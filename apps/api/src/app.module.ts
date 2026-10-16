@@ -3,12 +3,14 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
+import { DatabaseModule } from './database/database.module'
 import { CfAuthGuard } from './auth/auth.guard'
 import { RolesGuard } from './auth/roles.guard'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
     AuthModule,
   ],
   controllers: [AppController],

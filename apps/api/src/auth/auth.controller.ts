@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Req, UnauthorizedException } from '@nestjs
 import { ConfigService } from '@nestjs/config'
 import { Role } from '@carefusion/shared'
 import { Public } from './public.decorator'
+import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from './types'
 
 const ROLE_VALUES = new Set<string>(Object.values(Role))
@@ -14,7 +15,10 @@ interface DemoLoginBody {
 export class AuthController {
   private readonly demoMode: boolean
 
-  constructor(config: ConfigService) {
+  constructor(
+    config: ConfigService,
+    private readonly audit: AuditService,
+  ) {
     this.demoMode = config.get<string>('DEMO_MODE', 'false') === 'true'
   }
 
@@ -34,7 +38,7 @@ export class AuthController {
 
   @Public()
   @Post('demo-login')
-  demoLogin(@Body() body: DemoLoginBody) {
+  async demoLogin(@Body() body: DemoLoginBody, @Req() req: any) {
     if (!this.demoMode) {
       throw new UnauthorizedException('Demo login is disabled')
     }
@@ -43,14 +47,22 @@ export class AuthController {
       throw new UnauthorizedException('Invalid role')
     }
     const username = `demo-${role.toLowerCase().replace(/_/g, '-')}`
+    const user: AuthenticatedUser = {
+      id: username,
+      username,
+      role: role as any,
+      isDemo: true,
+    }
+
+    const ip = req.ip === '::1' ? '127.0.0.1' : req.ip?.replace('::ffff:', '')
+    await this.audit.logAction(user, 'auth.demo_login', {
+      ip,
+      details: { role, demo: true },
+    })
+
     return {
       token: `demo:${role}`,
-      user: {
-        id: username,
-        username,
-        role,
-        isDemo: true,
-      },
+      user: { id: username, username, role, isDemo: true },
     }
   }
 }
