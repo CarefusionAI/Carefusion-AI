@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+.next/
+.turbo/
+.vite/
+.vercel/
+*.tsbuildinfo
+
+# Environment files (never commit secrets). .env.example stays tracked.
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Test and coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Local data volumes
+.minio/
+pgdata/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.idea/

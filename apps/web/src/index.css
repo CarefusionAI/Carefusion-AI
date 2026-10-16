@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --cf-primary: #0d4f4f;
+    --cf-accent: #d4a017;
+  }
+
+  html {
+    font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-primary-50 text-primary-900 antialiased;
+    margin: 0;
+  }
+
+  a {
+    @apply text-primary;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cf-accent);
+    outline-offset: 2px;
+  }
+}

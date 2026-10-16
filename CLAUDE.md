@@ -15,6 +15,31 @@ CareFusion AI is being extended from an academic research system (IEEE ICSCST 20
 3. `docs/14_ACCOUNTS_AND_SETUP_NOTES.md` — accounts and laptop setup status.
 4. Then, as the task needs: `docs/01` (system overview), `02` (login/auth), `07` (citizen app), `08` (doctor app), `09` (staff/admin), `10` (tech stack), `11` (database design), `12` (Docker and environments).
 
+## Agent delegation rules (always)
+These rules are automatic — Claude applies them without being asked.
+
+### Subagent limits
+- **Max depth:** 5 (a subagent can spawn sub-subagents up to 5 levels deep).
+- **Max concurrent subagents:** 10 at any time.
+
+### Code writing → Sonnet 5.5, high effort
+When writing, editing, or generating any code (application code, migrations, configs, scripts, tests), delegate to a **Sonnet 5.5** subagent at **high** effort. The main model plans and reviews; Sonnet writes.
+
+### Saving session work → Haiku 5.5, high effort
+At the end of every session (or after any significant milestone), automatically delegate to a **Haiku 5.5** subagent at **high** effort to:
+- Summarise what was built, decided, or changed.
+- Append an entry to `docs/04_DECISION_LOG.md` (per Rule 8 below).
+- Create or update a session log at `docs/sessions/YYYY-MM-DD_SN.md` (S1 = morning, S2 = afternoon) with: date, goals, what was done, open items, files changed.
+
+### Discovery & gap-filling → Explore agent
+Before starting any non-trivial task, automatically spawn an **Explore** agent to:
+- Locate relevant files, schemas, types, and prior decisions.
+- Surface anything the main model's plan missed or assumed incorrectly.
+- Report back so the plan can be corrected before code is written.
+
+### Auto-documentation
+All important findings, architectural notes, and research that come up during a session are saved as Markdown files under `docs/` with the next available number prefix (`15_TOPIC.md`, `16_TOPIC.md`, …) or under a topical sub-folder (`docs/sessions/`, `docs/notes/`) so they are easy to find later. This happens automatically — the user should never need to ask for it.
+
 ## Rules (always)
 1. **Synthetic data only.** Never use or ask for real patient data. Demo identifiers look like `DEMO-0000-1234` and can never pass as real Aadhaar/ABHA numbers. Every screen shows a "SYNTHETIC DEMO DATA" banner.
 2. **No raw Aadhaar anywhere.** Tokens only.
@@ -42,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-10-16: Laptop set up (WSL Ubuntu, Git, SSH key to GitHub), repo cloned at `~/projects/Carefusion-AI`, docs added. **Next: W1 Sat S2 — monorepo skeleton, `docker-compose.yml`, `.env.example`.**
+- 2026-10-16 S2: Monorepo skeleton built and running — apps/web, apps/api, apps/ai, packages/shared, docker-compose with 8 services, all DB migrations applied. **Next: W1 Sun S1 — DB tests in Docker, commit + PR.**

@@ -664,3 +664,15 @@ Template:
 - Owner: User / Claude
 - Next step: W1 Sat S2 — monorepo skeleton (`apps/web`, `apps/api`, `apps/ai`, `packages/shared`), `docker-compose.yml`, `.env.example`.
 - Status: OPEN
+
+### 2026-10-16 — W1 Sat S2: Monorepo skeleton built and running
+- Done: Added agent delegation rules to CLAUDE.md (code via Sonnet 5.5, saves via Haiku 5.5, discovery via Explore agent; max depth 5, max 10 concurrent subagents).
+- Done: Installed Node.js 22.23.3 (nvm) + pnpm 9.12.0 in WSL.
+- Done: Built full monorepo skeleton — `apps/web` (React 18 + Vite + Tailwind, teal/amber theme), `apps/api` (NestJS placeholder), `apps/ai` (FastAPI with 4 simulated AI modules: symptom, image, genomic, temporal), `packages/shared` (12 roles, AIConfidence, demo banner).
+- Done: `docker-compose.yml` with 8 services (PostGIS 16, Valkey 8, Keycloak 26, Mailpit, db-migrate, API, AI, web). All 12 database migrations applied. AI service and Keycloak responding.
+- Decision: **MinIO deferred to W4** — Docker Hub pull requires authentication; not needed until file uploads.
+- Decision: **Bitnami/minio also unavailable** — will resolve with `docker login` or alternative when needed.
+- Decision: db-migrate gets `restart: on-failure:3` and a 3-second startup delay to handle the Postgres race condition.
+- Owner: Athun + Claude
+- Next step: W1 Sun S1 — run database tests in Docker, commit all work to `main` via PR.
+- Status: OPEN
