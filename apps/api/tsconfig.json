@@ -9,7 +9,7 @@
     "incremental": false,
     "isolatedModules": false,
     "paths": {
-      "@carefusion/shared": ["../../packages/shared/src/index.ts"]
+      "@carefusion/shared": ["../../packages/shared/dist/index.d.ts"]
     }
   },
   "include": ["src"],

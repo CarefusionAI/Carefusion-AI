@@ -1,9 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
 import type { Role } from '@carefusion/shared'
 import { getRoleConfig } from '../config/roles'
-
-// Demo-only auth. There is no real authentication in the alpha: choosing a role in the
-// role switcher "logs in" as the matching demo user. Real login (Keycloak) comes later; see docs/02.
+import { setAuthToken } from '../lib/api'
 
 export interface DemoUser {
   username: string
@@ -18,9 +16,9 @@ interface AuthContextValue {
   logout: () => void
 }
 
-const STORAGE_KEY = 'cf-demo-role'
+const ROLE_KEY = 'cf-demo-role'
+const TOKEN_KEY = 'cf-demo-token'
 
-// Assumption: demo usernames look like demo-lab-tech, demo-district-admin (see docs/02).
 function buildDemoUser(role: Role): DemoUser {
   const cfg = getRoleConfig(role)
   return {
@@ -30,25 +28,26 @@ function buildDemoUser(role: Role): DemoUser {
   }
 }
 
-// sessionStorage is only a convenience so a page refresh keeps the demo role.
-// It can throw or be empty (private window, blocked storage), so every access is guarded.
 function readStoredUser(): DemoUser | null {
   try {
-    const stored = window.sessionStorage.getItem(STORAGE_KEY)
+    const stored = window.sessionStorage.getItem(ROLE_KEY)
     if (!stored) return null
+    const token = window.sessionStorage.getItem(TOKEN_KEY)
+    if (token) setAuthToken(token)
     return buildDemoUser(stored as Role)
   } catch {
-    // Unknown stored role (getRoleConfig throws) or storage unavailable.
     return null
   }
 }
 
-function writeStoredRole(role: Role | null) {
+function writeStorage(role: Role | null, token: string | null) {
   try {
-    if (role) window.sessionStorage.setItem(STORAGE_KEY, role)
-    else window.sessionStorage.removeItem(STORAGE_KEY)
+    if (role) window.sessionStorage.setItem(ROLE_KEY, role)
+    else window.sessionStorage.removeItem(ROLE_KEY)
+    if (token) window.sessionStorage.setItem(TOKEN_KEY, token)
+    else window.sessionStorage.removeItem(TOKEN_KEY)
   } catch {
-    // Ignore: the app works without storage.
+    // Storage unavailable — app works without it.
   }
 }
 
@@ -58,13 +57,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<DemoUser | null>(readStoredUser)
 
   const login = useCallback((role: Role) => {
+    const token = `demo:${role}`
+    setAuthToken(token)
     setUser(buildDemoUser(role))
-    writeStoredRole(role)
+    writeStorage(role, token)
+
+    fetch('/api/v1/auth/demo-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    }).catch(() => {
+      // API may not be running yet — the demo token still works.
+    })
   }, [])
 
   const logout = useCallback(() => {
+    setAuthToken(null)
     setUser(null)
-    writeStoredRole(null)
+    writeStorage(null, null)
   }, [])
 
   const value = useMemo<AuthContextValue>(
