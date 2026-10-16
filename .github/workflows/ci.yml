@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all TypeScript packages
+        run: pnpm build
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/ai/requirements.txt
+
+      - name: Install Python dependencies
+        run: pip install -r apps/ai/requirements.txt
+
+      - name: Verify Python files parse
+        run: |
+          python - <<'EOF'
+          import ast
+          import pathlib
+          import sys
+
+          files = sorted(
+              p for p in pathlib.Path("apps/ai").rglob("*.py")
+              if not any(part in {"venv", ".venv", "__pycache__", "node_modules"} for part in p.parts)
+          )
+          if not files:
+              print("No Python files found in apps/ai")
+              sys.exit(1)
+
+          failed = False
+          for path in files:
+              try:
+                  ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+                  print(f"OK   {path}")
+              except SyntaxError as exc:
+                  failed = True
+                  print(f"FAIL {path}: {exc}")
+          sys.exit(1 if failed else 0)
+          EOF
+
+  db-tests:
+    name: Database tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: carefusion
+          POSTGRES_PASSWORD: ci_test_password
+          POSTGRES_DB: carefusion
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U carefusion -d carefusion"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: carefusion
+      PGPASSWORD: ci_test_password
+      PGDATABASE: carefusion
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install psql client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Run migrations
+        run: |
+          set -euo pipefail
+          for f in $(ls carefusion-db/migrations/*.sql | sort); do
+            echo "Applying $f"
+            psql -v ON_ERROR_STOP=1 -q -f "$f"
+          done
+
+      - name: Run rule tests
+        run: |
+          set -euo pipefail
+          psql -v ON_ERROR_STOP=1 -f carefusion-db/tests/test_rules.sql | tee test_output.txt
+
+      - name: Verify 0 failures
+        run: |
+          set -euo pipefail
+          # Any individual FAIL row is an error.
+          if grep -E '^[[:space:]]*FAIL[[:space:]]*\|' test_output.txt; then
+            echo "One or more rule tests failed."
+            exit 1
+          fi
+          # Summary row looks like "  47 |      0" under the "passed | failed" header.
+          summary=$(grep -E '^[[:space:]]*[0-9]+[[:space:]]*\|[[:space:]]*[0-9]+[[:space:]]*$' test_output.txt | tail -n 1 || true)
+          if [ -z "$summary" ]; then
+            echo "Could not find the passed/failed summary row in the test output."
+            exit 1
+          fi
+          echo "Summary (passed | failed): $summary"
+          failed=$(echo "$summary" | awk -F'|' '{gsub(/[[:space:]]/, "", $2); print $2}')
+          if [ "$failed" != "0" ]; then
+            echo "Rule tests reported $failed failure(s)."
+            exit 1
+          fi
+          echo "All rule tests passed."
