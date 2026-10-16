@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 import { ROLES, ROLE_GROUPS } from '../config/roles'
+import { useAuth } from '../context/AuthContext'
 
 // Demo-only role switcher. Real login (Keycloak) comes later; see docs/02.
 export default function RoleSwitcher() {
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   return (
     <section
@@ -15,7 +17,7 @@ export default function RoleSwitcher() {
           Demo role switcher
         </h1>
         <p className="mt-1 text-sm text-primary-100">
-          Choose a role to open its dashboard. Demo use only; no login is required in this alpha.
+          Choose a role to log in as its demo user and open its dashboard. Demo use only; no password is needed in this alpha.
         </p>
       </div>
 
@@ -30,7 +32,10 @@ export default function RoleSwitcher() {
                 <button
                   key={r.role}
                   type="button"
-                  onClick={() => navigate(r.path)}
+                  onClick={() => {
+                    login(r.role)
+                    navigate(r.path)
+                  }}
                   className="flex items-center gap-3 rounded-md border border-primary-200 bg-primary-50 px-3 py-2 text-left text-sm font-medium text-primary transition hover:border-accent hover:bg-accent-50"
                 >
                   <span

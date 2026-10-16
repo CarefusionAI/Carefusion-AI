@@ -1,9 +1,19 @@
 import type { ReactNode } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import DemoBanner from './DemoBanner'
-import { ROLES, ROLE_GROUPS } from '../config/roles'
+import { ROLES, ROLE_GROUPS, getRoleConfig } from '../config/roles'
+import { useAuth } from '../context/AuthContext'
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { user, login, logout } = useAuth()
+  const navigate = useNavigate()
+  const currentRole = user ? getRoleConfig(user.role) : null
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-primary-50 text-primary-900">
       <DemoBanner />
@@ -22,6 +32,37 @@ export default function Layout({ children }: { children: ReactNode }) {
               Unified Medical Affairs Platform (alpha demo)
             </span>
           </Link>
+
+          <div className="ml-auto flex items-center gap-3">
+            {user && currentRole ? (
+              <>
+                <span
+                  className="flex items-center gap-2 rounded bg-primary-700 px-2 py-1 text-xs"
+                  title={`Logged in as ${user.username}`}
+                >
+                  <span className="rounded bg-accent px-1.5 py-0.5 font-bold tracking-wider text-accent-foreground">
+                    {currentRole.badge}
+                  </span>
+                  <span className="hidden font-medium sm:inline">{user.displayName}</span>
+                  <span className="sr-only sm:hidden">{user.displayName}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded border border-primary-200 px-3 py-1 text-sm font-medium text-white transition hover:bg-primary-700"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="rounded border border-primary-200 px-3 py-1 text-sm font-medium !text-white no-underline transition hover:bg-primary-700"
+              >
+                Log in
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 
@@ -46,6 +87,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <li key={r.role}>
                       <NavLink
                         to={r.path}
+                        onClick={() => login(r.role)}
                         className={({ isActive }) =>
                           `block rounded px-2 py-1.5 text-sm no-underline ${
                             isActive
