@@ -30,3 +30,5 @@ export const AIConfidence = {
 } as const
 
 export type AIConfidence = (typeof AIConfidence)[keyof typeof AIConfidence]
+
+export * from './registration.js'

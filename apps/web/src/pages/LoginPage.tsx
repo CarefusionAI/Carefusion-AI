@@ -50,6 +50,7 @@ export default function LoginPage() {
             identifierLabel="Phone number or email"
             identifierPlaceholder="Phone or email"
             registerLabel="Create new user"
+            registerHref="/register"
           />
         ) : (
           <div className="space-y-4">

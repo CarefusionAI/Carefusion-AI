@@ -109,6 +109,7 @@ export function CredentialsForm({
   identifierAutoComplete = 'username',
   extraFields,
   registerLabel,
+  registerHref,
 }: {
   identifierLabel: string
   identifierPlaceholder?: string
@@ -116,6 +117,8 @@ export function CredentialsForm({
   extraFields?: ReactNode
   /** Disabled registration link text. Omit to hide it. */
   registerLabel?: string
+  /** If set, the registration label becomes a real link to this path. */
+  registerHref?: string
 }) {
   const [submitted, setSubmitted] = useState(false)
 
@@ -156,7 +159,12 @@ export function CredentialsForm({
 
       <div className="flex flex-wrap items-center justify-between gap-2">
         <DisabledLink>Forgot password?</DisabledLink>
-        {registerLabel && <DisabledLink>{registerLabel}</DisabledLink>}
+        {registerLabel && registerHref && (
+          <Link to={registerHref} className="text-sm font-medium text-primary-500 hover:text-primary-700 underline">
+            {registerLabel}
+          </Link>
+        )}
+        {registerLabel && !registerHref && <DisabledLink>{registerLabel}</DisabledLink>}
       </div>
     </form>
   )

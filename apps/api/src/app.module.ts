@@ -6,12 +6,14 @@ import { AuthModule } from './auth/auth.module'
 import { DatabaseModule } from './database/database.module'
 import { CfAuthGuard } from './auth/auth.guard'
 import { RolesGuard } from './auth/roles.guard'
+import { RegistrationModule } from './registration/registration.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     AuthModule,
+    RegistrationModule,
   ],
   controllers: [AppController],
   providers: [
