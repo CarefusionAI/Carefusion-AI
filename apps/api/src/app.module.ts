@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module'
 import { CfAuthGuard } from './auth/auth.guard'
 import { RolesGuard } from './auth/roles.guard'
 import { RegistrationModule } from './registration/registration.module'
+import { ApprovalModule } from './approval/approval.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RegistrationModule } from './registration/registration.module'
     DatabaseModule,
     AuthModule,
     RegistrationModule,
+    ApprovalModule,
   ],
   controllers: [AppController],
   providers: [

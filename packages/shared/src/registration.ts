@@ -195,3 +195,26 @@ export const PharmacyAdminRegistrationResponseSchema = z.object({
   errorMessage: z.string().optional(),
 })
 export type PharmacyAdminRegistrationResponse = z.infer<typeof PharmacyAdminRegistrationResponseSchema>
+
+// Approval inbox item
+export const ApprovalItemSchema = z.object({
+  id: z.string().uuid(),
+  subjectType: z.string(),
+  step: z.number(),
+  status: z.string(),
+  submittedAt: z.string(),
+  dueAt: z.string(),
+  checkResults: z.record(z.unknown()),
+  subjectUserId: z.string().uuid().nullable(),
+  applicantName: z.string().nullable(),
+  applicantAccountType: z.string().nullable(),
+})
+export type ApprovalItem = z.infer<typeof ApprovalItemSchema>
+
+export const ApproveRejectResponseSchema = z.object({
+  success: z.boolean(),
+  nextStep: z.boolean().optional(),
+  accountActivated: z.boolean().optional(),
+  errorMessage: z.string().optional(),
+})
+export type ApproveRejectResponse = z.infer<typeof ApproveRejectResponseSchema>
