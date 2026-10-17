@@ -218,3 +218,37 @@ export const ApproveRejectResponseSchema = z.object({
   errorMessage: z.string().optional(),
 })
 export type ApproveRejectResponse = z.infer<typeof ApproveRejectResponseSchema>
+
+// ---------- Admin operations (admins creating lower-level accounts) ----------
+
+export const CreateAdminRequestSchema = z.object({
+  personId: z.string().uuid(),
+  targetLevel: z.enum(['zonal', 'state', 'district']),
+  zoneId: z.number().int().optional(),
+  stateId: z.number().int().optional(),
+  districtId: z.string().uuid().optional(),
+})
+export type CreateAdminRequest = z.infer<typeof CreateAdminRequestSchema>
+
+export const CreateStaffRequestSchema = z.object({
+  personId: z.string().uuid(),
+  staffRole: z.enum(['nurse', 'lab', 'radiology']),
+  departmentId: z.string().uuid().optional(),
+  hospitalId: z.string().uuid(),
+})
+export type CreateStaffRequest = z.infer<typeof CreateStaffRequestSchema>
+
+export const CreatePharmacistRequestSchema = z.object({
+  personId: z.string().uuid(),
+  pharmacyId: z.string().uuid(),
+  registrationNo: z.string().min(3),
+})
+export type CreatePharmacistRequest = z.infer<typeof CreatePharmacistRequestSchema>
+
+export const CreateAccountResponseSchema = z.object({
+  success: z.boolean(),
+  userId: z.string().uuid().optional(),
+  status: z.enum(['pending', 'active']).optional(),
+  errorMessage: z.string().optional(),
+})
+export type CreateAccountResponse = z.infer<typeof CreateAccountResponseSchema>

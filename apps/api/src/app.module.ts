@@ -8,6 +8,7 @@ import { CfAuthGuard } from './auth/auth.guard'
 import { RolesGuard } from './auth/roles.guard'
 import { RegistrationModule } from './registration/registration.module'
 import { ApprovalModule } from './approval/approval.module'
+import { AdminOpsModule } from './admin-ops/admin-ops.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ApprovalModule } from './approval/approval.module'
     AuthModule,
     RegistrationModule,
     ApprovalModule,
+    AdminOpsModule,
   ],
   controllers: [AppController],
   providers: [
