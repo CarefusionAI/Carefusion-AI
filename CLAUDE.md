@@ -67,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-11-01 S2: W3 complete — citizen registration (mock Aadhaar e-KYC + face check + ABHA), doctor/hospital-admin/pharmacy-admin registration, approval chain (district→state→zonal→central), admin creation chain (central→zonal→state→district with two-person rule), staff & pharmacist account creation. All pushed to `w3-citizen-registration`. **Next: create PR w3→main, then W4.**
+- 2026-10-17 S1: W4 in progress — citizen profile API (view/update, special categories, system folders), document/folder API (CRUD, MinIO upload, pre-signed download, move), citizen home page (Profile + Documents tabs), demo identity resolution, Docker updates (MinIO, multi-stage Dockerfiles). All committed to `w4-citizen-profile` (6e0353c). **Next: push branch, browser test frontend, resolve MinIO image pull, create PR.**
