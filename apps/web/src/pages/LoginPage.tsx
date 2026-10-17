@@ -59,6 +59,7 @@ export default function LoginPage() {
               identifierLabel="Username"
               identifierPlaceholder="Doctor username"
               registerLabel="Register as a doctor"
+              registerHref="/register/doctor"
             />
             <p className="text-xs text-primary-500">
               Doctor accounts also need a second step (MFA) in the full system.

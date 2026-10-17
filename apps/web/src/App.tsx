@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginPage from './pages/LoginPage'
 import RegisterCitizenPage from './pages/RegisterCitizenPage'
+import RegisterDoctorPage from './pages/RegisterDoctorPage'
+import RegisterHospitalAdminPage from './pages/RegisterHospitalAdminPage'
+import RegisterPharmacyAdminPage from './pages/RegisterPharmacyAdminPage'
 import StaffLoginPage from './pages/StaffLoginPage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import Layout from './components/Layout'
@@ -103,6 +106,9 @@ export default function App() {
             <Route path="/login/staff" element={<StaffLoginPage />} />
             <Route path="/login/admin" element={<AdminLoginPage />} />
             <Route path="/register" element={<RegisterCitizenPage />} />
+            <Route path="/register/doctor" element={<RegisterDoctorPage />} />
+            <Route path="/register/hospital-admin" element={<RegisterHospitalAdminPage />} />
+            <Route path="/register/pharmacy-admin" element={<RegisterPharmacyAdminPage />} />
             {PROTECTED_ROUTES.map(({ path, element }) => (
               <Route key={path} path={path} element={<RequireAuth>{element}</RequireAuth>} />
             ))}

@@ -112,3 +112,86 @@ export const CitizenRegistrationResponseSchema = z.object({
   errorMessage: z.string().optional(),
 })
 export type CitizenRegistrationResponse = z.infer<typeof CitizenRegistrationResponseSchema>
+
+// HPR verification
+export const HprVerifyResponseSchema = z.object({
+  success: z.boolean(),
+  verified: z.boolean().optional(),
+  name: z.string().optional(),
+  council: z.string().optional(),
+  regNumber: z.string().optional(),
+  specialisation: z.string().optional(),
+  errorMessage: z.string().optional(),
+})
+export type HprVerifyResponse = z.infer<typeof HprVerifyResponseSchema>
+
+// HFR verification
+export const HfrVerifyResponseSchema = z.object({
+  success: z.boolean(),
+  verified: z.boolean().optional(),
+  facilityName: z.string().optional(),
+  errorMessage: z.string().optional(),
+})
+export type HfrVerifyResponse = z.infer<typeof HfrVerifyResponseSchema>
+
+// Drug licence verification
+export const DrugLicenceVerifyResponseSchema = z.object({
+  success: z.boolean(),
+  verified: z.boolean().optional(),
+  errorMessage: z.string().optional(),
+})
+export type DrugLicenceVerifyResponse = z.infer<typeof DrugLicenceVerifyResponseSchema>
+
+// Doctor registration request
+export const DoctorRegistrationRequestSchema = z.object({
+  // Person must already exist (citizen account) — the person_id links them
+  personId: z.string().uuid(),
+  hprId: z.string().min(5),
+  councilName: z.string().min(2),
+  councilRegNo: z.string().min(2),
+  specialisation: z.string().optional(),
+  degrees: z.array(z.object({ degree: z.string(), year: z.number() })).default([]),
+  hospitalId: z.string().uuid(),
+  departmentId: z.string().uuid().optional(),
+  employmentType: z.enum(['govt', 'private']),
+})
+export type DoctorRegistrationRequest = z.infer<typeof DoctorRegistrationRequestSchema>
+
+export const DoctorRegistrationResponseSchema = z.object({
+  success: z.boolean(),
+  userId: z.string().uuid().optional(),
+  status: z.enum(['pending', 'active', 'rejected']).optional(),
+  errorMessage: z.string().optional(),
+})
+export type DoctorRegistrationResponse = z.infer<typeof DoctorRegistrationResponseSchema>
+
+// Hospital admin registration request
+export const HospitalAdminRegistrationRequestSchema = z.object({
+  personId: z.string().uuid(),
+  hospitalId: z.string().uuid(),
+})
+export type HospitalAdminRegistrationRequest = z.infer<typeof HospitalAdminRegistrationRequestSchema>
+
+export const HospitalAdminRegistrationResponseSchema = z.object({
+  success: z.boolean(),
+  userId: z.string().uuid().optional(),
+  status: z.enum(['pending', 'active', 'rejected']).optional(),
+  errorMessage: z.string().optional(),
+})
+export type HospitalAdminRegistrationResponse = z.infer<typeof HospitalAdminRegistrationResponseSchema>
+
+// Pharmacy admin registration request
+export const PharmacyAdminRegistrationRequestSchema = z.object({
+  personId: z.string().uuid(),
+  pharmacyId: z.string().uuid(),
+  drugLicenceNo: z.string().min(5),
+})
+export type PharmacyAdminRegistrationRequest = z.infer<typeof PharmacyAdminRegistrationRequestSchema>
+
+export const PharmacyAdminRegistrationResponseSchema = z.object({
+  success: z.boolean(),
+  userId: z.string().uuid().optional(),
+  status: z.enum(['pending', 'active', 'rejected']).optional(),
+  errorMessage: z.string().optional(),
+})
+export type PharmacyAdminRegistrationResponse = z.infer<typeof PharmacyAdminRegistrationResponseSchema>

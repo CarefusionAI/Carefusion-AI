@@ -1,4 +1,5 @@
-import { CredentialsForm, DisabledLink, LoginCard, LoginPageLinks, SelectField } from '../components/LoginCard'
+import { Link } from 'react-router-dom'
+import { CredentialsForm, LoginCard, LoginPageLinks, SelectField } from '../components/LoginCard'
 
 // Admin login (docs/02 sections E, F, G).
 // Hospital and Pharmacy admins self-register; District, State, Zonal and Central admins are
@@ -36,10 +37,14 @@ export default function AdminLoginPage() {
         </p>
         <ul className="mt-2 space-y-1">
           <li>
-            <DisabledLink>Self-register as Hospital Admin</DisabledLink>
+            <Link to="/register/hospital-admin" className="text-sm font-medium text-primary-500 underline hover:text-primary-700">
+              Self-register as Hospital Admin
+            </Link>
           </li>
           <li>
-            <DisabledLink>Self-register as Pharmacy Admin</DisabledLink>
+            <Link to="/register/pharmacy-admin" className="text-sm font-medium text-primary-500 underline hover:text-primary-700">
+              Self-register as Pharmacy Admin
+            </Link>
           </li>
         </ul>
       </section>
