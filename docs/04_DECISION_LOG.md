@@ -698,3 +698,14 @@ Template:
 - Owner: Athun + Claude
 - Next step: W3 — citizen registration (mock Aadhaar e-KYC + face check), doctor self-registration (mock HPR), approval chain basics.
 - Status: DONE
+
+### 2026-11-01 — W3 Sun S2: Admin creation chain and staff/pharmacist accounts
+- Done: Built the **admin-ops API module** (`apps/api/src/admin-ops/`). Central, zonal and state admins create lower-level admins (central→zonal, zonal→state, state→district) through approval requests. Hospital admins create nurse, lab and radiology staff. Pharmacy admins create pharmacists. All writes run in DB transactions with validation. Role-guarded routes: create-admin, create-staff, create-pharmacist, zones, states.
+- Done: **Create account UI** (`apps/web/src/components/CreateAccountForm.tsx`) with CreateAdminForm, CreateStaffForm and CreatePharmacistForm. Central, zonal and state admin dashboards now show CreateAdminForm next to the approval inbox. Hospital admin and pharmacy admin dashboards replace their placeholders with a dashboard plus the matching create form.
+- Done: Shared Zod schemas added to `packages/shared` (CreateAdminRequestSchema, CreateStaffRequestSchema, CreatePharmacistRequestSchema, CreateAccountResponseSchema). `app.module.ts` imports AdminOpsModule.
+- Decision: **Two-person rule for zonal admin creation is stored as metadata** in `check_results` JSON. It is not yet enforced by the approval service.
+- Decision: Staff and pharmacist accounts are **activated immediately** (no approval step). Only admin creation goes through the approval chain.
+- Reason: Completes the W3 build plan for the full registration and account-creation hierarchy.
+- Owner: Athun + Claude
+- Next step: Create PR `w3-citizen-registration` → `main` (gh CLI not yet authenticated). Then W4 — doctor verification and patient records.
+- Status: DONE

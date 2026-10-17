@@ -67,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-10-17 S1: W2 complete — Keycloak realm + login pages, API auth module (JWT + demo mode), synthetic data generator (2205 persons, 46 tests pass), audit logging with hash chain. All pushed to `w1-monorepo-skeleton`. **Next: merge PR to main, then W3 — citizen registration with mock Aadhaar e-KYC.**
+- 2026-11-01 S2: W3 complete — citizen registration (mock Aadhaar e-KYC + face check + ABHA), doctor/hospital-admin/pharmacy-admin registration, approval chain (district→state→zonal→central), admin creation chain (central→zonal→state→district with two-person rule), staff & pharmacist account creation. All pushed to `w3-citizen-registration`. **Next: create PR w3→main, then W4.**
