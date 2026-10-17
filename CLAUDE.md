@@ -67,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-10-16 S2: Monorepo skeleton built and running — apps/web, apps/api, apps/ai, packages/shared, docker-compose with 8 services, all DB migrations applied. **Next: W1 Sun S1 — DB tests in Docker, commit + PR.**
+- 2026-10-17 S1: W2 complete — Keycloak realm + login pages, API auth module (JWT + demo mode), synthetic data generator (2205 persons, 46 tests pass), audit logging with hash chain. All pushed to `w1-monorepo-skeleton`. **Next: merge PR to main, then W3 — citizen registration with mock Aadhaar e-KYC.**

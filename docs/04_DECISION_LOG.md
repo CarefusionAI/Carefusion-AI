@@ -676,3 +676,25 @@ Template:
 - Owner: Athun + Claude
 - Next step: W1 Sun S1 — run database tests in Docker, commit all work to `main` via PR.
 - Status: OPEN
+
+### 2026-10-16 — W2 Sat S1: Keycloak realm + login pages + role switcher
+- Done: Keycloak `carefusion` realm with 12 roles, 2 OIDC clients (carefusion-web public, carefusion-api confidential), 12 demo users (password Demo1234!pass).
+- Done: Three login pages: `/login` (User/Doctor switch), `/login/staff` (Nurse/Lab/Radiology), `/login/admin` (6 admin roles with Jan Parichay SSO placeholder).
+- Done: AuthContext with demo role switcher (one-click login as any role, persists in sessionStorage).
+- Done: Layout header shows role badge + logout button; RequireAuth guards all role pages.
+- Done: GitHub Actions CI pipeline (build-and-test + db-tests jobs).
+- Done: "SYNTHETIC DEMO DATA" banner on every page.
+- Owner: Athun + Claude
+- Status: DONE
+
+### 2026-10-16 — W2 Sat S2 + Sun S1–S2: API auth, synthetic data, audit logging
+- Done: NestJS API auth module — Keycloak JWT validation via JWKS (passport-jwt + jwks-rsa), demo mode fallback (Bearer demo:<ROLE> or X-Demo-Role header when DEMO_MODE=true).
+- Done: Global CfAuthGuard + RolesGuard with @Public() and @Roles() decorators. /health is public, /api/v1/auth/me and /api/v1/auth/demo-login are protected/public.
+- Done: Shared package now builds to dist/ (fixes rootDir issues); workspace dependency properly linked in api + web package.json.
+- Done: Synthetic data generator (carefusion-db/seed/generate.py, no external deps): 2 Kerala districts (Ernakulam + Thiruvananthapuram), 20 hospitals, 40 pharmacies, 2000 citizens, 40 doctors, 60 staff, 20 hospital admins, 40 pharmacy admins, 40 pharmacists, 5 admin-chain accounts — all DEMO- identifiers. Verified: 2205 persons, 46 rule tests pass.
+- Done: Audit logging — DatabaseService (pg pool) + AuditService calling audit.log() with hash-chained trail. Demo logins recorded with action=auth.demo_login.
+- Decision: Use pg driver directly for raw SQL (audit.log, SET LOCAL context) instead of Prisma for now. Prisma full introspection deferred until typed ORM queries are needed.
+- Decision: Web AuthContext stores demo token in sessionStorage and sends it via Authorization header to the API.
+- Owner: Athun + Claude
+- Next step: W3 — citizen registration (mock Aadhaar e-KYC + face check), doctor self-registration (mock HPR), approval chain basics.
+- Status: DONE
