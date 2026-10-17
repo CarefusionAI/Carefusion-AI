@@ -10,6 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1152.0",
+    "@aws-sdk/s3-request-presigner": "^3.1152.0",
     "@carefusion/shared": "workspace:*",
     "@nestjs/common": "^10.4.6",
     "@nestjs/config": "3",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@nestjs/cli": "^10.4.5",
     "@types/express": "^5.0.0",
+    "@types/multer": "^2.3.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.23.1",
     "prisma": "^5.20.0",

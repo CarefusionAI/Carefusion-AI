@@ -28,7 +28,7 @@ export default function RolePage({ role }: { role: Role }) {
         </div>
 
         <div className="mt-6 rounded-md border border-accent-200 bg-accent-50 px-4 py-3 text-accent-600">
-          <p className="font-semibold">{cfg.comingSoon}</p>
+          <p className="font-semibold">{cfg.comingSoon ?? "Coming soon"}</p>
           <p className="mt-1 text-sm">
             This page is a placeholder. Screens for this role will be built following docs/13.
           </p>
