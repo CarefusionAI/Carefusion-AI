@@ -1,0 +1,230 @@
+{
+  "realm": "carefusion",
+  "displayName": "CareFusion AI",
+  "enabled": true,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "verifyEmail": false,
+  "sslRequired": "none",
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 900,
+  "ssoSessionMaxLifespan": 28800,
+  "passwordPolicy": "length(12)",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "browserFlow": "browser",
+  "roles": {
+    "realm": [
+      { "name": "CITIZEN", "description": "Citizen / patient using the citizen app" },
+      { "name": "DOCTOR", "description": "Registered doctor" },
+      { "name": "NURSE", "description": "Nurse" },
+      { "name": "LAB_TECH", "description": "Laboratory technician" },
+      { "name": "RADIOLOGY_TECH", "description": "Radiology technician" },
+      { "name": "PHARMACIST", "description": "Pharmacist" },
+      { "name": "PHARMACY_ADMIN", "description": "Pharmacy administrator" },
+      { "name": "HOSPITAL_ADMIN", "description": "Hospital administrator" },
+      { "name": "DISTRICT_ADMIN", "description": "District-level administrator" },
+      { "name": "STATE_ADMIN", "description": "State-level administrator" },
+      { "name": "ZONAL_ADMIN", "description": "Zonal administrator" },
+      { "name": "CENTRAL_ADMIN", "description": "Central (national) administrator" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "carefusion-web",
+      "name": "CareFusion Web (React SPA)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "https://*.vercel.app/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "https://*.vercel.app"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "carefusion-api",
+      "name": "CareFusion API (NestJS)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "api-demo-secret-change-me",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "protocolMappers": [
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "demo-citizen",
+      "email": "demo-citizen@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Citizen",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["CITIZEN"]
+    },
+    {
+      "username": "demo-doctor",
+      "email": "demo-doctor@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Doctor",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["DOCTOR"]
+    },
+    {
+      "username": "demo-nurse",
+      "email": "demo-nurse@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Nurse",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["NURSE"]
+    },
+    {
+      "username": "demo-labtech",
+      "email": "demo-labtech@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Lab Tech",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["LAB_TECH"]
+    },
+    {
+      "username": "demo-radiotech",
+      "email": "demo-radiotech@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Radiology Tech",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["RADIOLOGY_TECH"]
+    },
+    {
+      "username": "demo-pharmacist",
+      "email": "demo-pharmacist@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Pharmacist",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["PHARMACIST"]
+    },
+    {
+      "username": "demo-pharmadmin",
+      "email": "demo-pharmadmin@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Pharmacy Admin",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["PHARMACY_ADMIN"]
+    },
+    {
+      "username": "demo-hospitaladmin",
+      "email": "demo-hospitaladmin@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Hospital Admin",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["HOSPITAL_ADMIN"]
+    },
+    {
+      "username": "demo-districtadmin",
+      "email": "demo-districtadmin@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "District Admin",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["DISTRICT_ADMIN"]
+    },
+    {
+      "username": "demo-stateadmin",
+      "email": "demo-stateadmin@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "State Admin",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["STATE_ADMIN"]
+    },
+    {
+      "username": "demo-zonaladmin",
+      "email": "demo-zonaladmin@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Zonal Admin",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["ZONAL_ADMIN"]
+    },
+    {
+      "username": "demo-centraladmin",
+      "email": "demo-centraladmin@carefusion.demo",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Demo",
+      "lastName": "Central Admin",
+      "credentials": [{ "type": "password", "value": "Demo1234!pass", "temporary": false }],
+      "realmRoles": ["CENTRAL_ADMIN"]
+    }
+  ]
+}

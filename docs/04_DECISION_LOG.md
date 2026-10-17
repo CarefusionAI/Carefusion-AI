@@ -664,3 +664,48 @@ Template:
 - Owner: User / Claude
 - Next step: W1 Sat S2 — monorepo skeleton (`apps/web`, `apps/api`, `apps/ai`, `packages/shared`), `docker-compose.yml`, `.env.example`.
 - Status: OPEN
+
+### 2026-10-16 — W1 Sat S2: Monorepo skeleton built and running
+- Done: Added agent delegation rules to CLAUDE.md (code via Sonnet 5.5, saves via Haiku 5.5, discovery via Explore agent; max depth 5, max 10 concurrent subagents).
+- Done: Installed Node.js 22.23.3 (nvm) + pnpm 9.12.0 in WSL.
+- Done: Built full monorepo skeleton — `apps/web` (React 18 + Vite + Tailwind, teal/amber theme), `apps/api` (NestJS placeholder), `apps/ai` (FastAPI with 4 simulated AI modules: symptom, image, genomic, temporal), `packages/shared` (12 roles, AIConfidence, demo banner).
+- Done: `docker-compose.yml` with 8 services (PostGIS 16, Valkey 8, Keycloak 26, Mailpit, db-migrate, API, AI, web). All 12 database migrations applied. AI service and Keycloak responding.
+- Decision: **MinIO deferred to W4** — Docker Hub pull requires authentication; not needed until file uploads.
+- Decision: **Bitnami/minio also unavailable** — will resolve with `docker login` or alternative when needed.
+- Decision: db-migrate gets `restart: on-failure:3` and a 3-second startup delay to handle the Postgres race condition.
+- Owner: Athun + Claude
+- Next step: W1 Sun S1 — run database tests in Docker, commit all work to `main` via PR.
+- Status: OPEN
+
+### 2026-10-16 — W2 Sat S1: Keycloak realm + login pages + role switcher
+- Done: Keycloak `carefusion` realm with 12 roles, 2 OIDC clients (carefusion-web public, carefusion-api confidential), 12 demo users (password Demo1234!pass).
+- Done: Three login pages: `/login` (User/Doctor switch), `/login/staff` (Nurse/Lab/Radiology), `/login/admin` (6 admin roles with Jan Parichay SSO placeholder).
+- Done: AuthContext with demo role switcher (one-click login as any role, persists in sessionStorage).
+- Done: Layout header shows role badge + logout button; RequireAuth guards all role pages.
+- Done: GitHub Actions CI pipeline (build-and-test + db-tests jobs).
+- Done: "SYNTHETIC DEMO DATA" banner on every page.
+- Owner: Athun + Claude
+- Status: DONE
+
+### 2026-10-16 — W2 Sat S2 + Sun S1–S2: API auth, synthetic data, audit logging
+- Done: NestJS API auth module — Keycloak JWT validation via JWKS (passport-jwt + jwks-rsa), demo mode fallback (Bearer demo:<ROLE> or X-Demo-Role header when DEMO_MODE=true).
+- Done: Global CfAuthGuard + RolesGuard with @Public() and @Roles() decorators. /health is public, /api/v1/auth/me and /api/v1/auth/demo-login are protected/public.
+- Done: Shared package now builds to dist/ (fixes rootDir issues); workspace dependency properly linked in api + web package.json.
+- Done: Synthetic data generator (carefusion-db/seed/generate.py, no external deps): 2 Kerala districts (Ernakulam + Thiruvananthapuram), 20 hospitals, 40 pharmacies, 2000 citizens, 40 doctors, 60 staff, 20 hospital admins, 40 pharmacy admins, 40 pharmacists, 5 admin-chain accounts — all DEMO- identifiers. Verified: 2205 persons, 46 rule tests pass.
+- Done: Audit logging — DatabaseService (pg pool) + AuditService calling audit.log() with hash-chained trail. Demo logins recorded with action=auth.demo_login.
+- Decision: Use pg driver directly for raw SQL (audit.log, SET LOCAL context) instead of Prisma for now. Prisma full introspection deferred until typed ORM queries are needed.
+- Decision: Web AuthContext stores demo token in sessionStorage and sends it via Authorization header to the API.
+- Owner: Athun + Claude
+- Next step: W3 — citizen registration (mock Aadhaar e-KYC + face check), doctor self-registration (mock HPR), approval chain basics.
+- Status: DONE
+
+### 2026-11-01 — W3 Sun S2: Admin creation chain and staff/pharmacist accounts
+- Done: Built the **admin-ops API module** (`apps/api/src/admin-ops/`). Central, zonal and state admins create lower-level admins (central→zonal, zonal→state, state→district) through approval requests. Hospital admins create nurse, lab and radiology staff. Pharmacy admins create pharmacists. All writes run in DB transactions with validation. Role-guarded routes: create-admin, create-staff, create-pharmacist, zones, states.
+- Done: **Create account UI** (`apps/web/src/components/CreateAccountForm.tsx`) with CreateAdminForm, CreateStaffForm and CreatePharmacistForm. Central, zonal and state admin dashboards now show CreateAdminForm next to the approval inbox. Hospital admin and pharmacy admin dashboards replace their placeholders with a dashboard plus the matching create form.
+- Done: Shared Zod schemas added to `packages/shared` (CreateAdminRequestSchema, CreateStaffRequestSchema, CreatePharmacistRequestSchema, CreateAccountResponseSchema). `app.module.ts` imports AdminOpsModule.
+- Decision: **Two-person rule for zonal admin creation is stored as metadata** in `check_results` JSON. It is not yet enforced by the approval service.
+- Decision: Staff and pharmacist accounts are **activated immediately** (no approval step). Only admin creation goes through the approval chain.
+- Reason: Completes the W3 build plan for the full registration and account-creation hierarchy.
+- Owner: Athun + Claude
+- Next step: Create PR `w3-citizen-registration` → `main` (gh CLI not yet authenticated). Then W4 — doctor verification and patient records.
+- Status: DONE
