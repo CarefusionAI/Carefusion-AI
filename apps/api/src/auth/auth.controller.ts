@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config'
 import { Role } from '@carefusion/shared'
 import { Public } from './public.decorator'
 import { AuditService } from '../audit/audit.service'
+import { DatabaseService } from '../database/database.service'
+import { lookupDemoIdentity } from './demo-identity'
 import type { AuthenticatedUser } from './types'
 
 const ROLE_VALUES = new Set<string>(Object.values(Role))
@@ -18,6 +20,7 @@ export class AuthController {
   constructor(
     config: ConfigService,
     private readonly audit: AuditService,
+    private readonly db: DatabaseService,
   ) {
     this.demoMode = config.get<string>('DEMO_MODE', 'false') === 'true'
   }
@@ -33,6 +36,8 @@ export class AuthController {
       lastName: user.lastName,
       role: user.role,
       isDemo: user.isDemo,
+      personId: user.personId,
+      userId: user.userId,
     }
   }
 
@@ -53,6 +58,11 @@ export class AuthController {
       role: role as any,
       isDemo: true,
     }
+    const identity = await lookupDemoIdentity(this.db, role)
+    if (identity) {
+      user.personId = identity.personId
+      user.userId = identity.userId
+    }
 
     const ip = req.ip === '::1' ? '127.0.0.1' : req.ip?.replace('::ffff:', '')
     await this.audit.logAction(user, 'auth.demo_login', {
@@ -62,7 +72,14 @@ export class AuthController {
 
     return {
       token: `demo:${role}`,
-      user: { id: username, username, role, isDemo: true },
+      user: {
+        id: username,
+        username,
+        role,
+        isDemo: true,
+        personId: identity?.personId ?? null,
+        userId: identity?.userId ?? null,
+      },
     }
   }
 }

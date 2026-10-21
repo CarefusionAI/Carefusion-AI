@@ -14,24 +14,28 @@ export function LoginCard({
 }) {
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="rounded-lg border border-primary-200 bg-white shadow-sm">
-        <div className="rounded-t-lg border-b-4 border-accent bg-primary px-6 py-5 text-white">
-          <div className="flex items-center gap-3">
-            <span
-              aria-hidden="true"
-              className="flex h-10 w-10 items-center justify-center rounded bg-accent text-sm font-bold text-accent-foreground"
-            >
-              CF
+      <div
+        className="cf-card overflow-hidden rounded-xl border"
+        style={{
+          background: 'rgba(250,245,239,.92)',
+          borderColor: 'rgba(83,101,120,.13)',
+          boxShadow: '0 1px 3px rgba(83,101,120,.06), 0 4px 14px rgba(83,101,120,.04)',
+        }}
+      >
+        <div className="px-6 pb-4 pt-6">
+          <Link to="/" className="inline-flex no-underline">
+            <span className="text-lg font-semibold tracking-tight" style={{ color: '#3f5263' }}>
+              CareFusion<span style={{ color: '#3a726d' }}> AI</span>
             </span>
-            <div>
-              <p className="text-lg font-bold leading-tight">CareFusion AI</p>
-              <p className="text-xs text-primary-100">Unified Medical Affairs Platform</p>
-            </div>
-          </div>
-          <h1 className="mt-4 text-xl font-bold">{title}</h1>
-          <p className="mt-1 text-sm text-primary-100">{subtitle}</p>
+          </Link>
+          <h1 className="mt-4 font-serif text-2xl font-semibold" style={{ color: '#3f5263' }}>
+            {title}
+          </h1>
+          <p className="mt-1 text-sm" style={{ color: '#586470' }}>
+            {subtitle}
+          </p>
         </div>
-        <div className="space-y-5 p-6">{children}</div>
+        <div className="space-y-5 px-6 pb-6">{children}</div>
       </div>
     </div>
   )
@@ -51,7 +55,7 @@ export function TextField({
   const id = useId()
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-primary-800">
+      <label htmlFor={id} className="block text-sm font-medium" style={{ color: '#3f5263' }}>
         {label}
       </label>
       <input
@@ -59,7 +63,18 @@ export function TextField({
         type={type}
         autoComplete={autoComplete}
         placeholder={placeholder}
-        className="mt-1 block w-full rounded-md border border-primary-200 bg-white px-3 py-2 text-sm text-primary-900 placeholder:text-primary-300 focus:border-primary focus:outline-none"
+        className="mt-1 block w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none"
+        style={{
+          borderColor: 'rgba(83,101,120,.22)',
+          background: '#fff',
+          color: '#3f5263',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = '#3a726d'
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(83,101,120,.22)'
+        }}
       />
     </div>
   )
@@ -69,13 +84,18 @@ export function SelectField({ label, options }: { label: string; options: string
   const id = useId()
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-primary-800">
+      <label htmlFor={id} className="block text-sm font-medium" style={{ color: '#3f5263' }}>
         {label}
       </label>
       <select
         id={id}
         defaultValue={options[0]}
-        className="mt-1 block w-full rounded-md border border-primary-200 bg-white px-3 py-2 text-sm text-primary-900 focus:border-primary focus:outline-none"
+        className="mt-1 block w-full rounded-md border px-3 py-2 text-sm focus:outline-none"
+        style={{
+          borderColor: 'rgba(83,101,120,.22)',
+          background: '#fff',
+          color: '#3f5263',
+        }}
       >
         {options.map((o) => (
           <option key={o} value={o}>
@@ -93,7 +113,8 @@ export function DisabledLink({ children, hint }: { children: ReactNode; hint?: s
     <span
       aria-disabled="true"
       title={hint ?? 'Not available in the alpha demo'}
-      className="cursor-not-allowed text-sm text-primary-300 underline decoration-dotted"
+      className="cursor-not-allowed text-sm underline decoration-dotted"
+      style={{ color: 'rgba(83,101,120,.35)' }}
     >
       {children}
     </span>
@@ -139,7 +160,8 @@ export function CredentialsForm({
 
       <button
         type="submit"
-        className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700"
+        className="w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors"
+        style={{ background: '#3a726d', color: '#faf5ef' }}
       >
         Log in
       </button>
@@ -147,10 +169,15 @@ export function CredentialsForm({
       {submitted && (
         <p
           role="status"
-          className="rounded-md border border-accent-200 bg-accent-50 px-3 py-2 text-sm text-accent-600"
+          className="rounded-lg border px-3 py-2 text-sm"
+          style={{
+            borderColor: 'rgba(198,145,58,.25)',
+            background: 'rgba(198,145,58,.12)',
+            color: '#8b6a2f',
+          }}
         >
           Real login is not switched on in this alpha. Use the{' '}
-          <Link to="/" className="font-semibold underline">
+          <Link to="/" className="font-semibold underline" style={{ color: '#8b7340' }}>
             demo role switcher
           </Link>{' '}
           to open a dashboard.
@@ -160,7 +187,7 @@ export function CredentialsForm({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <DisabledLink>Forgot password?</DisabledLink>
         {registerLabel && registerHref && (
-          <Link to={registerHref} className="text-sm font-medium text-primary-500 hover:text-primary-700 underline">
+          <Link to={registerHref} className="text-sm font-medium underline" style={{ color: '#2d6560' }}>
             {registerLabel}
           </Link>
         )}
@@ -178,8 +205,8 @@ export function LoginPageLinks({ current }: { current: 'main' | 'staff' | 'admin
     { key: 'admin', to: '/login/admin', label: 'Admin login' },
   ] as const
   return (
-    <nav aria-label="Other login pages" className="border-t border-primary-100 pt-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+    <nav aria-label="Other login pages" className="border-t pt-4" style={{ borderColor: 'rgba(83,101,120,.13)' }}>
+      <p className="text-xs font-semibold uppercase" style={{ letterSpacing: '.1em', color: '#586470' }}>
         Other login pages
       </p>
       <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
@@ -187,7 +214,7 @@ export function LoginPageLinks({ current }: { current: 'main' | 'staff' | 'admin
           .filter((l) => l.key !== current)
           .map((l) => (
             <li key={l.key}>
-              <Link to={l.to} className="font-medium underline">
+              <Link to={l.to} className="font-medium underline" style={{ color: '#2d6560' }}>
                 {l.label}
               </Link>
             </li>

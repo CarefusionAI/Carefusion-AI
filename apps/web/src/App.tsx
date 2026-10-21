@@ -23,43 +23,8 @@ import StateAdminHome from './pages/StateAdminHome'
 import ZonalAdminHome from './pages/ZonalAdminHome'
 import CentralAdminHome from './pages/CentralAdminHome'
 
-// Service URLs are the laptop ports from docs/12 section 4.1 (developer convenience).
-const SERVICES = [
-  { name: 'API health', url: 'http://localhost:3000/health' },
-  { name: 'AI service health', url: 'http://localhost:8000/health' },
-  { name: 'AI service docs', url: 'http://localhost:8000/docs' },
-  { name: 'Keycloak (login server)', url: 'http://localhost:8080' },
-  { name: 'MinIO console (files)', url: 'http://localhost:9001' },
-  { name: 'Mailpit (test emails and OTPs)', url: 'http://localhost:8025' },
-]
-
 function Home() {
-  return (
-    <div className="space-y-8">
-      <RoleSwitcher />
-
-      <section className="mx-auto max-w-3xl">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-primary-500">
-          Developer service links (laptop)
-        </h2>
-        <ul className="mt-3 space-y-2">
-          {SERVICES.map((s) => (
-            <li key={s.url}>
-              <a
-                href={s.url}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between rounded-md border border-primary-200 bg-white px-4 py-2 text-sm hover:border-accent"
-              >
-                <span className="font-medium">{s.name}</span>
-                <span className="text-primary-500">{s.url}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
-  )
+  return <RoleSwitcher />
 }
 
 // Role pages need a demo "login" (done with the role switcher). Otherwise go back to /.

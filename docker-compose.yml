@@ -45,8 +45,38 @@ services:
       db:
         condition: service_healthy
 
-  # minio: added back in W4 (file uploads). Run `docker login` first if pull fails.
-  # image: minio/minio:RELEASE.2024-10-02T17-50-41Z
+  # S3-compatible storage for the laptop. LocalStack replaces MinIO (MinIO images could not be pulled).
+  # Inside Docker the API uses http://localstack:4566; the browser uses http://localhost:9000.
+  localstack:
+    image: localstack/localstack:3.6
+    ports:
+      - "9000:4566"
+    environment:
+      SERVICES: s3
+      AWS_DEFAULT_REGION: ap-south-1
+    volumes:
+      - cf-minio:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "bash", "-c", "curl -sf http://localhost:4566/_localstack/health | grep -q '\"s3\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  localstack-init:
+    image: localstack/localstack:3.6
+    depends_on:
+      localstack:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-south-1
+      MINIO_BUCKET: ${MINIO_BUCKET}
+    entrypoint: >
+      /bin/sh -c "
+      aws --endpoint-url http://localstack:4566 s3 mb s3://$${MINIO_BUCKET} 2>/dev/null || true;
+      exit 0;
+      "
 
   mailpit:
     image: axllent/mailpit:latest
@@ -67,15 +97,18 @@ services:
 
   api:
     build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/api/Dockerfile
     ports:
       - "3000:3000"
     env_file: .env
+    volumes:
+      - ./.env:/app/apps/api/.env:ro
     depends_on:
       - db
       - valkey
       - keycloak
+      - localstack
 
   ai:
     build:
@@ -89,12 +122,20 @@ services:
 
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/web/Dockerfile
     ports:
       - "5173:5173"
     env_file: .env
+    environment:
+      API_PROXY_TARGET: http://api:3000
+    volumes:
+      # Hot reload: edit source on the host, Vite in the container picks it up.
+      - ./apps/web/src:/app/apps/web/src
+      - ./apps/web/index.html:/app/apps/web/index.html
+      - ./packages/shared/src:/app/packages/shared/src
 
 volumes:
   cf-pgdata:
   cf-valkey:
+  cf-minio:

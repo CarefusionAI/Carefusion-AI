@@ -9,6 +9,9 @@ import { RolesGuard } from './auth/roles.guard'
 import { RegistrationModule } from './registration/registration.module'
 import { ApprovalModule } from './approval/approval.module'
 import { AdminOpsModule } from './admin-ops/admin-ops.module'
+import { CitizenModule } from './citizen/citizen.module'
+import { StorageModule } from './storage/storage.module'
+import { DocumentsModule } from './documents/documents.module'
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { AdminOpsModule } from './admin-ops/admin-ops.module'
     RegistrationModule,
     ApprovalModule,
     AdminOpsModule,
+    StorageModule,
+    CitizenModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [

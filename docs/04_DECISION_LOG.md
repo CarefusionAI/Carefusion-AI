@@ -709,3 +709,21 @@ Template:
 - Owner: Athun + Claude
 - Next step: Create PR `w3-citizen-registration` → `main` (gh CLI not yet authenticated). Then W4 — doctor verification and patient records.
 - Status: DONE
+
+### 2026-10-17 — W4 Sat S1: Citizen profile, documents and folders with MinIO storage
+- Done: Merged PR #2 (w3-citizen-registration → main). Created branch `w4-citizen-profile`.
+- Done: **Demo identity resolution** — auth guard resolves personId/userId from the database for each demo role, cached in-memory. Demo-login endpoint and auth/me now return personId/userId.
+- Done: **Citizen profile API** (`apps/api/src/citizen/`): view profile (joins person + citizen_profile + special_category + emergency_contact + geo), update editable fields (language, blood group, AI opt-in), list special category types, add/end special categories, auto-create system folders on first access.
+- Done: **Document/folder API** (`apps/api/src/documents/`): list/create/rename folders, upload documents with SHA-256 hash to MinIO, download via pre-signed URL (separate public endpoint for browser access), move documents between folders. Documents are immutable (no edit/delete).
+- Done: **S3-compatible storage service** (`apps/api/src/storage/`): uses @aws-sdk/client-s3 with configurable endpoint; separate signing client for browser-facing pre-signed URLs using MINIO_PUBLIC_ENDPOINT.
+- Done: **Citizen home page** (`apps/web/src/pages/CitizenHome.tsx`): Profile tab with identity card (locked fields), editable profile form, special categories CRUD, emergency contacts list. Documents tab with folder sidebar (system folder icons), document list, file upload, download, and move.
+- Done: **Shared Zod schemas** (`packages/shared/src/citizen.ts`): BloodGroup, PreferredLanguage, CitizenProfileResponse, UpdateCitizenProfileRequest, SpecialCategoryType/Request, DocType, FolderKind, FolderResponse, CreateFolderRequest, RenameFolderRequest, DocumentResponse, UploadDocumentRequest/Response, DocumentDownloadResponse, MoveDocumentRequest.
+- Done: **Docker updates**: MinIO + minio-init containers, multi-stage Dockerfiles for API and web, .dockerignore, configurable Vite proxy target (API_PROXY_TARGET env var for container networking).
+- Decision: **5 system folders auto-created per citizen** on first access: Doctor uploads, AI Chat, Image Analysis, Genomic Analysis, Temporal Analysis. User folders have kind=user.
+- Decision: **MinIO public endpoint** kept separate from internal endpoint so pre-signed URLs work for browser downloads (MINIO_PUBLIC_ENDPOINT in .env).
+- Decision: **Demo identity cached in-memory** (maps role → first active app_user from DB). Cache clears on restart.
+- API tested: demo-login, profile view/update, special category add/end, folder auto-create/create/rename — all working.
+- TypeScript: zero errors in both apps.
+- Owner: Athun + Claude
+- Next step: Push branch, test frontend in browser, resolve MinIO image pull (needs docker login), create PR.
+- Status: OPEN
