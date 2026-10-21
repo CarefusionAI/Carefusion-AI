@@ -4,8 +4,16 @@
 
 @layer base {
   :root {
-    --cf-primary: #0d4f4f;
-    --cf-accent: #d4a017;
+    --cf-surface: #f3eee8;
+    --cf-surface-raised: #faf5ef;
+    --cf-surface-cream: #efe7de;
+    --cf-border: rgba(83,101,120,.13);
+    --cf-border-strong: rgba(83,101,120,.22);
+    --cf-primary: #3a726d;
+    --cf-accent: #c9a86a;
+    --cf-focus-ring: rgba(58,114,109,.45);
+    --cf-shadow-card: 0 1px 3px rgba(83,101,120,.06), 0 4px 14px rgba(83,101,120,.04);
+    --cf-shadow-lift: 0 4px 16px rgba(83,101,120,.10), 0 8px 28px rgba(83,101,120,.05);
   }
 
   html {
@@ -13,16 +21,121 @@
   }
 
   body {
-    @apply bg-primary-50 text-primary-900 antialiased;
     margin: 0;
+    background: var(--cf-surface);
+    color: #536170;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   a {
-    @apply text-primary;
+    color: #2d6560;
   }
 
   :focus-visible {
-    outline: 2px solid var(--cf-accent);
+    outline: 2px solid var(--cf-focus-ring);
     outline-offset: 2px;
   }
 }
+
+/* CareFusion animated background system */
+.cf-root {
+  isolation: isolate;
+  position: relative;
+}
+
+.cf-fx {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Animated orbs */
+.fx-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.85;
+  animation: fxDrift 26s ease-in-out infinite alternate;
+}
+
+.fx-o1 { width: 560px; height: 560px; right: -140px; top: -160px; background: var(--fx-o1); }
+.fx-o2 { width: 480px; height: 480px; left: -160px; bottom: -140px; animation-duration: 32s; animation-delay: -8s; background: var(--fx-o2); }
+.fx-o3 { width: 380px; height: 380px; left: 38%; top: 30%; animation-duration: 38s; animation-delay: -16s; opacity: 0.6; background: var(--fx-o3); }
+
+@keyframes fxDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, 40px) scale(1.08); }
+  100% { transform: translate(40px, -30px) scale(0.95); }
+}
+
+/* Dot grid */
+.fx-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(58,114,109,.16) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 70% 60% at 78% 18%, #000 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 78% 18%, #000 0%, transparent 70%);
+}
+
+/* Medical cross SVGs */
+.fx-cross { position: absolute; overflow: visible; }
+.fx-cross .v { fill: var(--fx-a); }
+.fx-cross .h { fill: var(--fx-b); }
+.fx-c1 { width: 560px; height: 560px; right: -150px; bottom: -170px; opacity: 0.09; animation: fxSpin 90s linear infinite; }
+.fx-c2 { width: 230px; height: 230px; left: 5%; top: 12%; opacity: 0.08; animation: fxFloat 14s ease-in-out infinite; }
+.fx-c3 { width: 150px; height: 150px; right: 30%; top: 58%; opacity: 0.16; animation: fxFloat 18s ease-in-out -6s infinite; }
+.fx-c3 .v, .fx-c3 .h { fill: none; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+.fx-c3 .v { stroke: var(--fx-a); }
+.fx-c3 .h { stroke: var(--fx-b); }
+
+@keyframes fxSpin { to { transform: rotate(360deg); } }
+@keyframes fxFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-26px) rotate(8deg); } }
+
+/* ECG line */
+.fx-ecg { position: absolute; left: 0; bottom: 16%; width: 100%; height: 110px; opacity: 0.2; }
+.fx-ecg path { fill: none; stroke: var(--fx-a); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; stroke-dasharray: 420 2600; animation: fxEcg 7s linear infinite; }
+@keyframes fxEcg { from { stroke-dashoffset: 3020; } to { stroke-dashoffset: 0; } }
+
+/* Rising particles */
+.fx-p { position: absolute; bottom: -60px; width: 10px; height: 26px; border-radius: 9999px; background: var(--fx-a); opacity: 0; animation: fxRise 22s linear infinite; }
+.fx-p:nth-of-type(even) { background: var(--fx-b); width: 22px; height: 9px; }
+.fx-p1 { left: 8%; animation-delay: 0s; }
+.fx-p2 { left: 22%; animation-delay: -5s; animation-duration: 26s; }
+.fx-p3 { left: 41%; animation-delay: -11s; }
+.fx-p4 { left: 57%; animation-delay: -3s; animation-duration: 30s; }
+.fx-p5 { left: 73%; animation-delay: -15s; }
+.fx-p6 { left: 90%; animation-delay: -8s; animation-duration: 24s; }
+
+@keyframes fxRise {
+  0% { transform: translateY(0) rotate(0); opacity: 0; }
+  10% { opacity: 0.22; }
+  85% { opacity: 0.18; }
+  100% { transform: translateY(-115vh) rotate(160deg); opacity: 0; }
+}
+
+/* Glassmorphism for cards on animated background */
+.cf-root .cf-card {
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-orb, .fx-cross, .fx-ecg path, .fx-p { animation: none; }
+  .fx-p { display: none; }
+}
+
+/* Theme color variables per role group */
+.cf-fx-pub { --fx-o1: #86bdb8; --fx-o2: #ecd9b2; --fx-o3: #dfeaf4; --fx-a: #5e9e98; --fx-b: #d2b277; }
+.cf-fx-cit { --fx-o1: #cfe5d6; --fx-o2: #f3d9cd; --fx-o3: #cfe6e2; --fx-a: #5e9e98; --fx-b: #d2b277; }
+.cf-fx-doc { --fx-o1: #d3e2f1; --fx-o2: #cfe6e2; --fx-o3: #e3d9f0; --fx-a: #45658a; --fx-b: #86bdb8; }
+.cf-fx-stf { --fx-o1: #cfe6e2; --fx-o2: #d6e4f2; --fx-o3: #f3e4c6; --fx-a: #3a726d; --fx-b: #c9a86a; }
+.cf-fx-adm { --fx-o1: #e3d9f0; --fx-o2: #f3e4c6; --fx-o3: #d6e4f2; --fx-a: #6a5a8c; --fx-b: #c9a86a; }
+
+/* Rise animation for staggered entry */
+.rise { animation: rise 600ms cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; } }

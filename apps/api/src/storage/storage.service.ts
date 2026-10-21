@@ -3,12 +3,12 @@ import { ConfigService } from '@nestjs/config'
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-/** S3-compatible object storage: MinIO on the laptop, Cloudflare R2 in the alpha. */
+/** S3-compatible object storage: LocalStack (S3) on the laptop, Cloudflare R2 in the alpha. */
 @Injectable()
 export class StorageService {
   private readonly client: S3Client
-  // Pre-signed links are opened by the browser, which reaches MinIO at a different host
-  // (localhost:9000) than the API container does (minio:9000). The host is part of the signature.
+  // Pre-signed links are opened by the browser, which reaches storage at a different host
+  // (localhost:9000) than the API container does (localstack:4566). The host is part of the signature.
   private readonly signingClient: S3Client
   private readonly bucket: string
 
@@ -22,9 +22,9 @@ export class StorageService {
     }
     const make = (ep: string) =>
       new S3Client({
-        region: 'us-east-1', // MinIO ignores the region but the SDK needs one
+        region: 'ap-south-1', // must match the region LocalStack creates the bucket in (see docker-compose.yml)
         endpoint: ep,
-        forcePathStyle: true, // required for MinIO
+        forcePathStyle: true, // required for LocalStack and MinIO
         credentials,
       })
     this.client = make(endpoint)

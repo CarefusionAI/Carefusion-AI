@@ -69,13 +69,13 @@ interface SpecialCategoryType {
 type Tab = 'profile' | 'documents'
 
 const btnPrimary =
-  'rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50'
+  'rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50'
 const btnGhost =
-  'rounded-md border border-primary-200 bg-white px-4 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-50 disabled:opacity-50'
+  'rounded-lg border border-border-strong bg-surface-raised px-4 py-2.5 text-sm font-semibold text-ink transition-colors disabled:opacity-50'
 const btnSmall =
-  'rounded-md border border-primary-200 bg-white px-2.5 py-1 text-xs font-semibold text-primary-700 transition hover:bg-primary-50 disabled:opacity-50'
+  'rounded-lg border border-border-strong bg-surface-raised px-2.5 py-1.5 text-xs font-semibold text-ink transition-colors disabled:opacity-50'
 const inputCls =
-  'mt-1 block w-full rounded-md border border-primary-200 bg-white px-3 py-2 text-sm text-primary-900 focus:border-primary focus:outline-none'
+  'mt-1 block w-full rounded-lg border border-border-strong bg-white px-3 py-2 text-sm text-ink-strong focus:border-primary focus:outline-none'
 
 const LANGUAGES = [
   { value: 'en', label: 'English' },
@@ -132,7 +132,7 @@ async function failureMessage(res: Response): Promise<string> {
 
 function Spinner({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-2 text-sm text-primary-500" role="status">
+    <div className="flex items-center gap-2 text-sm text-primary" role="status">
       <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       {label}
     </div>
@@ -141,7 +141,7 @@ function Spinner({ label }: { label: string }) {
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <p role="alert" className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+    <p role="alert" className="rounded-md border border-danger-soft bg-danger-soft px-3 py-2 text-sm text-danger-text">
       {message}
     </p>
   )
@@ -150,10 +150,10 @@ function ErrorBox({ message }: { message: string }) {
 function Badge({ tone, children }: { tone: 'green' | 'yellow' | 'grey'; children: string }) {
   const cls =
     tone === 'green'
-      ? 'bg-green-100 text-green-700'
+      ? 'bg-ok-soft text-ok-text'
       : tone === 'yellow'
-        ? 'bg-amber-100 text-amber-700'
-        : 'bg-primary-50 text-primary-700'
+        ? 'bg-warning-soft text-warning-text'
+        : 'bg-surface-cream text-ink'
   return <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${cls}`}>{children}</span>
 }
 
@@ -171,10 +171,10 @@ function categoryTone(status: string): 'green' | 'yellow' | 'grey' {
 
 function Card({ title, children, note }: { title: string; children: React.ReactNode; note?: string }) {
   return (
-    <section className="rounded-lg border border-primary-100 bg-white shadow-sm">
-      <div className="border-b border-primary-100 px-4 py-3">
-        <h2 className="text-base font-semibold text-primary">{title}</h2>
-        {note && <p className="text-xs text-primary-400">{note}</p>}
+    <section className="cf-card rounded-xl border border-border bg-surface-raised shadow-card">
+      <div className="border-b border-border px-4 py-3">
+        <h2 className="text-base font-semibold text-ink-strong">{title}</h2>
+        {note && <p className="text-xs text-ink-muted">{note}</p>}
       </div>
       <div className="p-4">{children}</div>
     </section>
@@ -184,8 +184,8 @@ function Card({ title, children, note }: { title: string; children: React.ReactN
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs text-primary-400">{label}</dt>
-      <dd className="break-words text-sm text-primary-900">{value}</dd>
+      <dt className="text-xs text-ink-muted">{label}</dt>
+      <dd className="break-words text-sm text-ink-strong">{value}</dd>
     </div>
   )
 }
@@ -316,9 +316,9 @@ function ProfileTab() {
 
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-lg border border-primary-100 bg-white shadow-sm">
-        <div className="bg-primary px-4 py-3 text-primary-foreground">
-          <p className="text-xs uppercase tracking-wide text-primary-100">Identity</p>
+      <section className="cf-card overflow-hidden rounded-xl border border-border bg-surface-raised shadow-card">
+        <div className="rounded-t-lg px-4 py-3" style={{ background: '#3a726d', color: '#faf5ef' }}>
+          <p className="text-xs uppercase tracking-wide" style={{ color: 'rgba(250,245,239,.7)' }}>Identity</p>
           <h2 className="text-xl font-bold">{person.fullName}</h2>
         </div>
         <div className="space-y-4 p-4">
@@ -337,7 +337,7 @@ function ProfileTab() {
             {verifiedBadge(person.kycStatus, 'KYC')}
             {verifiedBadge(person.faceCheckStatus, 'Face check')}
             {person.identityLocked && (
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-primary-600">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-primary-text">
                 <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                   <path
                     fillRule="evenodd"
@@ -355,7 +355,7 @@ function ProfileTab() {
       <Card title="Editable profile">
         <form onSubmit={(e) => void saveProfile(e)} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <label className="block text-sm font-medium text-primary-700">
+            <label className="block text-sm font-medium text-ink">
               Preferred language
               <select value={language} onChange={(e) => setLanguage(e.target.value)} className={inputCls}>
                 {LANGUAGES.map((l) => (
@@ -365,7 +365,7 @@ function ProfileTab() {
                 ))}
               </select>
             </label>
-            <label className="block text-sm font-medium text-primary-700">
+            <label className="block text-sm font-medium text-ink">
               Blood group
               <select value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)} className={inputCls}>
                 {BLOOD_GROUPS.map((g) => (
@@ -376,23 +376,23 @@ function ProfileTab() {
               </select>
             </label>
           </div>
-          <label className="flex items-start gap-2 text-sm text-primary-700">
+          <label className="flex items-start gap-2 text-sm text-ink">
             <input
               type="checkbox"
               checked={optIn}
               onChange={(e) => setOptIn(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-primary-300 accent-primary"
+              className="mt-0.5 h-4 w-4 rounded border-border-strong accent-primary"
             />
             <span>
               AI research opt-in
-              <span className="block text-xs text-primary-400">
+              <span className="block text-xs text-ink-muted">
                 Allow de-identified data to be used in research (demo setting, simulated AI output only).
               </span>
             </span>
           </label>
           {saveMsg &&
             (saveMsg.ok ? (
-              <p role="status" className="rounded-md border border-accent-200 bg-accent-50 px-3 py-2 text-sm text-accent-600">
+              <p role="status" className="rounded-lg border border-ok-soft bg-ok-soft px-3 py-2 text-sm text-ok-text">
                 {saveMsg.text}
               </p>
             ) : (
@@ -408,13 +408,13 @@ function ProfileTab() {
         <div className="space-y-4">
           {catError && <ErrorBox message={catError} />}
           {specialCategories.length === 0 ? (
-            <p className="text-sm text-primary-500">No active special categories.</p>
+            <p className="text-sm text-ink-muted">No active special categories.</p>
           ) : (
-            <ul className="divide-y divide-primary-100 rounded-md border border-primary-100">
+            <ul className="divide-y divide-border rounded-lg border border-border">
               {specialCategories.map((c) => (
                 <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-medium text-primary-900">
+                    <span className="text-sm font-medium text-ink-strong">
                       {c.categoryName}
                       {c.otherText ? ` (${c.otherText})` : ''}
                     </span>
@@ -430,11 +430,11 @@ function ProfileTab() {
 
           <form
             onSubmit={(e) => void addCategory(e)}
-            className="space-y-3 rounded-md border border-primary-100 bg-primary-50 p-3"
+            className="space-y-3 rounded-lg border border-border bg-surface-cream p-3"
           >
-            <p className="text-sm font-semibold text-primary-700">Add category</p>
+            <p className="text-sm font-semibold text-ink">Add category</p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <label className="block text-sm font-medium text-primary-700">
+              <label className="block text-sm font-medium text-ink">
                 Category
                 <select value={newCode} onChange={(e) => setNewCode(e.target.value)} className={inputCls}>
                   {types.length === 0 && <option value="">No categories available</option>}
@@ -445,7 +445,7 @@ function ProfileTab() {
                   ))}
                 </select>
               </label>
-              <label className="block text-sm font-medium text-primary-700">
+              <label className="block text-sm font-medium text-ink">
                 Status
                 <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} className={inputCls}>
                   {CATEGORY_STATUSES.map((s) => (
@@ -457,7 +457,7 @@ function ProfileTab() {
               </label>
             </div>
             {newCode === 'other' && (
-              <label className="block text-sm font-medium text-primary-700">
+              <label className="block text-sm font-medium text-ink">
                 Please describe
                 <input
                   type="text"
@@ -477,14 +477,14 @@ function ProfileTab() {
 
       <Card title="Emergency contacts" note="Editing contacts will be available in a later release.">
         {contacts.length === 0 ? (
-          <p className="text-sm text-primary-500">No emergency contacts yet.</p>
+          <p className="text-sm text-ink-muted">No emergency contacts yet.</p>
         ) : (
-          <ul className="divide-y divide-primary-100 rounded-md border border-primary-100">
+          <ul className="divide-y divide-border rounded-lg border border-border">
             {contacts.map((c) => (
               <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
                 <div>
-                  <p className="text-sm font-medium text-primary-900">{c.contactName}</p>
-                  <p className="text-xs text-primary-500">{humanise(c.relation)}</p>
+                  <p className="text-sm font-medium text-ink-strong">{c.contactName}</p>
+                  <p className="text-xs text-ink-muted">{humanise(c.relation)}</p>
                 </div>
                 <Badge tone="grey">{`Priority ${c.priority}`}</Badge>
               </li>
@@ -655,7 +655,7 @@ function DocumentsTab() {
     <div className="space-y-4">
       {error && <ErrorBox message={error} />}
       {notice && (
-        <p role="status" className="rounded-md border border-accent-200 bg-accent-50 px-3 py-2 text-sm text-accent-600">
+        <p role="status" className="rounded-lg border border-ok-soft bg-ok-soft px-3 py-2 text-sm text-ok-text">
           {notice}
         </p>
       )}
@@ -675,15 +675,15 @@ function DocumentsTab() {
                     aria-current={active ? 'true' : undefined}
                     className={`flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-left text-sm transition ${
                       active
-                        ? 'border-primary bg-primary-50 font-semibold text-primary'
-                        : 'border-primary-100 bg-white text-primary-700 hover:bg-primary-50'
+                        ? 'border-primary bg-primary-soft font-semibold text-primary-text'
+                        : 'border-border bg-surface-raised text-ink hover:bg-surface-cream'
                     }`}
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       <span aria-hidden="true">{FOLDER_ICONS[f.kind] ?? FOLDER_ICONS.user}</span>
                       <span className="truncate">{f.name}</span>
                     </span>
-                    <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-semibold text-primary-700">
+                    <span className="rounded-full bg-surface-cream px-2 py-0.5 text-xs font-semibold text-ink">
                       {f.documentCount}
                     </span>
                   </button>
@@ -696,7 +696,7 @@ function DocumentsTab() {
               New folder
             </button>
           ) : (
-            <form onSubmit={(e) => void createFolder(e)} className="space-y-2 rounded-md border border-primary-100 bg-primary-50 p-2">
+            <form onSubmit={(e) => void createFolder(e)} className="space-y-2 rounded-lg border border-border bg-surface-cream p-2">
               <input
                 type="text"
                 autoFocus
@@ -721,7 +721,7 @@ function DocumentsTab() {
 
         <div className="space-y-4">
           {!selected ? (
-            <p className="rounded-lg border border-primary-100 bg-white p-6 text-center text-sm text-primary-500">
+            <p className="rounded-xl border border-border bg-surface-raised p-6 text-center text-sm text-ink-muted">
               No folders yet.
             </p>
           ) : (
@@ -729,17 +729,17 @@ function DocumentsTab() {
               <Card title={`${FOLDER_ICONS[selected.kind] ?? FOLDER_ICONS.user} ${selected.name}`}>
                 <form onSubmit={(e) => void upload(e)} className="space-y-3">
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <label className="block text-sm font-medium text-primary-700">
+                    <label className="block text-sm font-medium text-ink">
                       File
                       <input
                         key={file ? 'has-file' : 'no-file'}
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
                         onChange={(e) => pickFile(e.target.files?.[0] ?? null)}
-                        className="mt-1 block w-full text-sm text-primary-700 file:mr-3 file:rounded-md file:border file:border-primary-200 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-primary-700"
+                        className="mt-1 block w-full text-sm text-ink file:mr-3 file:rounded-md file:border file:border-border file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-ink"
                       />
                     </label>
-                    <label className="block text-sm font-medium text-primary-700">
+                    <label className="block text-sm font-medium text-ink">
                       Title
                       <input
                         type="text"
@@ -763,17 +763,17 @@ function DocumentsTab() {
               {loadingDocs ? (
                 <Spinner label="Loading documents..." />
               ) : docs.length === 0 ? (
-                <p className="rounded-lg border border-primary-100 bg-white p-6 text-center text-sm text-primary-500">
+                <p className="rounded-xl border border-border bg-surface-raised p-6 text-center text-sm text-ink-muted">
                   No documents in this folder.
                 </p>
               ) : (
                 <ul className="space-y-2">
                   {docs.map((d) => (
-                    <li key={d.id} className="space-y-2 rounded-lg border border-primary-100 bg-white p-3 shadow-sm">
+                    <li key={d.id} className="space-y-2 rounded-xl border border-border bg-surface-raised p-3 shadow-card">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="break-words text-sm font-semibold text-primary-900">{d.title}</p>
-                          <p className="text-xs text-primary-500">
+                          <p className="break-words text-sm font-semibold text-ink-strong">{d.title}</p>
+                          <p className="text-xs text-ink-muted">
                             {formatSize(d.sizeBytes)} · {formatDate(d.createdAt)}
                           </p>
                         </div>
@@ -799,8 +799,8 @@ function DocumentsTab() {
                         </button>
                       </div>
                       {movingId === d.id && (
-                        <div className="flex flex-wrap items-end gap-2 rounded-md border border-primary-100 bg-primary-50 p-2">
-                          <label className="block text-xs font-medium text-primary-700">
+                        <div className="flex flex-wrap items-end gap-2 rounded-lg border border-border bg-surface-cream p-2">
+                          <label className="block text-xs font-medium text-ink">
                             Move to folder
                             <select value={moveTo} onChange={(e) => setMoveTo(e.target.value)} className={inputCls}>
                               {moveTargets.map((f) => (
@@ -838,9 +838,9 @@ export default function CitizenHome() {
 
   if (!user?.personId) {
     return (
-      <div className="mx-auto max-w-3xl rounded-lg border border-primary-200 bg-white p-6 text-center shadow-sm">
-        <p className="font-semibold text-primary">Log in as Citizen to view your profile</p>
-        <p className="mt-1 text-sm text-primary-500">
+      <div className="mx-auto max-w-3xl rounded-xl border border-border bg-surface-raised p-6 text-center shadow-card">
+        <p className="font-semibold text-ink-strong">Log in as Citizen to view your profile</p>
+        <p className="mt-1 text-sm text-ink-muted">
           Pick the Citizen role on the role selector. The demo needs the API running to look up your demo identity.
         </p>
       </div>
@@ -855,11 +855,11 @@ export default function CitizenHome() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold text-primary">My Health Profile</h1>
-        <p className="text-sm text-primary-500">Your identity, health preferences and documents (synthetic demo data).</p>
+        <h1 className="font-serif text-2xl font-semibold text-ink-strong">My Health Profile</h1>
+        <p className="text-sm text-ink-muted">Your identity, health preferences and documents (synthetic demo data).</p>
       </header>
 
-      <div className="flex border-b border-primary-200" role="tablist">
+      <div className="flex border-b border-border" role="tablist">
         {tabs.map((t) => {
           const active = tab === t.id
           return (
@@ -870,7 +870,7 @@ export default function CitizenHome() {
               aria-selected={active}
               onClick={() => setTab(t.id)}
               className={`px-4 py-2 text-sm font-medium ${
-                active ? 'border-b-2 border-primary text-primary' : 'text-primary-400 hover:text-primary-600'
+                active ? 'border-b-2 border-primary text-primary-text' : 'text-ink-muted hover:text-ink'
               }`}
             >
               {t.label}
