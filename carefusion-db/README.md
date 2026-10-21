@@ -32,7 +32,10 @@ migrations/
 tests/
   test_rules.sql            46 rule tests in one rolled-back transaction
   bench_audit_log.sql       pgbench script: parallel writes to the log
-run_migrations.sh
+run_migrations.sh            ledger-based runner: migrate | seed | all
+seed/
+  demo_data.sql             generated filler data (generate.py)
+  design/00_base.sql        design seed, base layer (personas, facilities, wards, beds) + IDS.md + build_base.py
 ```
 
 Canonical demo-data decisions for 120+ are in the header of `120_events_feed.sql` (Anjali Menon age 35, order ids `ORD-DEMO-NNNN`, HPR ids `DEMO-HPR-71-NNNN`, event type `imaging-order`).
@@ -41,10 +44,21 @@ Migrations 120+ use `ALTER TYPE ... ADD VALUE`, so apply each file in its own `p
 ## Run it
 ```bash
 # Local (Docker):  docker run -d --name cf-db -e POSTGRES_PASSWORD=dev -p 5432:5432 postgis/postgis:16-3.4
-./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres"
+./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres"          # migrations (default mode)
+./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres" seed     # demo data
+./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres" all      # both
 psql "postgresql://postgres:dev@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f tests/test_rules.sql
 ```
 Neon (alpha): use the connection string from the Neon console. ⚠ Check that `postgis`, `pgcrypto`, `citext` and `btree_gist` are allowed on the Neon free plan first.
+
+With Docker Compose: `docker compose up -d` runs the `db-migrate` service (migrations only); the demo data is a separate, opt-in step: `docker compose --profile seed run --rm db-seed`.
+
+### The runner is safe to re-run
+- A ledger table `public.schema_migrations` (filename, sha256 checksum, kind, applied_at) records every file that was applied. A file already in the ledger is skipped, so a second run does nothing.
+- One `psql` call per file (never one big transaction); the ledger row is written by the same call, right after the file succeeded.
+- A database that was migrated before the ledger existed is detected and "baselined": the migrations that are already there are recorded without being run, and only the rest (for example 120+) are applied.
+- A migration file that changed after it was applied stops the run (exit code 3): never edit an applied migration, add a new numbered file. `ALLOW_CHECKSUM_DRIFT=1` only warns.
+- Seeds: `seed/demo_data.sql` first (generated, random-looking filler people; not re-runnable), then `seed/design/[0-9]*.sql` in name order (the design seed: named personas, facilities, wards; each file is idempotent). `SEED_FORCE=1` re-runs the `seed/design` files even if they are in the ledger. Identities used across the design seed are listed in `seed/design/IDS.md`.
 
 ## Tested (2026-10-11, PostgreSQL 16.15 + PostGIS 3.4)
 - All migrations apply on an empty database; **97 tables and views** in 12 schemas.
