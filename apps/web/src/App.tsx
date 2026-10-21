@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import type { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -22,6 +23,10 @@ import DistrictAdminHome from './pages/DistrictAdminHome'
 import StateAdminHome from './pages/StateAdminHome'
 import ZonalAdminHome from './pages/ZonalAdminHome'
 import CentralAdminHome from './pages/CentralAdminHome'
+import ScreensIndex from './pages/ScreensIndex'
+import { SCREENS } from './routes/screens'
+import { SCREEN_COMPONENTS } from './routes/screenComponents'
+import { Skeleton } from './components/ui'
 
 function Home() {
   return <RoleSwitcher />
@@ -60,6 +65,37 @@ const PROTECTED_ROUTES: { path: string; element: ReactNode }[] = [
   { path: '/central-admin', element: <CentralAdminHome /> },
 ]
 
+function ScreenFallback() {
+  return (
+    <div role="status" aria-label="Loading screen" className="flex flex-col gap-4">
+      <Skeleton width="40%" height={28} />
+      <Skeleton lines={4} />
+    </div>
+  )
+}
+
+// Placeholder routes for every design screen. /screens/<slug> always works; screens that had no
+// route before also get their canonical path (see routes/screens.ts).
+function screenRoutes() {
+  const routes: ReactNode[] = []
+  for (const s of SCREENS) {
+    const Page = SCREEN_COMPONENTS[s.id]
+    if (!Page) continue
+    const element = (
+      <Suspense fallback={<ScreenFallback />}>
+        <Page />
+      </Suspense>
+    )
+    routes.push(<Route key={`screens-${s.slug}`} path={`/screens/${s.slug}`} element={element} />)
+    if (s.path) {
+      routes.push(
+        <Route key={s.path} path={s.path} element={s.requiresAuth ? <RequireAuth>{element}</RequireAuth> : element} />,
+      )
+    }
+  }
+  return routes
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -77,6 +113,8 @@ export default function App() {
             {PROTECTED_ROUTES.map(({ path, element }) => (
               <Route key={path} path={path} element={<RequireAuth>{element}</RequireAuth>} />
             ))}
+            <Route path="/screens" element={<ScreensIndex />} />
+            {screenRoutes()}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
