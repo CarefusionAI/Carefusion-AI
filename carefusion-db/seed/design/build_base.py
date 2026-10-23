@@ -114,6 +114,43 @@ PHARMACIES = [
     (6, "Demo Taluk Hospital Pharmacy, Adoor", "DEMO-DL-KL-3077", "govt_hospital", 2, "Pathanamthitta", 9.1525, 76.7345),
 ]
 
+# Hospital 1 profile (hospital admin "Hospital profile" screen). 240 = sanctioned beds on the HFR record; 200 = beds in service
+# (the department table of the same screen sums to 200); see seed/design/50_hospital_admin.sql, decision "beds".
+H1_PROFILE = dict(
+    address="College Road, Pathanamthitta, Kerala 689645", phone="0468 222 0000",
+    services=["Casualty 24x7", "ICU", "Dialysis", "Blood bank", "CT and X-ray", "Maternity"],
+    about=("District-level government hospital with 240 sanctioned beds (200 in service), 24x7 casualty, dialysis and a blood bank."),
+    timings='{"op": "08:00-14:00", "casualty": "24x7", "help_desk": "08:00-20:00"}')
+# Department heads of hospital 1 (person serial of the doctor); departments without a head are left out
+H1_DEPT_HEAD = {GM: 2, "Casualty": 102, "ICU": 103, "Paediatrics": 104, "Maternity": 105, "Orthopaedics": 106,
+                "Surgery": 107, "Laboratory": 109}
+
+# Staff extras (identity.staff_profile): serial -> (employee code, registration no, designation, shift, is_charge).
+# Registration labels are demo councils: DNC = Demo Nursing Council, DPC = Demo Paramedical Council, DRB = Demo Radiation Board.
+STAFF_EXTRA = {
+    3: ("DEMO-ST-0412", "DNC DEMO-4471", "Staff nurse", "day", False),
+    4: ("DEMO-ST-0413", "DPC DEMO-0981", "Lab technician (DMLT)", "day", False),
+    5: ("DEMO-ST-0414", "DRB DEMO-RT-118", "Radiographer", "day", False),
+    121: ("DEMO-ST-0415", "DNC DEMO-60218", "Staff nurse (ICU)", "rotating", False),
+    122: ("DEMO-ST-0416", "DNC DEMO-31807", "Charge nurse", "day", True),
+    123: ("DEMO-ST-0417", "DNC DEMO-47720", "Staff nurse", "rotating", False),
+    124: ("DEMO-ST-0418", "DNC DEMO-52264", "Float nurse", "rotating", False),
+    125: ("DEMO-ST-0419", "DPC DEMO-1066", "Lab technician", "day", False),
+    126: ("DEMO-ST-0420", "DRB DEMO-RT-131", "CT technologist", "day", False),
+}
+# Pharmacist extras (identity.pharmacist_profile): serial -> (role label, shift)
+PHARMACIST_EXTRA = {
+    6: ("Senior pharmacist", "day"), 301: ("Pharmacist", "day"), 302: ("Store in-charge", "day"),
+    303: ("Pharmacist", "night"), 304: ("Pharmacist", "night"), 305: ("Pharmacist", None),
+}
+# Pharmacy extras (org.pharmacy): n -> dict of columns
+PHARMACY_EXTRA = {
+    1: dict(licence_valid_until="2029-03-31", counters=2, compliance_score=96,
+            last_inspection_on="2026-08-02", next_inspection_due="2027-02-15"),
+    2: dict(licence_valid_until="2026-11-06", counters=1),          # 20 days from the demo today
+    3: dict(is_jan_aushadhi=True),
+}
+
 # Wards (DGH = hospital 1): (n, code, name, dept name, charge nurse person serial or None)
 WARDS = [
     (3, "W3", "Ward 3", GM, 122),
@@ -219,6 +256,8 @@ ADMINS = [
     (211, "n-sharma", "N. Sharma", "1970-02-28", "female", "zonal_admin", "zonal", ("zone", 5), "Central zone (central console)"),
     (212, "l-sangma", "Dr. L. Sangma", "1971-08-05", "male", "zonal_admin", "zonal", ("zone", 1),
      "acting; the design says 'North-east', mapped to the North zone because there is no North-east zone"),
+    (213, "suja-varma", "Dr. Suja Varma", "1973-02-11", "female", "district_admin", "district", ("district", "Pathanamthitta"),
+     "deputy DMO, Pathanamthitta; second approver of the District console (the design label 'Dr. Meera Krishnan (DMO office)' is replaced by this separate person)"),
 ]
 # Hospital admin: Dr. Meera Krishnan -> hospital 1
 HOSPITAL_ADMINS = [(8, 1)]
@@ -412,6 +451,9 @@ def build_sql() -> tuple[str, dict]:
         elif s == 2:
             p["abha"] = "DEMO-0000-5678"
             p["handle"] = handle_for(p["name"], used_handles)
+        elif s == 213:  # added later: fixed number so the sequence of every other person stays unchanged
+            p["abha"] = "DEMO-0000-8213"
+            p["handle"] = handle_for(p["name"], used_handles)
         else:
             abha_seq += 1
             p["abha"] = f"DEMO-0000-{9000 + abha_seq:04d}"
@@ -505,38 +547,50 @@ LANGUAGE sql STABLE AS $$
     # ---------------- hospitals ----------------
     w("\n-- ---------- hospitals (org.hospital) ----------")
     w("INSERT INTO org.hospital (id, hfr_id, name, ownership, hospital_type, district_id, address, location, geofence,"
-      " licence_no, timings, status, approved_by, approved_at, created_at) VALUES")
+      " licence_no, phone, timings, services, about, status, approved_by, approved_at, created_at) VALUES")
     rows = []
     for n, name, hfr, htype, own, dist, lat, lng, depts in HOSPITALS:
         pt = f"ST_SetSRID(ST_MakePoint({lng:.6f}, {lat:.6f}), 4326)"
         geo = f"ST_Envelope(ST_Buffer({pt}, 0.006))"
-        timings = '{"op": "08:00-14:00", "help_desk": "08:00-20:00"}' if n == 1 else "{}"
+        timings = H1_PROFILE["timings"] if n == 1 else "{}"
+        address = H1_PROFILE["address"] if n == 1 else "Demo address, " + dist + ", Kerala"
+        phone = q(H1_PROFILE["phone"]) if n == 1 else "NULL"
+        services = ("ARRAY[" + ", ".join(q(x) for x in H1_PROFILE["services"]) + "]::text[]") if n == 1 else "'{}'::text[]"
+        about = q(H1_PROFILE["about"]) if n == 1 else "NULL"
         rows.append(f"  ('{uid(K_HOSPITAL, n)}', {q(hfr)}, {q(name)}, '{own}', '{htype}', util.seed_district({q(dist)}),"
-                    f" {q('Demo address, ' + dist + ', Kerala')}, {pt}, {geo}, {q('DEMO-HCE-KL-' + hfr[-4:])},"
-                    f" {q(timings)}::jsonb, 'active', '{uid(K_USER, 9)}', {q(T_VERIFIED)}, {q(T_SUPPORT)})")
+                    f" {q(address)}, {pt}, {geo}, {q('DEMO-HCE-KL-' + hfr[-4:])}, {phone},"
+                    f" {q(timings)}::jsonb, {services}, {about}, 'active', '{uid(K_USER, 9)}', {q(T_VERIFIED)}, {q(T_SUPPORT)})")
     w(",\n".join(rows))
     w("ON CONFLICT DO NOTHING;")
 
     w("\n-- ---------- departments (org.department): serial = hospital*100 + position in the list ----------")
-    w("INSERT INTO org.department (id, hospital_id, name) VALUES")
+    w("INSERT INTO org.department (id, hospital_id, name, head_user_id) VALUES")
     rows = []
     for n, name, hfr, htype, own, dist, lat, lng, depts in HOSPITALS:
         for i, d in enumerate(depts, 1):
-            rows.append(f"  ('{uid(K_DEPT, n * 100 + i)}', '{uid(K_HOSPITAL, n)}', {q(d)})")
+            head = f"'{uid(K_USER, H1_DEPT_HEAD[d])}'" if n == 1 and d in H1_DEPT_HEAD else "NULL"
+            rows.append(f"  ('{uid(K_DEPT, n * 100 + i)}', '{uid(K_HOSPITAL, n)}', {q(d)}, {head})")
     w(",\n".join(rows))
     w("ON CONFLICT DO NOTHING;")
 
     # ---------------- pharmacies ----------------
     w("\n-- ---------- pharmacies (org.pharmacy) ----------")
     w("INSERT INTO org.pharmacy (id, licence_no, name, pharmacy_type, linked_hospital_id, district_id, address, location,"
-      " opening_hours, status, approved_by, approved_at, created_at) VALUES")
+      " opening_hours, licence_valid_until, counters, compliance_score, last_inspection_on, next_inspection_due,"
+      " is_jan_aushadhi, status, approved_by, approved_at, created_at) VALUES")
     rows = []
     for n, name, lic, ptype, linked, dist, lat, lng in PHARMACIES:
         link = f"'{uid(K_HOSPITAL, linked)}'" if linked else "NULL"
         hours = '{"mon-sun": [["08:00", "20:00"]]}'
+        x = PHARMACY_EXTRA.get(n, {})
+        def dt(k):
+            return q(x[k]) + "::date" if k in x else "NULL"
         rows.append(f"  ('{uid(K_PHARMACY, n)}', {q(lic)}, {q(name)}, '{ptype}', {link}, util.seed_district({q(dist)}),"
                     f" {q('Demo address, ' + dist + ', Kerala')}, ST_SetSRID(ST_MakePoint({lng:.6f}, {lat:.6f}), 4326),"
-                    f" {q(hours)}::jsonb, 'active', '{uid(K_USER, 9)}', {q(T_VERIFIED)}, {q(T_SUPPORT)})")
+                    f" {q(hours)}::jsonb, {dt('licence_valid_until')}, {x.get('counters', 1)},"
+                    f" {x.get('compliance_score', 'NULL')}, {dt('last_inspection_on')}, {dt('next_inspection_due')},"
+                    f" {'true' if x.get('is_jan_aushadhi') else 'false'},"
+                    f" 'active', '{uid(K_USER, 9)}', {q(T_VERIFIED)}, {q(T_SUPPORT)})")
     w(",\n".join(rows))
     w("ON CONFLICT DO NOTHING;")
 
@@ -578,12 +632,14 @@ LANGUAGE sql STABLE AS $$
 
     # ---------------- staff profiles ----------------
     w("\n-- ---------- nurses, lab and radiology staff (identity.staff_profile), created by the hospital admin ----------")
-    w("INSERT INTO identity.staff_profile (user_id, hospital_id, department_id, staff_role, created_by_user_id, ward_id) VALUES")
+    w("INSERT INTO identity.staff_profile (user_id, hospital_id, department_id, staff_role, created_by_user_id, ward_id,"
+      " employee_code, registration_no, designation, shift, is_charge) VALUES")
     rows = []
-    for s, slug, name, dob, sex, srole, hosp, dept, ward, note in STAFF:
+    for s_, slug, name, dob, sex, srole, hosp, dept, ward, note in STAFF:
         wd = f"'{uid(K_WARD, ward)}'" if ward else "NULL"
-        rows.append(f"  ('{uid(K_USER, s)}', '{uid(K_HOSPITAL, hosp)}', '{uid(K_DEPT, dept_serial(hosp, dept))}', '{srole}',"
-                    f" '{uid(K_USER, 8)}', {wd})")
+        ec, rg, ds, sh, ch = STAFF_EXTRA[s_]
+        rows.append(f"  ('{uid(K_USER, s_)}', '{uid(K_HOSPITAL, hosp)}', '{uid(K_DEPT, dept_serial(hosp, dept))}', '{srole}',"
+                    f" '{uid(K_USER, 8)}', {wd}, {q(ec)}, {q(rg)}, {q(ds)}, {q(sh)}, {'true' if ch else 'false'})")
     w(",\n".join(rows))
     w("ON CONFLICT DO NOTHING;")
 
@@ -599,8 +655,9 @@ LANGUAGE sql STABLE AS $$
     w(",\n".join(f"  ('{uid(K_USER, r[0])}', '{uid(K_PHARMACY, r[6])}')" for r in PHARMA_STAFF if r[5] == "pharmacy_admin"))
     w("ON CONFLICT DO NOTHING;")
     w("\n-- ---------- pharmacists (identity.pharmacist_profile), created by the pharmacy admin Suma Thomas ----------")
-    w("INSERT INTO identity.pharmacist_profile (user_id, pharmacy_id, registration_no, created_by_user_id) VALUES")
-    w(",\n".join(f"  ('{uid(K_USER, r[0])}', '{uid(K_PHARMACY, r[6])}', {q(r[7])}, '{uid(K_USER, 7)}')"
+    w("INSERT INTO identity.pharmacist_profile (user_id, pharmacy_id, registration_no, created_by_user_id, role_label, shift) VALUES")
+    w(",\n".join(f"  ('{uid(K_USER, r[0])}', '{uid(K_PHARMACY, r[6])}', {q(r[7])}, '{uid(K_USER, 7)}',"
+                 f" {q(PHARMACIST_EXTRA[r[0]][0])}, {q(PHARMACIST_EXTRA[r[0]][1]) if PHARMACIST_EXTRA[r[0]][1] else 'NULL'})"
                  for r in PHARMA_STAFF if r[5] == "pharmacist"))
     w("ON CONFLICT DO NOTHING;")
 

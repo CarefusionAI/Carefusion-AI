@@ -186,7 +186,7 @@ INSERT INTO ai.ai_run (patient_person_id, tool, folder_id, run_by_user_id, sessi
 SELECT (SELECT v FROM fx WHERE k='pat_p'), 'image', f.id, (SELECT v FROM fx WHERE k='doc_u'), (SELECT v FROM fx WHERE k='session2'),
        '\x01', '\x02', 'k1', 'sim-vision', '0.1', true, 'completed', now(), now(), digest('r', 'sha256')
 FROM records.folder f WHERE f.patient_person_id = (SELECT v FROM fx WHERE k='pat_p') AND f.kind = 'image_analysis';
-INSERT INTO fx SELECT 'run', id FROM ai.ai_run LIMIT 1;
+INSERT INTO fx SELECT 'run', id FROM ai.ai_run WHERE patient_person_id = (SELECT v FROM fx WHERE k='pat_p') LIMIT 1;
 
 SELECT pg_temp.expect_fail('AI results are locked',
   format($q$UPDATE ai.ai_run SET status = 'failed' WHERE id = %L$q$, (SELECT v FROM fx WHERE k='run')), 'CF001');
@@ -271,7 +271,8 @@ SELECT pg_temp.check('Donation switches donor OFF and sets next date (~90 days)'
 SELECT pg_temp.expect_fail('Cannot switch ON before eligible date',
   format($q$UPDATE donation.blood_donor SET ready = true WHERE person_id = %L$q$, (SELECT v FROM fx WHERE k='pat_p')), 'CF060');
 SELECT pg_temp.check('Next donation date added to Dates panel',
-  (SELECT count(*) = 1 FROM records.dated_event WHERE event_type = 'blood_donation_eligible'));
+  (SELECT count(*) = 1 FROM records.dated_event
+    WHERE event_type = 'blood_donation_eligible' AND patient_person_id = (SELECT v FROM fx WHERE k='pat_p')));   -- scoped to the fixture patient so seeded donors do not count
 
 -- ---------------- 7. Ratings and chat ----------------
 SELECT pg_temp.expect_fail('Non-ABHA-verified person cannot rate',
@@ -1009,11 +1010,13 @@ INSERT INTO donation.blood_donation (donor_person_id, donated_at, camp_id, recor
 SELECT pg_temp.f('citA_p'), now(), id, pg_temp.f('docH_u'), 'platelets', 13.5 FROM donation.blood_camp WHERE name = 'Test camp';
 SELECT pg_temp.check('BLOOD: a camp donation is accepted, gets a donor code and switches the donor off',
   (SELECT donor_code LIKE 'DEMO-BD-KL-%' AND NOT ready FROM donation.blood_donor WHERE person_id = pg_temp.f('citA_p')));
-INSERT INTO donation.blood_bank (name, district_id) VALUES ('Test bank', pg_temp.f('district'));
+-- own district, so seeded blood banks in the fixture district (Kollam) do not change the days of cover
+INSERT INTO geo.district (state_id, name) VALUES (33, 'ZTest cover district');
+INSERT INTO donation.blood_bank (name, district_id) VALUES ('Test bank', (SELECT id FROM geo.district WHERE state_id = 33 AND name = 'ZTest cover district'));
 INSERT INTO donation.blood_stock_reading (bank_id, blood_group, units, daily_use_units)
 SELECT id, g::identity.blood_group, 6, 2 FROM donation.blood_bank, (VALUES ('B+'), ('O-')) t(g) WHERE name = 'Test bank';
 SELECT pg_temp.check('BLOOD: days of cover = units / daily use (3.0 days = low)',
-  (SELECT days_cover = 3.0 AND level = 'low' FROM report.v_blood_cover WHERE district_id = pg_temp.f('district') AND blood_group = 'B+'));
+  (SELECT days_cover = 3.0 AND level = 'low' FROM report.v_blood_cover WHERE district_id = (SELECT id FROM geo.district WHERE state_id = 33 AND name = 'ZTest cover district') AND blood_group = 'B+'));
 
 -- ---------------- 18. Break-glass, unidentified patients, access views ----------------
 SELECT pg_temp.expect_fail('BREAK-GLASS: a reason shorter than 20 characters is refused',
@@ -1059,7 +1062,7 @@ SELECT pg_temp.expect_fail('UNIDENTIFIED: an unidentified person needs a tempora
 INSERT INTO identity.person (full_name, date_of_birth, sex, is_unidentified, temp_label, dob_estimated)
 VALUES ('Unknown male ~45', '1981-01-01', 'male', true, 'Unknown male ~45 (DEMO-0000-5512)', true);
 SELECT pg_temp.check('UNIDENTIFIED: a proper unidentified person is accepted',
-  (SELECT count(*) = 1 FROM identity.person WHERE is_unidentified));
+  (SELECT count(*) = 1 FROM identity.person WHERE is_unidentified AND full_name = 'Unknown male ~45'));   -- scoped to the fixture so the seeded casualty patient does not count
 
 -- Scoped audit rows
 SELECT pg_temp.act('lab');
@@ -1147,8 +1150,8 @@ INSERT INTO org.facility_document (facility_type, pharmacy_id, doc_type, title, 
 VALUES ('pharmacy', pg_temp.f('pharmacy'), 'fire_noc', 'Fire NOC', 'DEMO-NOC-1', current_date + 40);
 SELECT pg_temp.expect_fail('COMPLIANCE: a document cannot be edited, only its status',
   $q$UPDATE org.facility_document SET title = 'changed'$q$, 'CF002');
-UPDATE org.facility_document SET status = 'renew_soon' WHERE doc_type = 'fire_noc';
-SELECT pg_temp.check('COMPLIANCE: status can change', (SELECT status = 'renew_soon' FROM org.facility_document WHERE doc_type = 'fire_noc'));
+UPDATE org.facility_document SET status = 'renew_soon' WHERE doc_type = 'fire_noc' AND reference_no = 'DEMO-NOC-1';
+SELECT pg_temp.check('COMPLIANCE: status can change', (SELECT status = 'renew_soon' FROM org.facility_document WHERE doc_type = 'fire_noc' AND reference_no = 'DEMO-NOC-1'));   -- scoped to the fixture so the seeded documents do not count
 SELECT pg_temp.expect_fail('COMPLIANCE: a hospital document must name a hospital',
   format($q$INSERT INTO org.facility_document (facility_type, pharmacy_id, doc_type, title) VALUES ('hospital', %L, 'x', 'x')$q$, pg_temp.f('pharmacy')), '23514');
 SELECT pg_temp.expect_fail('COMPLIANCE: compliance documents cannot be deleted', $q$DELETE FROM org.facility_document$q$, 'CF001');
@@ -1162,7 +1165,7 @@ SELECT pg_temp.expect_fail('INVITES: a pharmacist invite needs a pharmacy',
 INSERT INTO identity.staff_invite (pharmacy_id, role_kind, full_name, email_hash, token_hash, invited_by_user_id)
 VALUES (pg_temp.f('pharmacy'), 'pharmacist', 'Anu George', digest('anu', 'sha256'), digest('t3', 'sha256'), pg_temp.f('dadm_u'));
 SELECT pg_temp.check('INVITES: a valid pharmacist invite expires in 7 days',
-  (SELECT expires_at - created_at = interval '7 days' FROM identity.staff_invite WHERE full_name = 'Anu George'));
+  (SELECT expires_at - created_at = interval '7 days' FROM identity.staff_invite WHERE full_name = 'Anu George' AND pharmacy_id = pg_temp.f('pharmacy')));   -- scoped to the fixture pharmacy (the seed also has an Anu George invite)
 
 -- Approvals: hospital-level approver and "more info"
 INSERT INTO admin.approval_request (subject_type, subject_user_id, assigned_level, assigned_district_id, status, due_at)
@@ -1178,7 +1181,7 @@ SELECT pg_temp.expect_fail('APPROVALS: a hospital-level request must name the ho
 INSERT INTO admin.approval_request (subject_type, subject_user_id, assigned_level, assigned_hospital_id, status, due_at)
 VALUES ('hospital_staff', pg_temp.f('docH2_u'), 'hospital', pg_temp.f('hospital'), 'pending', now() + interval '7 days');
 SELECT pg_temp.check('APPROVALS: a hospital admin can be the approver of a staff request',
-  (SELECT count(*) = 1 FROM admin.approval_request WHERE assigned_level::text = 'hospital'));
+  (SELECT count(*) = 1 FROM admin.approval_request WHERE assigned_level::text = 'hospital' AND assigned_hospital_id = pg_temp.f('hospital')));   -- scoped to the fixture hospital
 
 SELECT pg_temp.expect_fail('FAMILY: a family member who has not accepted cannot show the key',
   format($q$INSERT INTO identity.family_link (citizen_person_id, member_person_id, relation, can_show_key) VALUES (%L, %L, 'husband', true)$q$,

@@ -189,6 +189,7 @@ Sign-in order in `lookupDemoIdentity`: earliest `created_at` among active accoun
 | 210 | Dr. K. Bose | 1966-04-13 | M | zonal_admin | East zone (central console) |
 | 211 | N. Sharma | 1970-02-28 | F | zonal_admin | Central zone (central console) |
 | 212 | Dr. L. Sangma | 1971-08-05 | M | zonal_admin | acting; the design says 'North-east', mapped to the North zone because there is no North-east zone |
+| 213 | Dr. Suja Varma | 1973-02-11 | F | district_admin | deputy DMO, Pathanamthitta; second approver of the District console (the design label 'Dr. Meera Krishnan (DMO office)' is replaced by this separate person) |
 | 1001 | Thomas Kurian | 1958-03-15 | M | citizen | inpatient Ward 3 Bed 7; COPD, pneumonia; also break-glass patient of 03:12 |
 | 1002 | Thomas Varghese | 1965-04-22 | M | citizen | OP token 08; critical K+ 6.1 |
 | 1003 | Joseph Kurian | 1960-05-02 | M | citizen | HbA1c review, Glimepiride |
@@ -352,6 +353,7 @@ India (central) > South zone (`geo.zone` id 2) > Kerala (`geo.state` id 33, code
 | 210 | Dr. K. Bose | zonal | zone 3 | `cfd00000-0016-4000-8000-000000000210` |
 | 211 | N. Sharma | zonal | zone 5 | `cfd00000-0016-4000-8000-000000000211` |
 | 212 | Dr. L. Sangma | zonal | zone 1 | `cfd00000-0016-4000-8000-000000000212` |
+| 213 | Dr. Suja Varma | district | district Pathanamthitta | `cfd00000-0016-4000-8000-000000000213` |
 
 ### Other shared rows
 

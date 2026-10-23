@@ -93,6 +93,7 @@ INSERT INTO identity.person (id, full_name, date_of_birth, sex, aadhaar_token, a
   ('cfd00000-0001-4000-8000-000000000210', 'Dr. K. Bose', '1966-04-13', 'male', 'tok_DEMO_b8fe026848dc', 'DEMO-0000-9046', 'k.bose@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
   ('cfd00000-0001-4000-8000-000000000211', 'N. Sharma', '1970-02-28', 'female', 'tok_DEMO_8e036618065b', 'DEMO-0000-9047', 'n.sharma@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
   ('cfd00000-0001-4000-8000-000000000212', 'Dr. L. Sangma', '1971-08-05', 'male', 'tok_DEMO_f7e183a5a0d1', 'DEMO-0000-9048', 'l.sangma@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
+  ('cfd00000-0001-4000-8000-000000000213', 'Dr. Suja Varma', '1973-02-11', 'female', 'tok_DEMO_154136aeeeb3', 'DEMO-0000-8213', 'suja.varma@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
   ('cfd00000-0001-4000-8000-000000001001', 'Thomas Kurian', '1958-03-15', 'male', 'tok_DEMO_d27f1edc8667', 'DEMO-0000-9049', 'thomas.kurian@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
   ('cfd00000-0001-4000-8000-000000001002', 'Thomas Varghese', '1965-04-22', 'male', 'tok_DEMO_99c5c2e75159', 'DEMO-0000-9050', 'thomas.varghese@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
   ('cfd00000-0001-4000-8000-000000001003', 'Joseph Kurian', '1960-05-02', 'male', 'tok_DEMO_5cd99520de9c', 'DEMO-0000-9051', 'joseph.kurian@demo', 'passed', 'passed', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00', 'citizen_app'),
@@ -210,6 +211,7 @@ INSERT INTO identity.app_user (id, person_id, account_type, keycloak_sub, status
   ('cfd00000-0002-4000-8000-000000000210', 'cfd00000-0001-4000-8000-000000000210', 'zonal_admin', 'demo-kc-zonal-admin-k-bose', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
   ('cfd00000-0002-4000-8000-000000000211', 'cfd00000-0001-4000-8000-000000000211', 'zonal_admin', 'demo-kc-zonal-admin-n-sharma', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
   ('cfd00000-0002-4000-8000-000000000212', 'cfd00000-0001-4000-8000-000000000212', 'zonal_admin', 'demo-kc-zonal-admin-l-sangma', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
+  ('cfd00000-0002-4000-8000-000000000213', 'cfd00000-0001-4000-8000-000000000213', 'district_admin', 'demo-kc-district-admin-suja-varma', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
   ('cfd00000-0002-4000-8000-000000001001', 'cfd00000-0001-4000-8000-000000001001', 'citizen', 'demo-kc-citizen-thomas-kurian', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
   ('cfd00000-0002-4000-8000-000000001002', 'cfd00000-0001-4000-8000-000000001002', 'citizen', 'demo-kc-citizen-thomas-varghese', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
   ('cfd00000-0002-4000-8000-000000001003', 'cfd00000-0001-4000-8000-000000001003', 'citizen', 'demo-kc-citizen-joseph-kurian', 'active', '2026-01-02 00:00:00+00', NULL, '2026-01-02 00:00:00+00'),
@@ -275,73 +277,74 @@ INSERT INTO admin.admin_post (id, user_id, level, zone_id, state_id, district_id
   ('cfd00000-0016-4000-8000-000000000209', 'cfd00000-0002-4000-8000-000000000209', 'state', NULL, 9, NULL, 'demo-jp-ak-mishra', tstzrange('2026-01-02 00:00:00+00'::timestamptz, NULL)),
   ('cfd00000-0016-4000-8000-000000000210', 'cfd00000-0002-4000-8000-000000000210', 'zonal', 3, NULL, NULL, 'demo-jp-k-bose', tstzrange('2026-01-02 00:00:00+00'::timestamptz, NULL)),
   ('cfd00000-0016-4000-8000-000000000211', 'cfd00000-0002-4000-8000-000000000211', 'zonal', 5, NULL, NULL, 'demo-jp-n-sharma', tstzrange('2026-01-02 00:00:00+00'::timestamptz, NULL)),
-  ('cfd00000-0016-4000-8000-000000000212', 'cfd00000-0002-4000-8000-000000000212', 'zonal', 1, NULL, NULL, 'demo-jp-l-sangma', tstzrange('2026-01-02 00:00:00+00'::timestamptz, NULL))
+  ('cfd00000-0016-4000-8000-000000000212', 'cfd00000-0002-4000-8000-000000000212', 'zonal', 1, NULL, NULL, 'demo-jp-l-sangma', tstzrange('2026-01-02 00:00:00+00'::timestamptz, NULL)),
+  ('cfd00000-0016-4000-8000-000000000213', 'cfd00000-0002-4000-8000-000000000213', 'district', NULL, NULL, util.seed_district('Pathanamthitta'), 'demo-jp-suja-varma', tstzrange('2026-01-02 00:00:00+00'::timestamptz, NULL))
 ON CONFLICT DO NOTHING;
 
 -- ---------- hospitals (org.hospital) ----------
-INSERT INTO org.hospital (id, hfr_id, name, ownership, hospital_type, district_id, address, location, geofence, licence_no, timings, status, approved_by, approved_at, created_at) VALUES
-  ('cfd00000-0010-4000-8000-000000000001', 'DEMO-HFR-KL-0193', 'Demo General Hospital, Pathanamthitta', 'govt', 'GH', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.787000, 9.264800), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.787000, 9.264800), 4326), 0.006)), 'DEMO-HCE-KL-0193', '{"op": "08:00-14:00", "help_desk": "08:00-20:00"}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000002', 'DEMO-HFR-KL-0201', 'Demo Taluk Hospital, Adoor', 'govt', 'THQ', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.735000, 9.152000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.735000, 9.152000), 4326), 0.006)), 'DEMO-HCE-KL-0201', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000003', 'DEMO-HFR-KL-0202', 'Demo District Hospital, Kozhencherry', 'govt', 'DH', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.706600, 9.334200), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.706600, 9.334200), 4326), 0.006)), 'DEMO-HCE-KL-0202', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000004', 'DEMO-HFR-KL-0203', 'Demo Taluk Hospital, Kozhencherry', 'govt', 'THQ', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.713000, 9.330000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.713000, 9.330000), 4326), 0.006)), 'DEMO-HCE-KL-0203', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000005', 'DEMO-HFR-KL-0204', 'Demo Taluk Hospital, Thiruvalla', 'govt', 'THQ', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.572000, 9.383000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.572000, 9.383000), 4326), 0.006)), 'DEMO-HCE-KL-0204', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000006', 'DEMO-HFR-KL-0205', 'Demo Private Hospital, Thiruvalla', 'private', 'PVT_HOSP', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.576000, 9.387000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.576000, 9.387000), 4326), 0.006)), 'DEMO-HCE-KL-0205', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000007', 'DEMO-HFR-KL-0206', 'Demo Cardiac Care Centre, Pathanamthitta', 'private', 'PVT_HOSP', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.790000, 9.270000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.790000, 9.270000), 4326), 0.006)), 'DEMO-HCE-KL-0206', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000008', 'DEMO-HFR-KL-0207', 'Demo Medical College, Kottayam', 'govt', 'MCH', util.seed_district('Kottayam'), 'Demo address, Kottayam, Kerala', ST_SetSRID(ST_MakePoint(76.520000, 9.635000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.520000, 9.635000), 4326), 0.006)), 'DEMO-HCE-KL-0207', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000009', 'DEMO-HFR-KL-0211', 'PHC Kozhencherry', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.720000, 9.328000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.720000, 9.328000), 4326), 0.006)), 'DEMO-HCE-KL-0211', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000010', 'DEMO-HFR-KL-0212', 'PHC Konni', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.850000, 9.233000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.850000, 9.233000), 4326), 0.006)), 'DEMO-HCE-KL-0212', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000011', 'DEMO-HFR-KL-0213', 'PHC Omalloor', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.777000, 9.279000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.777000, 9.279000), 4326), 0.006)), 'DEMO-HCE-KL-0213', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000012', 'DEMO-HFR-KL-0214', 'PHC Elanthoor', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.760000, 9.315000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.760000, 9.315000), 4326), 0.006)), 'DEMO-HCE-KL-0214', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0010-4000-8000-000000000013', 'DEMO-HFR-KL-0221', 'Demo Eye Centre, Pathanamthitta', 'private', 'PVT_CLINIC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.784000, 9.261000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.784000, 9.261000), 4326), 0.006)), 'DEMO-HCE-KL-0221', '{}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00')
+INSERT INTO org.hospital (id, hfr_id, name, ownership, hospital_type, district_id, address, location, geofence, licence_no, phone, timings, services, about, status, approved_by, approved_at, created_at) VALUES
+  ('cfd00000-0010-4000-8000-000000000001', 'DEMO-HFR-KL-0193', 'Demo General Hospital, Pathanamthitta', 'govt', 'GH', util.seed_district('Pathanamthitta'), 'College Road, Pathanamthitta, Kerala 689645', ST_SetSRID(ST_MakePoint(76.787000, 9.264800), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.787000, 9.264800), 4326), 0.006)), 'DEMO-HCE-KL-0193', '0468 222 0000', '{"op": "08:00-14:00", "casualty": "24x7", "help_desk": "08:00-20:00"}'::jsonb, ARRAY['Casualty 24x7', 'ICU', 'Dialysis', 'Blood bank', 'CT and X-ray', 'Maternity']::text[], 'District-level government hospital with 240 sanctioned beds (200 in service), 24x7 casualty, dialysis and a blood bank.', 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000002', 'DEMO-HFR-KL-0201', 'Demo Taluk Hospital, Adoor', 'govt', 'THQ', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.735000, 9.152000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.735000, 9.152000), 4326), 0.006)), 'DEMO-HCE-KL-0201', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000003', 'DEMO-HFR-KL-0202', 'Demo District Hospital, Kozhencherry', 'govt', 'DH', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.706600, 9.334200), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.706600, 9.334200), 4326), 0.006)), 'DEMO-HCE-KL-0202', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000004', 'DEMO-HFR-KL-0203', 'Demo Taluk Hospital, Kozhencherry', 'govt', 'THQ', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.713000, 9.330000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.713000, 9.330000), 4326), 0.006)), 'DEMO-HCE-KL-0203', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000005', 'DEMO-HFR-KL-0204', 'Demo Taluk Hospital, Thiruvalla', 'govt', 'THQ', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.572000, 9.383000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.572000, 9.383000), 4326), 0.006)), 'DEMO-HCE-KL-0204', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000006', 'DEMO-HFR-KL-0205', 'Demo Private Hospital, Thiruvalla', 'private', 'PVT_HOSP', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.576000, 9.387000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.576000, 9.387000), 4326), 0.006)), 'DEMO-HCE-KL-0205', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000007', 'DEMO-HFR-KL-0206', 'Demo Cardiac Care Centre, Pathanamthitta', 'private', 'PVT_HOSP', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.790000, 9.270000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.790000, 9.270000), 4326), 0.006)), 'DEMO-HCE-KL-0206', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000008', 'DEMO-HFR-KL-0207', 'Demo Medical College, Kottayam', 'govt', 'MCH', util.seed_district('Kottayam'), 'Demo address, Kottayam, Kerala', ST_SetSRID(ST_MakePoint(76.520000, 9.635000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.520000, 9.635000), 4326), 0.006)), 'DEMO-HCE-KL-0207', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000009', 'DEMO-HFR-KL-0211', 'PHC Kozhencherry', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.720000, 9.328000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.720000, 9.328000), 4326), 0.006)), 'DEMO-HCE-KL-0211', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000010', 'DEMO-HFR-KL-0212', 'PHC Konni', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.850000, 9.233000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.850000, 9.233000), 4326), 0.006)), 'DEMO-HCE-KL-0212', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000011', 'DEMO-HFR-KL-0213', 'PHC Omalloor', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.777000, 9.279000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.777000, 9.279000), 4326), 0.006)), 'DEMO-HCE-KL-0213', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000012', 'DEMO-HFR-KL-0214', 'PHC Elanthoor', 'govt', 'PHC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.760000, 9.315000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.760000, 9.315000), 4326), 0.006)), 'DEMO-HCE-KL-0214', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0010-4000-8000-000000000013', 'DEMO-HFR-KL-0221', 'Demo Eye Centre, Pathanamthitta', 'private', 'PVT_CLINIC', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.784000, 9.261000), 4326), ST_Envelope(ST_Buffer(ST_SetSRID(ST_MakePoint(76.784000, 9.261000), 4326), 0.006)), 'DEMO-HCE-KL-0221', NULL, '{}'::jsonb, '{}'::text[], NULL, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00')
 ON CONFLICT DO NOTHING;
 
 -- ---------- departments (org.department): serial = hospital*100 + position in the list ----------
-INSERT INTO org.department (id, hospital_id, name) VALUES
-  ('cfd00000-0011-4000-8000-000000000101', 'cfd00000-0010-4000-8000-000000000001', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000102', 'cfd00000-0010-4000-8000-000000000001', 'Casualty'),
-  ('cfd00000-0011-4000-8000-000000000103', 'cfd00000-0010-4000-8000-000000000001', 'ICU'),
-  ('cfd00000-0011-4000-8000-000000000104', 'cfd00000-0010-4000-8000-000000000001', 'Paediatrics'),
-  ('cfd00000-0011-4000-8000-000000000105', 'cfd00000-0010-4000-8000-000000000001', 'Maternity'),
-  ('cfd00000-0011-4000-8000-000000000106', 'cfd00000-0010-4000-8000-000000000001', 'Orthopaedics'),
-  ('cfd00000-0011-4000-8000-000000000107', 'cfd00000-0010-4000-8000-000000000001', 'Surgery'),
-  ('cfd00000-0011-4000-8000-000000000108', 'cfd00000-0010-4000-8000-000000000001', 'Laboratory'),
-  ('cfd00000-0011-4000-8000-000000000109', 'cfd00000-0010-4000-8000-000000000001', 'Radiology'),
-  ('cfd00000-0011-4000-8000-000000000201', 'cfd00000-0010-4000-8000-000000000002', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000202', 'cfd00000-0010-4000-8000-000000000002', 'Casualty'),
-  ('cfd00000-0011-4000-8000-000000000203', 'cfd00000-0010-4000-8000-000000000002', 'Ophthalmology'),
-  ('cfd00000-0011-4000-8000-000000000204', 'cfd00000-0010-4000-8000-000000000002', 'Dermatology'),
-  ('cfd00000-0011-4000-8000-000000000301', 'cfd00000-0010-4000-8000-000000000003', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000302', 'cfd00000-0010-4000-8000-000000000003', 'Casualty'),
-  ('cfd00000-0011-4000-8000-000000000303', 'cfd00000-0010-4000-8000-000000000003', 'Paediatrics'),
-  ('cfd00000-0011-4000-8000-000000000304', 'cfd00000-0010-4000-8000-000000000003', 'Maternity'),
-  ('cfd00000-0011-4000-8000-000000000305', 'cfd00000-0010-4000-8000-000000000003', 'Diabetology'),
-  ('cfd00000-0011-4000-8000-000000000401', 'cfd00000-0010-4000-8000-000000000004', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000402', 'cfd00000-0010-4000-8000-000000000004', 'Casualty'),
-  ('cfd00000-0011-4000-8000-000000000501', 'cfd00000-0010-4000-8000-000000000005', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000502', 'cfd00000-0010-4000-8000-000000000005', 'Casualty'),
-  ('cfd00000-0011-4000-8000-000000000601', 'cfd00000-0010-4000-8000-000000000006', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000602', 'cfd00000-0010-4000-8000-000000000006', 'Endocrinology'),
-  ('cfd00000-0011-4000-8000-000000000701', 'cfd00000-0010-4000-8000-000000000007', 'Cardiology'),
-  ('cfd00000-0011-4000-8000-000000000801', 'cfd00000-0010-4000-8000-000000000008', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000000802', 'cfd00000-0010-4000-8000-000000000008', 'Cardiology'),
-  ('cfd00000-0011-4000-8000-000000000803', 'cfd00000-0010-4000-8000-000000000008', 'Nephrology'),
-  ('cfd00000-0011-4000-8000-000000000804', 'cfd00000-0010-4000-8000-000000000008', 'Neurology'),
-  ('cfd00000-0011-4000-8000-000000000805', 'cfd00000-0010-4000-8000-000000000008', 'Radiology'),
-  ('cfd00000-0011-4000-8000-000000000901', 'cfd00000-0010-4000-8000-000000000009', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000001001', 'cfd00000-0010-4000-8000-000000000010', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000001101', 'cfd00000-0010-4000-8000-000000000011', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000001201', 'cfd00000-0010-4000-8000-000000000012', 'General medicine'),
-  ('cfd00000-0011-4000-8000-000000001301', 'cfd00000-0010-4000-8000-000000000013', 'Ophthalmology')
+INSERT INTO org.department (id, hospital_id, name, head_user_id) VALUES
+  ('cfd00000-0011-4000-8000-000000000101', 'cfd00000-0010-4000-8000-000000000001', 'General medicine', 'cfd00000-0002-4000-8000-000000000002'),
+  ('cfd00000-0011-4000-8000-000000000102', 'cfd00000-0010-4000-8000-000000000001', 'Casualty', 'cfd00000-0002-4000-8000-000000000102'),
+  ('cfd00000-0011-4000-8000-000000000103', 'cfd00000-0010-4000-8000-000000000001', 'ICU', 'cfd00000-0002-4000-8000-000000000103'),
+  ('cfd00000-0011-4000-8000-000000000104', 'cfd00000-0010-4000-8000-000000000001', 'Paediatrics', 'cfd00000-0002-4000-8000-000000000104'),
+  ('cfd00000-0011-4000-8000-000000000105', 'cfd00000-0010-4000-8000-000000000001', 'Maternity', 'cfd00000-0002-4000-8000-000000000105'),
+  ('cfd00000-0011-4000-8000-000000000106', 'cfd00000-0010-4000-8000-000000000001', 'Orthopaedics', 'cfd00000-0002-4000-8000-000000000106'),
+  ('cfd00000-0011-4000-8000-000000000107', 'cfd00000-0010-4000-8000-000000000001', 'Surgery', 'cfd00000-0002-4000-8000-000000000107'),
+  ('cfd00000-0011-4000-8000-000000000108', 'cfd00000-0010-4000-8000-000000000001', 'Laboratory', 'cfd00000-0002-4000-8000-000000000109'),
+  ('cfd00000-0011-4000-8000-000000000109', 'cfd00000-0010-4000-8000-000000000001', 'Radiology', NULL),
+  ('cfd00000-0011-4000-8000-000000000201', 'cfd00000-0010-4000-8000-000000000002', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000000202', 'cfd00000-0010-4000-8000-000000000002', 'Casualty', NULL),
+  ('cfd00000-0011-4000-8000-000000000203', 'cfd00000-0010-4000-8000-000000000002', 'Ophthalmology', NULL),
+  ('cfd00000-0011-4000-8000-000000000204', 'cfd00000-0010-4000-8000-000000000002', 'Dermatology', NULL),
+  ('cfd00000-0011-4000-8000-000000000301', 'cfd00000-0010-4000-8000-000000000003', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000000302', 'cfd00000-0010-4000-8000-000000000003', 'Casualty', NULL),
+  ('cfd00000-0011-4000-8000-000000000303', 'cfd00000-0010-4000-8000-000000000003', 'Paediatrics', NULL),
+  ('cfd00000-0011-4000-8000-000000000304', 'cfd00000-0010-4000-8000-000000000003', 'Maternity', NULL),
+  ('cfd00000-0011-4000-8000-000000000305', 'cfd00000-0010-4000-8000-000000000003', 'Diabetology', NULL),
+  ('cfd00000-0011-4000-8000-000000000401', 'cfd00000-0010-4000-8000-000000000004', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000000402', 'cfd00000-0010-4000-8000-000000000004', 'Casualty', NULL),
+  ('cfd00000-0011-4000-8000-000000000501', 'cfd00000-0010-4000-8000-000000000005', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000000502', 'cfd00000-0010-4000-8000-000000000005', 'Casualty', NULL),
+  ('cfd00000-0011-4000-8000-000000000601', 'cfd00000-0010-4000-8000-000000000006', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000000602', 'cfd00000-0010-4000-8000-000000000006', 'Endocrinology', NULL),
+  ('cfd00000-0011-4000-8000-000000000701', 'cfd00000-0010-4000-8000-000000000007', 'Cardiology', NULL),
+  ('cfd00000-0011-4000-8000-000000000801', 'cfd00000-0010-4000-8000-000000000008', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000000802', 'cfd00000-0010-4000-8000-000000000008', 'Cardiology', NULL),
+  ('cfd00000-0011-4000-8000-000000000803', 'cfd00000-0010-4000-8000-000000000008', 'Nephrology', NULL),
+  ('cfd00000-0011-4000-8000-000000000804', 'cfd00000-0010-4000-8000-000000000008', 'Neurology', NULL),
+  ('cfd00000-0011-4000-8000-000000000805', 'cfd00000-0010-4000-8000-000000000008', 'Radiology', NULL),
+  ('cfd00000-0011-4000-8000-000000000901', 'cfd00000-0010-4000-8000-000000000009', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000001001', 'cfd00000-0010-4000-8000-000000000010', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000001101', 'cfd00000-0010-4000-8000-000000000011', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000001201', 'cfd00000-0010-4000-8000-000000000012', 'General medicine', NULL),
+  ('cfd00000-0011-4000-8000-000000001301', 'cfd00000-0010-4000-8000-000000000013', 'Ophthalmology', NULL)
 ON CONFLICT DO NOTHING;
 
 -- ---------- pharmacies (org.pharmacy) ----------
-INSERT INTO org.pharmacy (id, licence_no, name, pharmacy_type, linked_hospital_id, district_id, address, location, opening_hours, status, approved_by, approved_at, created_at) VALUES
-  ('cfd00000-0012-4000-8000-000000000001', 'DEMO-DL-KL-2041', 'Demo Hospital Pharmacy', 'govt_hospital', 'cfd00000-0010-4000-8000-000000000001', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.787500, 9.265200), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0012-4000-8000-000000000002', 'DEMO-DL-KL-2988', 'Care Plus Demo Pharmacy, Thiruvalla', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.573000, 9.386000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0012-4000-8000-000000000003', 'DEMO-DL-KL-3105', 'Demo Generic Medicines Kendra, Pathanamthitta', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.786000, 9.264000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0012-4000-8000-000000000004', 'DEMO-DL-KL-3112', 'Lotus Medical Store, Kozhencherry', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.718000, 9.332000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0012-4000-8000-000000000005', 'DEMO-DL-KL-3120', 'Sneha Community Pharmacy, Pathanamthitta', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.783000, 9.267000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
-  ('cfd00000-0012-4000-8000-000000000006', 'DEMO-DL-KL-3077', 'Demo Taluk Hospital Pharmacy, Adoor', 'govt_hospital', 'cfd00000-0010-4000-8000-000000000002', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.734500, 9.152500), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00')
+INSERT INTO org.pharmacy (id, licence_no, name, pharmacy_type, linked_hospital_id, district_id, address, location, opening_hours, licence_valid_until, counters, compliance_score, last_inspection_on, next_inspection_due, is_jan_aushadhi, status, approved_by, approved_at, created_at) VALUES
+  ('cfd00000-0012-4000-8000-000000000001', 'DEMO-DL-KL-2041', 'Demo Hospital Pharmacy', 'govt_hospital', 'cfd00000-0010-4000-8000-000000000001', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.787500, 9.265200), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, '2029-03-31'::date, 2, 96, '2026-08-02'::date, '2027-02-15'::date, false, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0012-4000-8000-000000000002', 'DEMO-DL-KL-2988', 'Care Plus Demo Pharmacy, Thiruvalla', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.573000, 9.386000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, '2026-11-06'::date, 1, NULL, NULL, NULL, false, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0012-4000-8000-000000000003', 'DEMO-DL-KL-3105', 'Demo Generic Medicines Kendra, Pathanamthitta', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.786000, 9.264000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, NULL, 1, NULL, NULL, NULL, true, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0012-4000-8000-000000000004', 'DEMO-DL-KL-3112', 'Lotus Medical Store, Kozhencherry', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.718000, 9.332000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, NULL, 1, NULL, NULL, NULL, false, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0012-4000-8000-000000000005', 'DEMO-DL-KL-3120', 'Sneha Community Pharmacy, Pathanamthitta', 'private', NULL, util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.783000, 9.267000), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, NULL, 1, NULL, NULL, NULL, false, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0012-4000-8000-000000000006', 'DEMO-DL-KL-3077', 'Demo Taluk Hospital Pharmacy, Adoor', 'govt_hospital', 'cfd00000-0010-4000-8000-000000000002', util.seed_district('Pathanamthitta'), 'Demo address, Pathanamthitta, Kerala', ST_SetSRID(ST_MakePoint(76.734500, 9.152500), 4326), '{"mon-sun": [["08:00", "20:00"]]}'::jsonb, NULL, 1, NULL, NULL, NULL, false, 'active', 'cfd00000-0002-4000-8000-000000000009', '2026-01-01 00:00:00+00', '2026-01-02 00:00:00+00')
 ON CONFLICT DO NOTHING;
 
 -- ---------- wards of Demo General Hospital (org.ward) and 24-bed board of Ward 3 (org.bed) ----------
@@ -416,16 +419,16 @@ INSERT INTO identity.doctor_profile (user_id, hpr_id, council_name, council_reg_
 ON CONFLICT DO NOTHING;
 
 -- ---------- nurses, lab and radiology staff (identity.staff_profile), created by the hospital admin ----------
-INSERT INTO identity.staff_profile (user_id, hospital_id, department_id, staff_role, created_by_user_id, ward_id) VALUES
-  ('cfd00000-0002-4000-8000-000000000003', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003'),
-  ('cfd00000-0002-4000-8000-000000000004', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000108', 'lab', 'cfd00000-0002-4000-8000-000000000008', NULL),
-  ('cfd00000-0002-4000-8000-000000000005', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000109', 'radiology', 'cfd00000-0002-4000-8000-000000000008', NULL),
-  ('cfd00000-0002-4000-8000-000000000121', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000103', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000012'),
-  ('cfd00000-0002-4000-8000-000000000122', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003'),
-  ('cfd00000-0002-4000-8000-000000000123', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003'),
-  ('cfd00000-0002-4000-8000-000000000124', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003'),
-  ('cfd00000-0002-4000-8000-000000000125', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000108', 'lab', 'cfd00000-0002-4000-8000-000000000008', NULL),
-  ('cfd00000-0002-4000-8000-000000000126', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000109', 'radiology', 'cfd00000-0002-4000-8000-000000000008', NULL)
+INSERT INTO identity.staff_profile (user_id, hospital_id, department_id, staff_role, created_by_user_id, ward_id, employee_code, registration_no, designation, shift, is_charge) VALUES
+  ('cfd00000-0002-4000-8000-000000000003', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003', 'DEMO-ST-0412', 'DNC DEMO-4471', 'Staff nurse', 'day', false),
+  ('cfd00000-0002-4000-8000-000000000004', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000108', 'lab', 'cfd00000-0002-4000-8000-000000000008', NULL, 'DEMO-ST-0413', 'DPC DEMO-0981', 'Lab technician (DMLT)', 'day', false),
+  ('cfd00000-0002-4000-8000-000000000005', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000109', 'radiology', 'cfd00000-0002-4000-8000-000000000008', NULL, 'DEMO-ST-0414', 'DRB DEMO-RT-118', 'Radiographer', 'day', false),
+  ('cfd00000-0002-4000-8000-000000000121', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000103', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000012', 'DEMO-ST-0415', 'DNC DEMO-60218', 'Staff nurse (ICU)', 'rotating', false),
+  ('cfd00000-0002-4000-8000-000000000122', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003', 'DEMO-ST-0416', 'DNC DEMO-31807', 'Charge nurse', 'day', true),
+  ('cfd00000-0002-4000-8000-000000000123', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003', 'DEMO-ST-0417', 'DNC DEMO-47720', 'Staff nurse', 'rotating', false),
+  ('cfd00000-0002-4000-8000-000000000124', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'nurse', 'cfd00000-0002-4000-8000-000000000008', 'cfd00000-0013-4000-8000-000000000003', 'DEMO-ST-0418', 'DNC DEMO-52264', 'Float nurse', 'rotating', false),
+  ('cfd00000-0002-4000-8000-000000000125', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000108', 'lab', 'cfd00000-0002-4000-8000-000000000008', NULL, 'DEMO-ST-0419', 'DPC DEMO-1066', 'Lab technician', 'day', false),
+  ('cfd00000-0002-4000-8000-000000000126', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000109', 'radiology', 'cfd00000-0002-4000-8000-000000000008', NULL, 'DEMO-ST-0420', 'DRB DEMO-RT-131', 'CT technologist', 'day', false)
 ON CONFLICT DO NOTHING;
 
 -- ---------- hospital admin (identity.hospital_admin_profile) ----------
@@ -440,13 +443,13 @@ INSERT INTO identity.pharmacy_admin_profile (user_id, pharmacy_id) VALUES
 ON CONFLICT DO NOTHING;
 
 -- ---------- pharmacists (identity.pharmacist_profile), created by the pharmacy admin Suma Thomas ----------
-INSERT INTO identity.pharmacist_profile (user_id, pharmacy_id, registration_no, created_by_user_id) VALUES
-  ('cfd00000-0002-4000-8000-000000000006', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-30214', 'cfd00000-0002-4000-8000-000000000007'),
-  ('cfd00000-0002-4000-8000-000000000301', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-33871', 'cfd00000-0002-4000-8000-000000000007'),
-  ('cfd00000-0002-4000-8000-000000000302', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-28140', 'cfd00000-0002-4000-8000-000000000007'),
-  ('cfd00000-0002-4000-8000-000000000303', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-39025', 'cfd00000-0002-4000-8000-000000000007'),
-  ('cfd00000-0002-4000-8000-000000000304', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-40517', 'cfd00000-0002-4000-8000-000000000007'),
-  ('cfd00000-0002-4000-8000-000000000305', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-21339', 'cfd00000-0002-4000-8000-000000000007')
+INSERT INTO identity.pharmacist_profile (user_id, pharmacy_id, registration_no, created_by_user_id, role_label, shift) VALUES
+  ('cfd00000-0002-4000-8000-000000000006', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-30214', 'cfd00000-0002-4000-8000-000000000007', 'Senior pharmacist', 'day'),
+  ('cfd00000-0002-4000-8000-000000000301', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-33871', 'cfd00000-0002-4000-8000-000000000007', 'Pharmacist', 'day'),
+  ('cfd00000-0002-4000-8000-000000000302', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-28140', 'cfd00000-0002-4000-8000-000000000007', 'Store in-charge', 'day'),
+  ('cfd00000-0002-4000-8000-000000000303', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-39025', 'cfd00000-0002-4000-8000-000000000007', 'Pharmacist', 'night'),
+  ('cfd00000-0002-4000-8000-000000000304', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-40517', 'cfd00000-0002-4000-8000-000000000007', 'Pharmacist', 'night'),
+  ('cfd00000-0002-4000-8000-000000000305', 'cfd00000-0012-4000-8000-000000000001', 'DSPC DEMO-21339', 'cfd00000-0002-4000-8000-000000000007', 'Pharmacist', NULL)
 ON CONFLICT DO NOTHING;
 
 -- ---------- citizen health-profile shells (identity.citizen_profile) ----------
@@ -580,6 +583,7 @@ INSERT INTO identity.consent_record (id, person_id, purpose, notice_version, giv
   ('cfd00000-0006-4000-8000-000000000210', 'cfd00000-0001-4000-8000-000000000210', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000000210', '2026-01-02 00:00:00+00'),
   ('cfd00000-0006-4000-8000-000000000211', 'cfd00000-0001-4000-8000-000000000211', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000000211', '2026-01-02 00:00:00+00'),
   ('cfd00000-0006-4000-8000-000000000212', 'cfd00000-0001-4000-8000-000000000212', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000000212', '2026-01-02 00:00:00+00'),
+  ('cfd00000-0006-4000-8000-000000000213', 'cfd00000-0001-4000-8000-000000000213', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000000213', '2026-01-02 00:00:00+00'),
   ('cfd00000-0006-4000-8000-000000001001', 'cfd00000-0001-4000-8000-000000001001', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000001001', '2026-01-02 00:00:00+00'),
   ('cfd00000-0006-4000-8000-000000001002', 'cfd00000-0001-4000-8000-000000001002', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000001002', '2026-01-02 00:00:00+00'),
   ('cfd00000-0006-4000-8000-000000001003', 'cfd00000-0001-4000-8000-000000001003', 'privacy_notice', '1.0-alpha', 'cfd00000-0001-4000-8000-000000001003', '2026-01-02 00:00:00+00'),
