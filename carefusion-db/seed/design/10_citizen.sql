@@ -23,8 +23,8 @@
 --     prescription, queue token P-042, medicine finder stock. They go in 20_/40_ with prescription ids kind 0211.
 --   * Encrypted columns (body_enc, summary_enc) hold PLAIN UTF-8 bytes with enc_key_id 'demo-none' (same
 --     convention as apps/api documents.service.ts). Not secret, demo only.
---   * Special category: the diabetes card is requested with category_code 'other' + other_text because the
---     type list (migration 110) has no 'diabetes'; a later migration may add it.
+--   * Special category: the diabetes card is requested with category_code 'diabetes' (type added by migration 129).
+--     Databases seeded before 129 keep the old row (category 'other' + other_text); this file never updates it.
 --   * Provider details of the Find-care cards (languages, OP fee, years, teleconsult) live in
 --     identity.doctor_profile, which is a BASE row (not updated here). Values to add in build_base.py:
 --       Dr Arun Nair: ml+en, fee 0, 14 y | Dr Lakshmi Varma: ml+en, 0 | Dr Cherian Thomas: en+hi, 500
@@ -169,7 +169,7 @@ INSERT INTO admin.approval_request (id, subject_type, subject_person_id, step, a
   ('cfd00000-0106-4000-8000-000000000001', 'special_category', 'cfd00000-0001-4000-8000-000000000001', 1, 'district', util.seed_district('Pathanamthitta'), 'pending', '2026-10-14 10:00:00+05:30', '2026-10-21 17:00:00+05:30', NULL, '{"proof": "HbA1c 7.4% on 04 Oct 2026", "requested_by": "Dr. Arun Nair", "card": "Diabetes care programme"}'::jsonb, 'normal')
 ON CONFLICT DO NOTHING;
 INSERT INTO identity.special_category_request (id, person_id, category_code, other_text, status, proof_document_id, approval_request_id, requested_at) VALUES
-  ('cfd00000-0107-4000-8000-000000000001', 'cfd00000-0001-4000-8000-000000000001', 'other', 'Diabetes (chronic illness card, diabetes care programme)', 'district_review', 'cfd00000-0101-4000-8000-000000000004', 'cfd00000-0106-4000-8000-000000000001', '2026-10-02 11:30:00+05:30')
+  ('cfd00000-0107-4000-8000-000000000001', 'cfd00000-0001-4000-8000-000000000001', 'diabetes', NULL, 'district_review', 'cfd00000-0101-4000-8000-000000000004', 'cfd00000-0106-4000-8000-000000000001', '2026-10-02 11:30:00+05:30')
 ON CONFLICT DO NOTHING;
 INSERT INTO identity.special_category_request_step (id, request_id, step, actor_user_id, note, at) VALUES
   ('cfd00000-0108-4000-8000-000000000001', 'cfd00000-0107-4000-8000-000000000001', 'requested', 'cfd00000-0002-4000-8000-000000000002', 'Request sent by Dr. Arun Nair', '2026-10-02 11:30:00+05:30'),
@@ -277,18 +277,18 @@ ON CONFLICT DO NOTHING;
 INSERT INTO engage.appointment (id, slot_id, citizen_person_id, status, requested_at, decided_by_user_id, decided_at, booking_ref, token_no, reason, visit_type, fee_amount, priority) VALUES
   ('cfd00000-0141-4000-8000-000000000001', 'cfd00000-0140-4000-8000-000000000001', 'cfd00000-0001-4000-8000-000000000001', 'completed', '2026-09-24 09:00:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-09-24 09:20:00+05:30', 'DEMO-APT-58190', 7, 'New problem: fever, cough', 'new', 0, 'normal'),
   ('cfd00000-0141-4000-8000-000000000002', 'cfd00000-0140-4000-8000-000000000002', 'cfd00000-0001-4000-8000-000000000001', 'completed', '2026-09-30 15:00:00+05:30', 'cfd00000-0002-4000-8000-000000000101', '2026-09-30 15:30:00+05:30', 'DEMO-APT-58197', 3, 'Diabetic eye check', 'new', 0, 'normal'),
-  ('cfd00000-0141-4000-8000-000000000003', 'cfd00000-0140-4000-8000-000000000003', 'cfd00000-0001-4000-8000-000000000001', 'completed', '2026-10-15 11:00:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-10-15 11:20:00+05:30', 'DEMO-APT-58201', 7, 'Follow-up visit', 'follow_up', 0, 'normal'),
+  ('cfd00000-0141-4000-8000-000000000003', 'cfd00000-0140-4000-8000-000000000003', 'cfd00000-0001-4000-8000-000000000001', 'confirmed', '2026-10-15 11:00:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-10-15 11:20:00+05:30', 'DEMO-APT-58201', 7, 'Follow-up visit', 'follow_up', 0, 'normal'),
   ('cfd00000-0141-4000-8000-000000000004', 'cfd00000-0140-4000-8000-000000002015', 'cfd00000-0001-4000-8000-000000000001', 'confirmed', '2026-10-14 09:50:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-10-14 10:05:00+05:30', 'DEMO-APT-58213', 16, 'Follow-up visit', 'follow_up', 0, 'normal'),
   ('cfd00000-0141-4000-8000-000000000005', 'cfd00000-0140-4000-8000-000000002011', 'cfd00000-0001-4000-8000-000000001006', 'confirmed', '2026-10-14 08:30:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-10-14 09:00:00+05:30', 'DEMO-APT-58210', 8, 'Prescription refill', 'follow_up', 0, 'normal'),
   ('cfd00000-0141-4000-8000-000000000006', 'cfd00000-0140-4000-8000-000000002013', 'cfd00000-0001-4000-8000-000000001011', 'confirmed', '2026-10-14 08:45:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-10-14 09:00:00+05:30', 'DEMO-APT-58211', 12, 'Test results', 'review', 0, 'normal'),
   ('cfd00000-0141-4000-8000-000000000007', 'cfd00000-0140-4000-8000-000000002018', 'cfd00000-0001-4000-8000-000000001008', 'confirmed', '2026-10-14 09:10:00+05:30', 'cfd00000-0002-4000-8000-000000000002', '2026-10-14 09:30:00+05:30', 'DEMO-APT-58212', 22, 'New problem: back pain', 'new', 0, 'normal')
 ON CONFLICT DO NOTHING;
 
--- past OP visits (the 17 Oct visit is Anjali's token 7 in Dr Arun's queue; the doctor seed must reuse this row)
+-- past OP visits (the 17 Oct visit is Anjali's token 7 in Dr Arun's queue, in_consultation / ended_at NULL = 'In room'; the doctor seed must reuse this row. The review-verifiable visit of Dr Arun is the 26 Sep one, status done)
 INSERT INTO engage.op_visit (id, hospital_id, department_id, doctor_user_id, patient_person_id, appointment_id, visit_date, token_no, priority, is_walk_in, status, checked_in_at, called_at, started_at, ended_at, access_session_id) VALUES
   ('cfd00000-0142-4000-8000-000000000001', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'cfd00000-0002-4000-8000-000000000002', 'cfd00000-0001-4000-8000-000000000001', 'cfd00000-0141-4000-8000-000000000001', '2026-09-26'::date, 7, 'normal', false, 'done', '2026-09-26 10:05:00+05:30', '2026-09-26 10:30:00+05:30', '2026-09-26 10:32:00+05:30', '2026-09-26 10:50:00+05:30', NULL),
   ('cfd00000-0142-4000-8000-000000000002', 'cfd00000-0010-4000-8000-000000000002', 'cfd00000-0011-4000-8000-000000000203', 'cfd00000-0002-4000-8000-000000000101', 'cfd00000-0001-4000-8000-000000000001', 'cfd00000-0141-4000-8000-000000000002', '2026-10-02'::date, 3, 'normal', false, 'done', '2026-10-02 09:55:00+05:30', '2026-10-02 10:15:00+05:30', '2026-10-02 10:15:00+05:30', '2026-10-02 10:27:00+05:30', 'cfd00000-0104-4000-8000-000000000002'),
-  ('cfd00000-0142-4000-8000-000000000003', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'cfd00000-0002-4000-8000-000000000002', 'cfd00000-0001-4000-8000-000000000001', 'cfd00000-0141-4000-8000-000000000003', '2026-10-17'::date, 7, 'normal', false, 'done', '2026-10-17 13:50:00+05:30', '2026-10-17 14:20:00+05:30', '2026-10-17 14:24:00+05:30', '2026-10-17 14:50:00+05:30', 'cfd00000-0104-4000-8000-000000000001'),
+  ('cfd00000-0142-4000-8000-000000000003', 'cfd00000-0010-4000-8000-000000000001', 'cfd00000-0011-4000-8000-000000000101', 'cfd00000-0002-4000-8000-000000000002', 'cfd00000-0001-4000-8000-000000000001', 'cfd00000-0141-4000-8000-000000000003', '2026-10-17'::date, 7, 'normal', false, 'in_consultation', '2026-10-17 13:50:00+05:30', '2026-10-17 14:20:00+05:30', '2026-10-17 14:24:00+05:30', NULL, 'cfd00000-0104-4000-8000-000000000001'),
   ('cfd00000-0142-4000-8000-000000000004', 'cfd00000-0010-4000-8000-000000000010', 'cfd00000-0011-4000-8000-000000001001', 'cfd00000-0002-4000-8000-000000000112', 'cfd00000-0001-4000-8000-000000000001', NULL, '2026-08-11'::date, 14, 'normal', true, 'done', '2026-08-11 09:20:00+05:30', '2026-08-11 09:40:00+05:30', '2026-08-11 09:42:00+05:30', '2026-08-11 09:55:00+05:30', NULL)
 ON CONFLICT DO NOTHING;
 
@@ -298,7 +298,7 @@ ON CONFLICT DO NOTHING;
 INSERT INTO records.dated_event (id, patient_person_id, event_type, starts_at, ends_at, title, source_table, source_id, set_by_user_id, status, remind_before, notes, repeat_rule) VALUES
   ('cfd00000-0110-4000-8000-000000000001', 'cfd00000-0001-4000-8000-000000000001', 'test_due', '2026-10-04 08:00:00+05:30', NULL, 'HbA1c blood test', NULL, NULL, 'cfd00000-0002-4000-8000-000000000002', 'done', NULL, 'District PHL, Pathanamthitta · done', 'none'),
   ('cfd00000-0110-4000-8000-000000000002', 'cfd00000-0001-4000-8000-000000000001', 'refill_due', '2026-10-09 10:00:00+05:30', NULL, 'Atorvastatin refill', NULL, NULL, 'cfd00000-0002-4000-8000-000000000002', 'done', NULL, 'Collected', 'none'),
-  ('cfd00000-0110-4000-8000-000000000003', 'cfd00000-0001-4000-8000-000000000001', 'past_visit', '2026-10-17 14:20:00+05:30', '2026-10-17 14:50:00+05:30', 'Visit with Dr. Arun Nair', 'engage.op_visit', 'cfd00000-0142-4000-8000-000000000003', NULL, 'done', NULL, '14:20 · done', 'none'),
+  ('cfd00000-0110-4000-8000-000000000003', 'cfd00000-0001-4000-8000-000000000001', 'past_visit', '2026-10-17 14:20:00+05:30', '2026-10-17 14:50:00+05:30', 'Visit with Dr. Arun Nair', 'engage.op_visit', 'cfd00000-0142-4000-8000-000000000003', NULL, 'scheduled', NULL, '14:20 · in the consultation room', 'none'),
   ('cfd00000-0110-4000-8000-000000000004', 'cfd00000-0001-4000-8000-000000000001', 'appointment', '2026-10-21 10:30:00+05:30', '2026-10-21 10:45:00+05:30', 'Follow-up with Dr. Arun Nair', 'engage.appointment', 'cfd00000-0141-4000-8000-000000000004', 'cfd00000-0002-4000-8000-000000000002', 'scheduled', interval '1 day', '10:30 · OP block 2, Demo General Hospital · token 16', 'none'),
   ('cfd00000-0110-4000-8000-000000000005', 'cfd00000-0001-4000-8000-000000000001', 'refill_due', '2026-10-24 09:00:00+05:30', NULL, 'Metformin refill due', NULL, NULL, 'cfd00000-0002-4000-8000-000000000002', 'scheduled', interval '3 days', 'Set by Dr. Arun Nair · 30 tablets · any generic-medicine or hospital pharmacy', 'none'),
   ('cfd00000-0110-4000-8000-000000000006', 'cfd00000-0001-4000-8000-000000000001', 'checkup_due', '2026-10-28 11:00:00+05:30', NULL, 'Diabetic eye screening', NULL, NULL, 'cfd00000-0002-4000-8000-000000000101', 'scheduled', interval '1 day', '11:00 · Demo Taluk Hospital, Kozhencherry', 'none'),
@@ -564,13 +564,13 @@ INSERT INTO identity.user_preference (user_id, text_size, high_contrast, reduce_
   ('cfd00000-0002-4000-8000-000000000001', 'default', false, false, false, true, true, '{"enabled": true, "from": "22:00", "to": "07:00"}'::jsonb, '{"app_language": "en", "ai_language": "ml", "emergency_card_without_key": true, "ai_reads_documents": true, "research_use": false, "monthly_summary_email": false, "send_by": "App + SMS"}'::jsonb)
 ON CONFLICT DO NOTHING;
 
--- 'What a doctor can see': 3 of 6 switchable folders on (4 of 7 with the locked emergency card)
+-- 'What a doctor can see': imaging and genomic are ON because the doctor design shows her chest X-ray and genomic panel; mental health stays off (5 of 6 switchable folders on)
 INSERT INTO identity.share_preference (person_id, category, enabled) VALUES
   ('cfd00000-0001-4000-8000-000000000001', 'lab', true),
   ('cfd00000-0001-4000-8000-000000000001', 'rx', true),
   ('cfd00000-0001-4000-8000-000000000001', 'vitals', true),
-  ('cfd00000-0001-4000-8000-000000000001', 'imaging', false),
-  ('cfd00000-0001-4000-8000-000000000001', 'genomic', false),
+  ('cfd00000-0001-4000-8000-000000000001', 'imaging', true),
+  ('cfd00000-0001-4000-8000-000000000001', 'genomic', true),
   ('cfd00000-0001-4000-8000-000000000001', 'mental_health', false)
 ON CONFLICT DO NOTHING;
 

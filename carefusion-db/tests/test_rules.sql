@@ -54,7 +54,7 @@ BEGIN
   INSERT INTO identity.app_user (person_id, account_type, keycloak_sub, status) VALUES (doc_p, 'citizen', 'kc-doc-cit', 'active') RETURNING id INTO doc_cit;
   INSERT INTO identity.app_user (person_id, account_type, keycloak_sub, status) VALUES (doc_p, 'doctor', 'kc-doc', 'active') RETURNING id INTO doc_u;
   INSERT INTO identity.doctor_profile (user_id, hpr_id, council_name, council_reg_no, hospital_id, employment_type)
-  VALUES (doc_u, 'DEMO-HPR-0001', 'Travancore-Cochin Medical Council', 'DEMO-REG-1', h, 'govt');
+  VALUES (doc_u, 'DEMO-HPR-71-9000', 'Travancore-Cochin Medical Council', 'DEMO-REG-1', h, 'govt');
 
   INSERT INTO identity.person (full_name, date_of_birth, sex, abha_number, kyc_status, face_check_status, aadhaar_token)
   VALUES ('Demo Patient', '1970-05-05', 'male', 'DEMO-ABHA-0002', 'passed', 'passed', 'DEMO-TOKEN-0002') RETURNING id INTO pat_p;
@@ -829,6 +829,20 @@ SELECT pg_temp.check('FEFO: with an override reason the dispense succeeds and st
   (SELECT quantity = 145 FROM pharmacy.stock_item WHERE id = pg_temp.f('stockB')));
 SELECT pg_temp.check('STOCK: a dispense writes a ledger row (-5)',
   (SELECT count(*) = 1 FROM pharmacy.stock_movement WHERE stock_item_id = pg_temp.f('stockB') AND movement_type = 'dispense' AND quantity_delta = -5));
+-- migration 129: an item is done only when the dispensed quantity reaches the prescribed quantity (itemN1: 10 prescribed, 5 given so far)
+SELECT pg_temp.check('PARTIAL DISPENSE: 5 of 10 given leaves the prescription partly dispensed',
+  (SELECT status::text = 'partly_dispensed' FROM pharmacy.prescription WHERE id = pg_temp.f('rxN')));
+INSERT INTO pharmacy.dispensing (prescription_item_id, pharmacy_id, pharmacist_user_id, outcome, quantity, stock_item_id)
+VALUES (pg_temp.f('itemN1'), pg_temp.f('pharmacy'), pg_temp.f('phar_u'), 'dispensed', 5, pg_temp.f('stockA'));
+SELECT pg_temp.check('PARTIAL DISPENSE: the top-up of the same item is accepted (5 + 5 = 10 prescribed)',
+  (SELECT sum(quantity) = 10 FROM pharmacy.dispensing WHERE prescription_item_id = pg_temp.f('itemN1')));
+SELECT pg_temp.check('PARTIAL DISPENSE: other items still open, so the prescription stays partly dispensed',
+  (SELECT status::text = 'partly_dispensed' FROM pharmacy.prescription WHERE id = pg_temp.f('rxN')));
+SELECT pg_temp.check('AUDIT: audit.log and audit.log_scoped run as their owner (SECURITY DEFINER)',
+  (SELECT count(*) = 2 AND bool_and(prosecdef) FROM pg_proc WHERE pronamespace = 'audit'::regnamespace AND proname IN ('log', 'log_scoped')));
+SELECT pg_temp.check('BOOKING: new booking refs continue after every existing ref',
+  (SELECT (SELECT last_value FROM engage.booking_ref_seq) >= coalesce(max(substring(booking_ref FROM '[0-9]+$')::bigint), 0)
+     FROM engage.appointment WHERE booking_ref ~ '^DEMO-APT-[0-9]+$'));
 UPDATE pharmacy.stock_item SET blocked_reason = 'Recall RN-TEST', blocked_at = now() WHERE id = pg_temp.f('stockA');
 SELECT pg_temp.expect_fail('RECALL: a blocked batch cannot be dispensed',
   format($q$INSERT INTO pharmacy.dispensing (prescription_item_id, pharmacy_id, pharmacist_user_id, outcome, quantity, stock_item_id)
@@ -1186,6 +1200,97 @@ SELECT pg_temp.check('APPROVALS: a hospital admin can be the approver of a staff
 SELECT pg_temp.expect_fail('FAMILY: a family member who has not accepted cannot show the key',
   format($q$INSERT INTO identity.family_link (citizen_person_id, member_person_id, relation, can_show_key) VALUES (%L, %L, 'husband', true)$q$,
          pg_temp.f('citA_p'), pg_temp.f('citB_p')), '23514');
+
+-- ---------------- Migration 129 + events feed of the design seed ----------------
+-- HPR id format (CHECK doctor_hpr_canonical)
+SELECT pg_temp.mk_user('hprBad', 'Dr Bad Hpr', 'doctor');
+SELECT pg_temp.expect_fail('HPR: a doctor with a non-canonical HPR id is refused',
+  format($q$INSERT INTO identity.doctor_profile (user_id, hpr_id, council_name, council_reg_no, hospital_id, employment_type)
+            VALUES (%L, 'DEMO-HPR-1', 'Demo Medical Council, Kerala', 'DEMO-MC-90001', %L, 'govt')$q$, pg_temp.f('hprBad_u'), pg_temp.f('hospital')), '23514');
+INSERT INTO identity.doctor_profile (user_id, hpr_id, council_name, council_reg_no, hospital_id, employment_type)
+VALUES (pg_temp.f('hprBad_u'), 'DEMO-HPR-71-9100', 'Demo Medical Council, Kerala', 'DEMO-MC-90001', pg_temp.f('hospital'), 'govt');
+SELECT pg_temp.check('HPR: a canonical id (DEMO-HPR-71-NNNN) is accepted',
+  (SELECT count(*) = 1 FROM identity.doctor_profile WHERE hpr_id = 'DEMO-HPR-71-9100'));
+SELECT pg_temp.check('HPR: the constraint exists',
+  (SELECT count(*) = 1 FROM pg_constraint WHERE conname = 'doctor_hpr_canonical' AND conrelid = 'identity.doctor_profile'::regclass));
+
+-- reference data moved into the migration
+SELECT pg_temp.check('CATALOGUE: NEUT, UCULT and ABG are in the test catalogue (migration 129)',
+  (SELECT count(*) = 3 FROM lab.test_catalogue WHERE code IN ('NEUT', 'UCULT', 'ABG')));
+SELECT pg_temp.check('CATALOGUE: NEUT is part of the CBC panel',
+  (SELECT count(*) = 1 FROM lab.panel_test WHERE panel_code = 'CBC' AND test_code = 'NEUT'));
+SELECT pg_temp.check('SPECIAL CATEGORY: "diabetes" is a card type',
+  (SELECT count(*) = 1 FROM identity.special_category_type WHERE code = 'diabetes'));
+SELECT pg_temp.check('EVENTS: every default event link is an in-app route path',
+  (SELECT count(*) = 0 FROM engage.event_type_ref WHERE default_href IS NOT NULL AND default_href !~ '^/([^/[:space:]\\][^[:space:]\\]*)?$'));
+SELECT pg_temp.check('EVENTS: the old guessed links (/doctor/queue ...) are gone',
+  (SELECT count(*) = 0 FROM engage.event_type_ref WHERE default_href ~ '^/(doctor|pharmacist|lab|radiology|hospital-admin)/'));
+
+-- visiting posting: a doctor of hospital A who covers hospital B shows up in B's break-glass review
+-- (sessBG: docH_u, hospital "hospital"; the admin of the OTHER hospital hadmH2 sees nothing until a posting exists)
+INSERT INTO identity.doctor_posting_history (user_id, hospital_id, valid, changed_by)
+SELECT pg_temp.f('docH_u'), h.id, tstzrange(now() - interval '1 day', now() + interval '1 day'), pg_temp.f('dadm_u')
+FROM org.hospital h JOIN identity.hospital_admin_profile ha ON ha.hospital_id = h.id WHERE ha.user_id = pg_temp.f('hadmH2_u');
+SET ROLE cf_app;
+SELECT pg_temp.act('hadmH2');
+SELECT pg_temp.check('VISITING POSTING: the admin of the hospital the doctor covers sees the break-glass session',
+  (SELECT count(*) = 1 FROM access.v_break_glass_review));
+SELECT pg_temp.act('hadmH');
+SELECT pg_temp.check('VISITING POSTING: the home hospital still sees it',
+  (SELECT count(*) = 1 FROM access.v_break_glass_review));
+RESET ROLE;
+DELETE FROM identity.doctor_posting_history WHERE user_id = pg_temp.f('docH_u');   -- (superuser fixture clean-up; the table is append-only for the app)
+SET ROLE cf_app;
+SELECT pg_temp.act('hadmH2');
+SELECT pg_temp.check('VISITING POSTING: without a posting the other hospital sees nothing again',
+  (SELECT count(*) = 0 FROM access.v_break_glass_review));
+RESET ROLE;
+
+-- events of the design seed (only when seed/design/80_events.sql was applied)
+CREATE FUNCTION pg_temp.act_seed(p_serial int, p_acct text) RETURNS void LANGUAGE plpgsql AS $$
+BEGIN
+  PERFORM set_config('app.user_id', util.seed_uuid(2, p_serial)::text, true);
+  PERFORM set_config('app.person_id', util.seed_uuid(1, p_serial)::text, true);
+  PERFORM set_config('app.account_type', p_acct, true);
+END $$;
+CREATE TEMP TABLE seeded AS SELECT EXISTS (SELECT 1 FROM engage.event WHERE id = 'cfd00000-0801-4000-8000-000000000051') AS yes;
+GRANT SELECT ON seeded TO cf_app;
+SET ROLE cf_app;
+SELECT pg_temp.act_seed(1, 'citizen');   -- Anjali Menon
+SELECT pg_temp.check('SEEDED EVENTS: Anjali sees "Emergency access used" and no other patient''s name in it',
+  (SELECT NOT (SELECT yes FROM seeded) OR (count(*) = 2 AND bool_and(text !~* '(Thomas|Sreeja|Kurian|unidentified)'))
+     FROM engage.v_my_events WHERE type = 'break-glass'));
+SELECT pg_temp.check('SEEDED EVENTS: Anjali does not see any event about Thomas Kurian',
+  (SELECT count(*) = 0 FROM engage.v_my_events WHERE patient_person_id = util.seed_uuid(1, 1001)));
+SELECT pg_temp.act_seed(1001, 'citizen');   -- Thomas Kurian: the break-glass of 16 Oct 03:12 is about him
+SELECT pg_temp.check('SEEDED EVENTS: Thomas Kurian sees his own emergency-access event',
+  (SELECT NOT (SELECT yes FROM seeded) OR count(*) = 1 FROM engage.v_my_events WHERE type = 'break-glass' AND 'citizen' = ANY (to_roles)));
+SELECT pg_temp.check('SEEDED EVENTS: Thomas Kurian does not see events about Anjali',
+  (SELECT count(*) = 0 FROM engage.v_my_events WHERE patient_person_id = util.seed_uuid(1, 1)));
+SELECT pg_temp.act_seed(9, 'district_admin');   -- Ajay Kumar
+SELECT pg_temp.check('SEEDED EVENTS: the district admin sees no event that names a patient',
+  (SELECT count(*) = 0 FROM engage.event WHERE patient_person_id IS NOT NULL));
+SELECT pg_temp.check('SEEDED EVENTS: the district admin still gets the non-identifying console copies',
+  (SELECT NOT (SELECT yes FROM seeded) OR count(*) >= 5 FROM engage.event WHERE 'district' = ANY (to_roles)));
+SELECT pg_temp.act_seed(10, 'state_admin');   -- Latha Nair
+SELECT pg_temp.check('SEEDED EVENTS: the state admin sees no event that names a patient',
+  (SELECT count(*) = 0 FROM engage.event WHERE patient_person_id IS NOT NULL));
+SELECT pg_temp.act_seed(12, 'central_admin');   -- S. Banerjee
+SELECT pg_temp.check('SEEDED EVENTS: the central admin sees no event that names a patient',
+  (SELECT count(*) = 0 FROM engage.event WHERE patient_person_id IS NOT NULL));
+SELECT pg_temp.act_seed(8, 'hospital_admin');   -- Dr. Meera Krishnan
+SELECT pg_temp.check('SEEDED EVENTS: the hospital admin sees the break-glass details of Thomas Kurian',
+  (SELECT NOT (SELECT yes FROM seeded) OR count(*) = 1 FROM engage.event
+    WHERE type = 'break-glass' AND text LIKE '%Dr. Sreeja Paul · Thomas Kurian%' AND 'hospitaladmin' = ANY (to_roles)));
+SELECT pg_temp.check('SEEDED EVENTS: the hospital admin sees Dr. Sreeja Paul''s 16 Oct session in the break-glass review (visiting posting)',
+  (SELECT NOT (SELECT yes FROM seeded) OR count(*) = 1 FROM access.v_break_glass_review WHERE doctor_name = 'Dr. Sreeja Paul' AND started_at = '2026-10-16 03:12:00+05:30'::timestamptz));
+RESET ROLE;
+-- (stream 33 is tampered with on purpose earlier in this file, so only the national stream is verified here;
+--  the Kerala stream 33 chain is verified by the seed proof, see docs/notes/seed_row_counts.md)
+SELECT pg_temp.check('SEEDED EVENTS: the audit hash chain of the national stream is intact',
+  audit.verify_chain(0::smallint) IS NULL);
+SELECT pg_temp.check('SEEDED EVENTS: audit scope columns match their hashed copy',
+  audit.check_scope_columns(33::smallint) IS NULL);
 
 -- ---------------- Results ----------------
 \o

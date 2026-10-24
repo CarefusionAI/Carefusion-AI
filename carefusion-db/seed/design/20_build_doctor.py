@@ -516,7 +516,7 @@ def build() -> str:
     w("--     0219 chat_participant, 0220 chat_message, 0221 rating, 0222 clinical_alert, 0225 medicine, 0230 admission, 0232 vital_set,")
     w("--     0233 escalation, 0234 nursing_task, 0235 nursing_note, 0236 med_order, 0237 med_administration, 0238 ward_stock,")
     w("--     0239 ward_stock_request, 0240 staff_shift, 0242 allergy, 0243 condition, 0244 medication_current, 0246 immunization,")
-    w("--     0249 ai chat_session, 0250 ai chat_message, 0252 location_check, 0253 item_view, 0299 unidentified patients")
+    w("--     0249 ai chat_session, 0250 ai chat_message, 0252 location_check, 0253 item_view, 0254 doctor_posting_history (Dr Sreeja Paul visiting DGH), 0299 unidentified patients")
     w("-- =====================================================================")
     w("BEGIN;")
     medicines()
@@ -526,6 +526,7 @@ def build() -> str:
     sessions()
     orders()
     appointments()
+    visiting_posting()
     prescriptions()
     # filled by later sections (functions defined below)
     for fn in (clinical_facts, ai_results, referrals, handovers, vitals, nursing, messaging, reviews, alerts, shifts):
@@ -734,6 +735,16 @@ def appointments():
     insert("org.doctor_schedule_block", ["id", "doctor_user_id", "hospital_id", "block_type", "during", "location", "note"], rows)
 
 
+# ---------------------------------------------------------------- visiting posting
+def visiting_posting():
+    section("Dr. Sreeja Paul: visiting posting at Demo General Hospital (kind 0254), so the hospital admin sees her break-glass sessions")
+    w("-- Her base posting stays Demo Taluk Hospital, Adoor (IDS D9). This row says she covers Demo General Hospital from 1 Oct to 31 Dec 2026;")
+    w("-- migration 129 lets access.v_break_glass_review and access.hospital_review honour such a posting.")
+    insert("identity.doctor_posting_history", ["id", "user_id", "hospital_id", "department_id", "valid", "changed_by"],
+           [[U(254, 1), A(SREEJA), "'cfd00000-0010-4000-8000-000000000001'", "NULL",
+             "tstzrange('2026-10-01 00:00:00+05:30', '2027-01-01 00:00:00+05:30', '[)')", A(9)]])
+
+
 # ---------------------------------------------------------------- prescriptions
 def prescriptions():
     section("prescription PDFs (documents, kind 0206) in each patient's 'Doctor uploads' folder")
@@ -841,9 +852,9 @@ def ai_results():
                      "Variant noted. Continue atorvastatin 10 mg, check CK at 3 months, ask about muscle aches.")),
         dict(n=3, patient=ANJALI, tool="temporal", session="an_now", start="2026-10-17 14:28", end="2026-10-17 14:29", status="completed",
              model="temporal-trend-sim", module="Temporal analysis · HbA1c and LDL, Apr 2025 to Oct 2026", conf=0.82,
-             head="LDL up 20% in 6 months",
-             text="Glucose control improving (HbA1c 7.9% to 7.4%); lipids drifting up (LDL 118 to 142 mg/dL). Review statin adherence.",
-             hyps=[(1, "LDL rising (118 to 142 mg/dL) while HbA1c improves (7.9% to 7.4%)", None, None, 0.82, "VERIFIED", 0.80,
+             head="LDL 158 to 142, still above target",
+             text="Glucose control improving (HbA1c 7.9% to 7.4%); lipids improving but still above target (LDL 158 to 142 mg/dL, 12 Jun to 17 Oct). Review statin adherence.",
+             hyps=[(1, "LDL falling (158 to 142 mg/dL) but still above target while HbA1c improves (7.9% to 7.4%)", None, None, 0.82, "VERIFIED", 0.80,
                     [("guideline", "DEMO-GL-LIPID-007", "state", 0.78)]),
                    (2, "Statin refill gap (70% on time)", None, None, 0.60, "SUPPORTED_WITH_CAUTION", 0.50, [("regional", "DEMO-REG-ADHERENCE-02", "state", 0.5)]),
                    (3, "Diet change after the September infection", None, None, 0.30, "UNCERTAIN", 0.20, [("guideline", "DEMO-GL-LIFESTYLE-01", "global", 0.3)])],

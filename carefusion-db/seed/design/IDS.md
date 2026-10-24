@@ -63,7 +63,7 @@ Other lookups that are stable without helpers: `geo.zone.id = 2` (South), `geo.s
 | 0500-0599 | hospital admin and pharmacy admin: approvals, roster, permissions |
 | 0600-0699 | government consoles: surveillance, alerts, reports, AI governance |
 | 0700-0799 | donation and organ: pledges, camps, requests |
-| 0800-0899 | events feed, access sessions, break-glass, audit |
+| 0800-0899 | events feed, access sessions, break-glass, audit. In use (80_events.sql): 0801 design events (serial = design no. x 10 + audience), 0802 booking, 0803 prescription, 0804 lab-order, 0805 imaging-order, 0806 lab-result, 0807 imaging-result, 0808 break-glass, 0809 alert, 0810 vitals-critical, 0811 dispensed / collected, 0812 complaint, 0813 blood-request, 0814 blood-response, 0815 referral, 0816 in-app notification. Kind 0254 (20_) = doctor_posting_history (Dr Sreeja Paul visiting DGH). |
 
 Rows of another seed file must use ids `cfd00000-<your kind>-4000-8000-<serial>` (any `util.seed_uuid(kind, n)`), so a re-run of that file is a no-op via `ON CONFLICT DO NOTHING`.
 

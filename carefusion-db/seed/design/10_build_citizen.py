@@ -160,8 +160,8 @@ hdr = [
     "--     prescription, queue token P-042, medicine finder stock. They go in 20_/40_ with prescription ids kind 0211.",
     "--   * Encrypted columns (body_enc, summary_enc) hold PLAIN UTF-8 bytes with enc_key_id 'demo-none' (same",
     "--     convention as apps/api documents.service.ts). Not secret, demo only.",
-    "--   * Special category: the diabetes card is requested with category_code 'other' + other_text because the",
-    "--     type list (migration 110) has no 'diabetes'; a later migration may add it.",
+    "--   * Special category: the diabetes card is requested with category_code 'diabetes' (type added by migration 129).",
+    "--     Databases seeded before 129 keep the old row (category 'other' + other_text); this file never updates it.",
     "--   * Provider details of the Find-care cards (languages, OP fee, years, teleconsult) live in",
     "--     identity.doctor_profile, which is a BASE row (not updated here). Values to add in build_base.py:",
     "--       Dr Arun Nair: ml+en, fee 0, 14 y | Dr Lakshmi Varma: ml+en, 0 | Dr Cherian Thomas: en+hi, 500",
@@ -329,7 +329,7 @@ ins("admin.approval_request",
 ins("identity.special_category_request",
     ["id", "person_id", "category_code", "other_text", "status", "proof_document_id", "approval_request_id",
      "requested_at"],
-    [[f"'{uid(107, 1)}'", f"'{ANJALI_P}'", "'other'", q("Diabetes (chronic illness card, diabetes care programme)"),
+    [[f"'{uid(107, 1)}'", f"'{ANJALI_P}'", "'diabetes'", "NULL",
       q("district_review"), f"'{uid(101, 4)}'", f"'{uid(106, 1)}'", T("2026-10-02 11:30")]])
 ins("identity.special_category_request_step",
     ["id", "request_id", "step", "actor_user_id", "note", "at"],
@@ -434,7 +434,7 @@ def slot_arun(day_off: int, idx: int) -> str:
 APPTS = [  # serial, slot, person, status, requested, decided, booking_ref, token, reason, visit_type, fee, doctor-decider
     (1, uid(140, 1), PP(1), "completed", "2026-09-24 09:00", "2026-09-24 09:20", "DEMO-APT-58190", 7, "New problem: fever, cough", "new", 0),
     (2, uid(140, 2), PP(1), "completed", "2026-09-30 15:00", "2026-09-30 15:30", "DEMO-APT-58197", 3, "Diabetic eye check", "new", 0),
-    (3, uid(140, 3), PP(1), "completed", "2026-10-15 11:00", "2026-10-15 11:20", "DEMO-APT-58201", 7, "Follow-up visit", "follow_up", 0),
+    (3, uid(140, 3), PP(1), "confirmed", "2026-10-15 11:00", "2026-10-15 11:20", "DEMO-APT-58201", 7, "Follow-up visit", "follow_up", 0),
     (4, slot_arun(1, 4), PP(1), "confirmed", "2026-10-14 09:50", "2026-10-14 10:05", "DEMO-APT-58213", 16, "Follow-up visit", "follow_up", 0),
     (5, slot_arun(1, 0), PP(1006), "confirmed", "2026-10-14 08:30", "2026-10-14 09:00", "DEMO-APT-58210", 8, "Prescription refill", "follow_up", 0),
     (6, slot_arun(1, 2), PP(1011), "confirmed", "2026-10-14 08:45", "2026-10-14 09:00", "DEMO-APT-58211", 12, "Test results", "review", 0),
@@ -453,18 +453,18 @@ ins("engage.appointment",
 VISITS = [  # serial, hospital, dept, doctor, appointment, date, token, status, checked_in, called, started, ended, session
     (1, 1, B.GM, ARUN, uid(141, 1), "2026-09-26", 7, "done", "2026-09-26 10:05", "2026-09-26 10:30", "2026-09-26 10:32", "2026-09-26 10:50", None),
     (2, 2, "Ophthalmology", SREEJA, uid(141, 2), "2026-10-02", 3, "done", "2026-10-02 09:55", "2026-10-02 10:15", "2026-10-02 10:15", "2026-10-02 10:27", uid(104, 2)),
-    (3, 1, B.GM, ARUN, uid(141, 3), "2026-10-17", 7, "done", "2026-10-17 13:50", "2026-10-17 14:20", "2026-10-17 14:24", "2026-10-17 14:50", uid(104, 1)),
+    (3, 1, B.GM, ARUN, uid(141, 3), "2026-10-17", 7, "in_consultation", "2026-10-17 13:50", "2026-10-17 14:20", "2026-10-17 14:24", None, uid(104, 1)),
     (4, 10, B.GM, ANITHA, None, "2026-08-11", 14, "done", "2026-08-11 09:20", "2026-08-11 09:40", "2026-08-11 09:42", "2026-08-11 09:55", None),
 ]
 rows = []
 for s, h, dept, doc, appt, dte, tok, st, ci, ca, sa, en, sess in VISITS:
     rows.append([f"'{uid(142, s)}'", f"'{HOSP(h)}'", f"'{DEPT(h, dept)}'", f"'{doc}'", f"'{ANJALI_P}'", f"'{appt}'" if appt else "NULL",
-                 D(dte), str(tok), "'normal'", "true" if s == 4 else "false", f"'{st}'", T(ci), T(ca), T(sa), T(en),
+                 D(dte), str(tok), "'normal'", "true" if s == 4 else "false", f"'{st}'", T(ci), T(ca), T(sa), (T(en) if en else "NULL"),
                  f"'{sess}'" if sess else "NULL"])
 ins("engage.op_visit",
     ["id", "hospital_id", "department_id", "doctor_user_id", "patient_person_id", "appointment_id", "visit_date",
      "token_no", "priority", "is_walk_in", "status", "checked_in_at", "called_at", "started_at", "ended_at", "access_session_id"],
-    rows, note="past OP visits (the 17 Oct visit is Anjali's token 7 in Dr Arun's queue; the doctor seed must reuse this row)")
+    rows, note="past OP visits (the 17 Oct visit is Anjali's token 7 in Dr Arun's queue, in_consultation / ended_at NULL = 'In room'; the doctor seed must reuse this row. The review-verifiable visit of Dr Arun is the 26 Sep one, status done)")
 
 # ----------------------------------------------------------------------------------------------
 # 7. Dates (calendar)
@@ -473,7 +473,7 @@ w("\n-- ===== Dates =====")
 EV = [  # serial, type, start, end, title, source_table, source_id, set_by, status, remind_before, notes
     (1, "test_due", "2026-10-04 08:00", None, "HbA1c blood test", None, None, ARUN, "done", None, "District PHL, Pathanamthitta · done"),
     (2, "refill_due", "2026-10-09 10:00", None, "Atorvastatin refill", None, None, ARUN, "done", None, "Collected"),
-    (3, "past_visit", "2026-10-17 14:20", "2026-10-17 14:50", "Visit with Dr. Arun Nair", "engage.op_visit", uid(142, 3), None, "done", None, "14:20 · done"),
+    (3, "past_visit", "2026-10-17 14:20", "2026-10-17 14:50", "Visit with Dr. Arun Nair", "engage.op_visit", uid(142, 3), None, "scheduled", None, "14:20 · in the consultation room"),
     (4, "appointment", "2026-10-21 10:30", "2026-10-21 10:45", "Follow-up with Dr. Arun Nair", "engage.appointment", uid(141, 4), ARUN, "scheduled", "1 day",
      "10:30 · OP block 2, Demo General Hospital · token 16"),
     (5, "refill_due", "2026-10-24 09:00", None, "Metformin refill due", None, None, ARUN, "scheduled", "3 days", "Set by Dr. Arun Nair · 30 tablets · any generic-medicine or hospital pharmacy"),
@@ -773,8 +773,8 @@ ins("identity.user_preference",
       J('{"app_language": "en", "ai_language": "ml", "emergency_card_without_key": true, "ai_reads_documents": true, "research_use": false, "monthly_summary_email": false, "send_by": "App + SMS"}')]])
 ins("identity.share_preference", ["person_id", "category", "enabled"],
     [[f"'{ANJALI_P}'", f"'{c}'", "true" if e else "false"] for c, e in
-     [("lab", True), ("rx", True), ("vitals", True), ("imaging", False), ("genomic", False), ("mental_health", False)]],
-    note="'What a doctor can see': 3 of 6 switchable folders on (4 of 7 with the locked emergency card)")
+     [("lab", True), ("rx", True), ("vitals", True), ("imaging", True), ("genomic", True), ("mental_health", False)]],
+    note="'What a doctor can see': imaging and genomic are ON because the doctor design shows her chest X-ray and genomic panel; mental health stays off (5 of 6 switchable folders on)")
 ins("identity.device",
     ["id", "user_id", "platform", "device_name", "bound_at", "last_seen_at", "last_ip_area", "last_city", "user_agent"],
     [[f"'{uid(170, 1)}'", f"'{ANJALI_U}'", "'web'", q("Pixel 7 · Chrome"), T("2026-08-20 09:00"), T("2026-10-17 15:50"), q("Pathanamthitta"), q("Pathanamthitta"), q("Chrome on Android (demo)")],

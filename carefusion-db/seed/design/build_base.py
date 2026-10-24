@@ -125,6 +125,32 @@ H1_PROFILE = dict(
 H1_DEPT_HEAD = {GM: 2, "Casualty": 102, "ICU": 103, "Paediatrics": 104, "Maternity": 105, "Orthopaedics": 106,
                 "Surgery": 107, "Laboratory": 109}
 
+# Doctor extras (identity.doctor_profile): serial -> (languages, fee in rupees, years in practice, accepts walk-in, teleconsult, bio).
+# Source: Find-care cards of the citizen design (languages, OP fee, walk-in) and the doctor app (Dr Arun Nair: 14 years, teleconsult 16:00-17:00).
+# Doctors not named in the Find-care cards get assumed values (marked ASSUMPTION): Malayalam + English, free OP in a govt hospital.
+DOCTOR_EXTRA = {
+    2: (["Malayalam", "English"], 0, 14, True, True, "General physician at Demo General Hospital; diabetes and hypertension follow-up."),
+    110: (["Malayalam", "English"], 0, 18, False, False, "Diabetology at Demo District Hospital, Kozhencherry."),
+    111: (["English", "Hindi"], 500, 24, False, False, "Private cardiologist, Demo Cardiac Care Centre."),
+    112: (["Malayalam"], 0, 9, True, False, "Family medicine at PHC Konni; walk-in OP."),
+    113: (["English", "Tamil"], 600, 19, False, True, "Endocrinology at Demo Private Hospital, Thiruvalla."),
+}
+# Hospital services shown on the Find-care cards (hospital 1 uses H1_PROFILE). ASSUMPTION for the list contents.
+HOSPITAL_SERVICES = {
+    2: ["OP", "Casualty 24x7", "Eye clinic", "Skin clinic"],
+    3: ["OP", "Casualty 24x7", "Diabetes clinic", "Maternity", "Paediatrics"],
+    4: ["OP", "Casualty 24x7"],
+    5: ["OP", "Casualty 24x7"],
+    6: ["OP", "Endocrinology", "Teleconsult"],
+    7: ["Cardiology", "ECG and echo"],
+    8: ["OP", "Cardiology", "Nephrology", "Neurology", "Radiology", "Blood bank"],
+    9: ["OP", "Vaccination", "Antenatal care"],
+    10: ["OP", "Walk-in", "Vaccination"],
+    11: ["OP", "Vaccination"],
+    12: ["OP", "Vaccination"],
+    13: ["Eye clinic", "Optician"],
+}
+
 # Staff extras (identity.staff_profile): serial -> (employee code, registration no, designation, shift, is_charge).
 # Registration labels are demo councils: DNC = Demo Nursing Council, DPC = Demo Paramedical Council, DRB = Demo Radiation Board.
 STAFF_EXTRA = {
@@ -146,7 +172,8 @@ PHARMACIST_EXTRA = {
 # Pharmacy extras (org.pharmacy): n -> dict of columns
 PHARMACY_EXTRA = {
     1: dict(licence_valid_until="2029-03-31", counters=2, compliance_score=96,
-            last_inspection_on="2026-08-02", next_inspection_due="2027-02-15"),
+            last_inspection_on="2026-08-02", next_inspection_due="2027-02-15",
+            is_jan_aushadhi=True),   # Demo Hospital Pharmacy sells generic (Jan Aushadhi) medicines
     2: dict(licence_valid_until="2026-11-06", counters=1),          # 20 days from the demo today
     3: dict(is_jan_aushadhi=True),
 }
@@ -315,8 +342,8 @@ CITIZENS = [
     (2004, "diya-menon", "Diya Menon", 9, "female", None, "Kozhencherry", "MINOR; Anjali's daughter, Anjali is guardian"),
     (2005, "johnson-kuruvilla", "Johnson Kuruvilla", 58, "male", None, "Kozhencherry", "neighbour, organ witness 2 (was 'Thomas Kurian')"),
     # Donors
-    (3001, "vishnu-prasad", "Vishnu Prasad", 31, "male", "O+", "Pathanamthitta", "blood donor"),
-    (3002, "reshma-kurup", "Reshma Kurup", 27, "female", "A+", "Konni", "blood donor (was 'Reshma K.')"),
+    (3001, "vishnu-prasad", "Vishnu Prasad", 31, "male", "B+", "Pathanamthitta", "blood donor"),
+    (3002, "reshma-kurup", "Reshma Kurup", 27, "female", "B+", "Konni", "blood donor (was 'Reshma K.')"),
     (3003, "ananya-raj", "Ananya Raj", 24, "female", "O-", "Adoor", "blood donor (was 'Ananya R.')"),
 ]
 MINORS = {1018, 2004}
@@ -555,7 +582,8 @@ LANGUAGE sql STABLE AS $$
         timings = H1_PROFILE["timings"] if n == 1 else "{}"
         address = H1_PROFILE["address"] if n == 1 else "Demo address, " + dist + ", Kerala"
         phone = q(H1_PROFILE["phone"]) if n == 1 else "NULL"
-        services = ("ARRAY[" + ", ".join(q(x) for x in H1_PROFILE["services"]) + "]::text[]") if n == 1 else "'{}'::text[]"
+        svc = H1_PROFILE["services"] if n == 1 else HOSPITAL_SERVICES.get(n, [])
+        services = ("ARRAY[" + ", ".join(q(x) for x in svc) + "]::text[]") if svc else "'{}'::text[]"
         about = q(H1_PROFILE["about"]) if n == 1 else "NULL"
         rows.append(f"  ('{uid(K_HOSPITAL, n)}', {q(hfr)}, {q(name)}, '{own}', '{htype}', util.seed_district({q(dist)}),"
                     f" {q(address)}, {pt}, {geo}, {q('DEMO-HCE-KL-' + hfr[-4:])}, {phone},"
@@ -618,15 +646,21 @@ LANGUAGE sql STABLE AS $$
     # ---------------- doctor profiles ----------------
     w("\n-- ---------- doctors (identity.doctor_profile) ----------")
     w("INSERT INTO identity.doctor_profile (user_id, hpr_id, council_name, council_reg_no, specialisation, degrees,"
-      " hospital_id, department_id, employment_type, signing_method, duty_hours, hpr_verified_at) VALUES")
+      " hospital_id, department_id, employment_type, signing_method, duty_hours, hpr_verified_at,"
+      " languages, fee_amount, years_experience, accepts_walkin, offers_teleconsult, bio) VALUES")
     rows = []
     for s, slug, name, dob, sex, hosp, dept, spec, hpr, reg, note in DOCTORS:
         degrees = '[{"degree": "MBBS", "year": 2008}, {"degree": "MD", "year": 2012}]' if s == 2 else '[{"degree": "MBBS"}]'
         duty = '{"days": "Mon-Sat", "from": "09:00", "to": "17:00"}' if s == 2 else "{}"
         emp = "govt" if hosp in GOVT_HOSPITALS else "private"
+        age = TODAY.year - int(dob[:4])
+        langs, fee, yrs, walkin, tele, bio = DOCTOR_EXTRA.get(
+            s, (["Malayalam", "English"], 0 if emp == "govt" else 500, max(3, age - 27), True, False, None))
+        extra_cols = (f", ARRAY[{', '.join(q(x) for x in langs)}]::text[], {fee}, {yrs},"
+                      f" {'true' if walkin else 'false'}, {'true' if tele else 'false'}, {q(bio) if bio else 'NULL'}")
         rows.append(f"  ('{uid(K_USER, s)}', 'DEMO-HPR-71-{hpr}', 'Demo Medical Council, Kerala', 'DEMO-MC-{reg}',"
                     f" {q(spec)}, {q(degrees)}::jsonb, '{uid(K_HOSPITAL, hosp)}', '{uid(K_DEPT, dept_serial(hosp, dept))}',"
-                    f" '{emp}', 'mock', {q(duty)}::jsonb, {q(T_VERIFIED)})")
+                    f" '{emp}', 'mock', {q(duty)}::jsonb, {q(T_VERIFIED)}{extra_cols})")
     w(",\n".join(rows))
     w("ON CONFLICT DO NOTHING;")
 
@@ -665,7 +699,7 @@ LANGUAGE sql STABLE AS $$
     w("\n-- ---------- citizen health-profile shells (identity.citizen_profile) ----------")
     w("-- Blood group only where a design shows it. Doctors have a companion citizen profile (every doctor is first a citizen).")
     w("INSERT INTO identity.citizen_profile (person_id, preferred_language, district_id, approx_location, blood_group,"
-      " guardian_person_id, guardian_consent_at, handover_due_on, health_card_issued_at) VALUES")
+      " organ_donor_status, guardian_person_id, guardian_consent_at, handover_due_on, health_card_issued_at) VALUES")
     rows = []
     for p in people:
         s = p["serial"]
@@ -676,6 +710,7 @@ LANGUAGE sql STABLE AS $$
         lat += (s % 7) * 0.002
         lng += (s % 5) * 0.002
         blood = p.get("blood") or "unknown"
+        organ = "pledged" if s == 1 else "none"   # Anjali's organ pledge (70_donation.sql, step 3 of 4)
         guardian, gcons, due = "NULL", "NULL", "NULL"
         if s == 2004:
             guardian, gcons = f"'{uid(K_PERSON, 1)}'", q("2026-01-05 00:00:00+00")
@@ -687,7 +722,7 @@ LANGUAGE sql STABLE AS $$
         lang = "ml" if s in (1005, 1013, 1122) else "en"
         card = "NULL" if s in MINORS else q(T_VERIFIED)
         rows.append(f"  ('{uid(K_PERSON, s)}', '{lang}', util.seed_district('Pathanamthitta'),"
-                    f" ST_SetSRID(ST_MakePoint({lng:.2f}, {lat:.2f}), 4326), '{blood}', {guardian}, {gcons}, {due}, {card})")
+                    f" ST_SetSRID(ST_MakePoint({lng:.2f}, {lat:.2f}), 4326), '{blood}', '{organ}', {guardian}, {gcons}, {due}, {card})")
     w(",\n".join(rows))
     w("ON CONFLICT DO NOTHING;")
 
