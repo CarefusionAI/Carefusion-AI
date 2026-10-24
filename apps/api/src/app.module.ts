@@ -12,6 +12,13 @@ import { AdminOpsModule } from './admin-ops/admin-ops.module'
 import { CitizenModule } from './citizen/citizen.module'
 import { StorageModule } from './storage/storage.module'
 import { DocumentsModule } from './documents/documents.module'
+import { EventsModule } from './events'
+import { CitizenAppModule } from './citizen-app'
+import { DoctorModule } from './doctor/doctor.module'
+import { StaffModule } from './staff/staff.module'
+import { HospitalAdminModule } from './hospital-admin/hospital-admin.module'
+import { PharmacyAdminModule } from './pharmacy-admin/pharmacy-admin.module'
+import { GovAdminModule } from './gov-admin/gov-admin.module'
 
 @Module({
   imports: [
@@ -24,6 +31,13 @@ import { DocumentsModule } from './documents/documents.module'
     StorageModule,
     CitizenModule,
     DocumentsModule,
+    EventsModule,
+    CitizenAppModule,
+    DoctorModule,
+    StaffModule,
+    HospitalAdminModule,
+    PharmacyAdminModule,
+    GovAdminModule,
   ],
   controllers: [AppController],
   providers: [

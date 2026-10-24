@@ -17,7 +17,7 @@ const SPECIALISATIONS = [
 /**
  * MOCK of the ABDM Healthcare Professionals Registry (HPR) lookup
  * (same request/response shape as the real service).
- * Only IDs starting with "DEMO-HPR-" are found. Doctor details are
+ * Only IDs of the form DEMO-HPR-71-NNNN (same rule as identity.is_canonical_hpr_id) are found. Doctor details are
  * deterministic, derived from a hash of the ID. All data is synthetic.
  */
 @Injectable()
@@ -32,7 +32,7 @@ export class MockHprService {
     this.logger.log('MOCK CONNECTOR: HPR verification')
     await this.delay(200)
 
-    if (!hprId || !hprId.startsWith('DEMO-HPR-')) {
+    if (!hprId || !/^DEMO-HPR-71-[0-9]{4}$/.test(hprId)) {
       return { success: false, errorMessage: 'HPR ID not found in registry' }
     }
 

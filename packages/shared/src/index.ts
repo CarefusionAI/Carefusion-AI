@@ -34,3 +34,17 @@ export type AIConfidence = (typeof AIConfidence)[keyof typeof AIConfidence]
 export * from './registration.js'
 
 export * from './citizen.js'
+
+export * from './events.js'
+
+export * from './citizen-app.js'
+
+export * from './doctor.js'
+
+export * from './staff.js'
+
+export * from './hospital-admin.js'
+
+export * from './pharmacy-admin.js'
+
+export * from './gov-admin.js'
