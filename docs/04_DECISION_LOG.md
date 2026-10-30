@@ -739,3 +739,12 @@ Template:
 - Owner: Athun + Claude
 - Next step: start Docker Desktop, `docker compose up -d`, run `docker compose --profile seed run --rm db-seed`, click through every role from `/demo-signin`, fix what breaks; open PR `w5-frontend-port` after PR #3 (W4) merges.
 - Status: OPEN
+
+### 2026-10-30 — First online deployment (alpha demo)
+- Done: **Live at https://carefusion-roan.vercel.app** — one Vercel project holds the built web app (static) and the NestJS API as a single serverless function (`/api/*`), talking to a **Neon Postgres** database (`carefusion-alpha`, Singapore, project `withered-sunset-94638598`) loaded with all migrations and the design seed.
+- Done: `scripts/build-vercel.sh` assembles the deploy folder (`.vercel-deploy/`); `apps/api/src/serverless.ts` is the serverless entry; `DB_POOL_MAX` setting for the connection pool. Deploy: `scripts/build-vercel.sh && cd .vercel-deploy && vercel deploy --prod`.
+- Decision: **Oracle VM not needed for the alpha.** The API runs on Vercel Functions. Reason: no card/VM, one deploy. Costs: small in-memory caches reset per instance; the doctor one-time-key list is per instance.
+- Decision: the Vercel runtime cannot `require()` ES modules, so the deploy build pins `jwks-rsa` 3.x and vendors a CommonJS build of `packages/shared`.
+- Setup done on Neon: `GRANT cf_app TO cf_owner WITH SET TRUE` so the API can switch to the restricted role.
+- Known gaps: demo mode is on, so anyone with the link can open any role (synthetic data only); file storage (R2) not connected; Keycloak not deployed; repo is under a different GitHub account than Vercel's link, so deploys are from the CLI, not on push.
+- Owner: Athun + Claude. Status: DONE (alpha)
