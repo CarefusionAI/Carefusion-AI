@@ -16,6 +16,7 @@ import { errorText } from '../../../api/clinicalHttp'
 import { Alert, Badge, Button, EmptyState, Modal, Select, Skeleton, StatCard, TextField } from '../../../components/ui'
 import QrCode from './QrCode'
 import { CHECK_LABEL, STAGE_LABEL, STAGE_TONE, fmtDate, fmtDateTime } from './util'
+import { demoDate } from '../../../lib/demoClock'
 
 type Filter = 'all' | RxStage
 
@@ -433,7 +434,7 @@ export default function Queue({ say }: { say: (m: string) => void }) {
           ) : (
             <EmptyState title="Choose a prescription">Pick one from the queue to check and dispense it.</EmptyState>
           )}
-          <p className="ph-muted">Last checked {fmtDateTime(new Date().toISOString())}. Synthetic demo data.</p>
+          <p className="ph-muted">Last checked {fmtDateTime(demoDate().toISOString())}. Synthetic demo data.</p>
         </div>
       </div>
     </div>

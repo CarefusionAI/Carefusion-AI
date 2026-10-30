@@ -17,6 +17,7 @@ import type {
   WardStockRequestInput,
 } from '../common/shared'
 import { ageYears, decodeDemoBytes, forbidden, iso, notFound, num, dateStr } from '../common/staff.util'
+import { demoNowMs } from '../common/demo-clock'
 
 const NURSE_ORDER_TYPES = ['nursing', 'medication', 'vitals']
 
@@ -132,7 +133,7 @@ export class NurseService {
       [hospitalId, wardFilter, NURSE_ORDER_TYPES],
     )
     const mar = await this.marDoses(hospitalId, wardFilter, undefined)
-    const now = Date.now()
+    const now = demoNowMs()
     const dosesNextHour = mar.filter((d) => d.dueAt && (d.status === 'due' || d.status === 'overdue') && new Date(d.dueAt).getTime() <= now + 3600_000).length
     const occupied = beds.filter((b) => b.admissionId).length
     return {
@@ -304,7 +305,7 @@ export class NurseService {
       const ins = await c.query(
         `INSERT INTO inpatient.vital_set
            (admission_id, patient_person_id, observed_at, recorded_by_user_id, resp_rate, spo2, on_oxygen, systolic, diastolic, pulse, temp_c, avpu, note, recorded_offline)
-         VALUES ($1,$2,COALESCE($3::timestamptz, now()),$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+         VALUES ($1,$2,COALESCE($3::timestamptz, util.demo_now()),$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
          RETURNING id, observed_at, news_parts, news_score, news_band`,
         [admissionId, adm.patient_person_id, dto.observedAt ?? null, actor.userId, dto.respRate, dto.spo2, dto.onOxygen, dto.systolic, dto.diastolic ?? null, dto.pulse, dto.tempC, dto.avpu, noteParts.length ? noteParts.join(' · ') : null, dto.recordedOffline],
       )
@@ -384,7 +385,7 @@ export class NurseService {
         LIMIT 200`,
       [hospitalId, ward?.id ?? null, scope, actor.userId, status],
     )
-    const now = Date.now()
+    const now = demoNowMs()
     return rows.map((t) => ({
       id: t.id,
       admissionId: t.admission_id,
@@ -434,7 +435,7 @@ export class NurseService {
     if (!rows[0]) notFound('Task')
     if (rows[0].done_at) throw new ConflictException({ success: false, errorMessage: 'Task is already done' })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE inpatient.nursing_task SET done_at = now(), done_by_user_id = $2, note = COALESCE($3, note) WHERE id = $1`, [taskId, actor.userId, note ?? null])
+      await c.query(`UPDATE inpatient.nursing_task SET done_at = util.demo_now(), done_by_user_id = $2, note = COALESCE($3, note) WHERE id = $1`, [taskId, actor.userId, note ?? null])
       await this.ctx.audit(c, 'inpatient.task.done', { entityType: 'inpatient.nursing_task', entityId: taskId, patientPersonId: rows[0].patient_person_id })
     })
     return { id: taskId, done: true }
@@ -445,7 +446,7 @@ export class NurseService {
   private async marDoses(hospitalId: string, wardId: string | null, date: string | undefined, admissionId?: string): Promise<MarDose[]> {
     const rows = await this.db.query<any>(
       `WITH day AS (
-         SELECT COALESCE($3::date, (now() AT TIME ZONE 'Asia/Kolkata')::date) AS d
+         SELECT COALESCE($3::date, (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date) AS d
        ), adm AS (
          SELECT a.id AS admission_id, a.patient_person_id, b.bed_no, p.full_name
            FROM access.admission a
@@ -480,7 +481,7 @@ export class NurseService {
         ORDER BY s.due_at NULLS LAST, o.bed_no`,
       [hospitalId, wardId, date ?? null, admissionId ?? null],
     )
-    const now = Date.now()
+    const now = demoNowMs()
     return rows.map((r) => {
       let status: MarDose['status']
       if (r.is_prn) status = 'prn'
@@ -512,7 +513,7 @@ export class NurseService {
     const doses = await this.marDoses(hospitalId, ward?.id ?? null, opts.date, opts.admissionId)
     const timed = doses.filter((d) => !d.isPrn)
     return {
-      date: opts.date ?? new Date().toISOString().slice(0, 10),
+      date: opts.date ?? new Date(demoNowMs()).toISOString().slice(0, 10),
       summary: {
         total: timed.length,
         given: timed.filter((d) => d.status === 'given').length,
@@ -548,7 +549,7 @@ export class NurseService {
       const r = await c.query(
         `INSERT INTO inpatient.med_administration
            (med_order_id, admission_id, patient_person_id, due_at, given_at, outcome, reason, dose_given, nurse_user_id, band_scanned, drug_scanned)
-         VALUES ($1,$2,$3,$4, CASE WHEN $5 = 'given' THEN now() END, $5, $6, $7, $8, $9, $10) RETURNING id, given_at`,
+         VALUES ($1,$2,$3,$4, CASE WHEN $5 = 'given' THEN util.demo_now() END, $5, $6, $7, $8, $9, $10) RETURNING id, given_at`,
         [dto.medOrderId, mo.admission_id, mo.patient_person_id, dto.dueAt, dto.outcome, dto.reason ?? null, dto.outcome === 'given' ? dto.doseGiven ?? mo.dose : null, actor.userId, dto.bandScanned, dto.drugScanned],
       )
       await this.ctx.audit(c, 'inpatient.mar.administer', {
@@ -669,7 +670,7 @@ export class NurseService {
     const o = await this.nurseOrder(actor, orderId)
     if (o.status !== 'open') throw new ConflictException({ success: false, errorMessage: `Order is already ${o.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_order SET status = 'accepted', accepted_by_user_id = $2, accepted_at = now(), assigned_to_user_id = $2 WHERE id = $1`, [orderId, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'accepted', accepted_by_user_id = $2, accepted_at = util.demo_now(), assigned_to_user_id = $2 WHERE id = $1`, [orderId, actor.userId])
       await this.ctx.audit(c, 'order.accept', { entityType: 'records.clinical_order', entityId: orderId, patientPersonId: o.patient_person_id })
     })
     return { id: orderId, status: 'accepted' }
@@ -679,7 +680,7 @@ export class NurseService {
     const o = await this.nurseOrder(actor, orderId)
     if (o.status !== 'open') throw new ConflictException({ success: false, errorMessage: `Order is already ${o.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_order SET status = 'rejected', rejected_reason = $2, accepted_by_user_id = $3, accepted_at = now() WHERE id = $1`, [orderId, dto.reason, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'rejected', rejected_reason = $2, accepted_by_user_id = $3, accepted_at = util.demo_now() WHERE id = $1`, [orderId, dto.reason, actor.userId])
       await this.ctx.emitEvent(c, actor, {
         type: 'message',
         toRoles: ['doctor'],
@@ -701,7 +702,7 @@ export class NurseService {
     if (!['open', 'accepted', 'in_progress'].includes(o.status)) throw new ConflictException({ success: false, errorMessage: `Order is already ${o.status}` })
     await this.ctx.tx(actor, async (c) => {
       await c.query(
-        `UPDATE records.clinical_order SET status = 'done', completed_by_user_id = $2, completed_at = now(), accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, now()) WHERE id = $1`,
+        `UPDATE records.clinical_order SET status = 'done', completed_by_user_id = $2, completed_at = util.demo_now(), accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, util.demo_now()) WHERE id = $1`,
         [orderId, actor.userId],
       )
       await this.ctx.audit(c, 'order.complete', { entityType: 'records.clinical_order', entityId: orderId, patientPersonId: o.patient_person_id })
@@ -875,7 +876,7 @@ export class NurseService {
     const r = await this.db.query('SELECT 1 FROM records.clinical_alert WHERE id = $1 AND hospital_id = $2', [alertId, hospitalId])
     if (r.length === 0) notFound('Alert')
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_alert SET acknowledged_by_user_id = $2, acknowledged_at = COALESCE(acknowledged_at, now()) WHERE id = $1`, [alertId, actor.userId])
+      await c.query(`UPDATE records.clinical_alert SET acknowledged_by_user_id = $2, acknowledged_at = COALESCE(acknowledged_at, util.demo_now()) WHERE id = $1`, [alertId, actor.userId])
     })
     return { id: alertId, acknowledged: true }
   }
@@ -890,7 +891,7 @@ export class NurseService {
     if (!r[0]) notFound('Escalation')
     if (r[0].acknowledged_at) throw new ConflictException({ success: false, errorMessage: 'Already acknowledged' })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE inpatient.escalation SET acknowledged_by_user_id = $2, acknowledged_at = now(), outcome = $3 WHERE id = $1`, [escalationId, actor.userId, dto.outcome ?? null])
+      await c.query(`UPDATE inpatient.escalation SET acknowledged_by_user_id = $2, acknowledged_at = util.demo_now(), outcome = $3 WHERE id = $1`, [escalationId, actor.userId, dto.outcome ?? null])
       await this.ctx.audit(c, 'inpatient.escalation.ack', { entityType: 'inpatient.escalation', entityId: escalationId, patientPersonId: r[0].patient_person_id })
     })
     return { id: escalationId, acknowledged: true }

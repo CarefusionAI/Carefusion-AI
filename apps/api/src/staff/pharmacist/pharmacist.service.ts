@@ -14,6 +14,7 @@ import type {
   StockActionRequest,
 } from '../common/shared'
 import { ageYears, decodeDemoBytes, forbidden, iso, notFound, num, dateStr } from '../common/staff.util'
+import { demoNowMs } from '../common/demo-clock'
 
 const UNRESOLVED = ['issued', 'partly_dispensed']
 
@@ -58,8 +59,8 @@ export class PharmacistService {
     const pharmacyId = this.pharmacy(actor)
     await this.ctx.tx(actor, async (c) => {
       await c.query(
-        `INSERT INTO pharmacy.counter_state (user_id, pharmacy_id, counter, state, since, last_active_at) VALUES ($1,$2,$3,$4,now(),now())
-         ON CONFLICT (user_id) DO UPDATE SET pharmacy_id = EXCLUDED.pharmacy_id, counter = EXCLUDED.counter, state = EXCLUDED.state, since = now(), last_active_at = now()`,
+        `INSERT INTO pharmacy.counter_state (user_id, pharmacy_id, counter, state, since, last_active_at) VALUES ($1,$2,$3,$4,util.demo_now(),util.demo_now())
+         ON CONFLICT (user_id) DO UPDATE SET pharmacy_id = EXCLUDED.pharmacy_id, counter = EXCLUDED.counter, state = EXCLUDED.state, since = util.demo_now(), last_active_at = util.demo_now()`,
         [actor.userId, pharmacyId, dto.counter ?? null, dto.state],
       )
     })
@@ -83,12 +84,12 @@ export class PharmacistService {
          LEFT JOIN pharmacy.rx_fulfilment f ON f.prescription_id = rx.id AND f.pharmacy_id = $1
          LEFT JOIN pharmacy.queue_token qt ON qt.prescription_id = rx.id AND qt.pharmacy_id = $1
         WHERE EXISTS (SELECT 1 FROM pharmacy.prescription_delivery d WHERE d.prescription_id = rx.id AND d.pharmacy_id = $1)
-          AND (rx.status::text IN ('issued','partly_dispensed') OR f.collected_at >= date_trunc('day', now()) OR f.ready_at >= date_trunc('day', now()))
+          AND (rx.status::text IN ('issued','partly_dispensed') OR f.collected_at >= date_trunc('day', util.demo_now()) OR f.ready_at >= date_trunc('day', util.demo_now()))
         ORDER BY f.collected_at NULLS FIRST, rx.issued_at DESC
         LIMIT 200`,
       [pharmacyId],
     )
-    const now = Date.now()
+    const now = demoNowMs()
     let list = rows.map((r) => {
       const stage = r.collected_at ? 'collected' : r.ready_at ? 'ready' : r.verified_at ? 'verified' : 'pending'
       return {
@@ -115,7 +116,7 @@ export class PharmacistService {
     }
     const [k] = await this.db.query<any>(
       `SELECT (SELECT count(DISTINCT i.prescription_id)::int FROM pharmacy.dispensing d JOIN pharmacy.prescription_item i ON i.id = d.prescription_item_id
-                WHERE d.pharmacy_id = $1 AND d.dispensed_at >= date_trunc('day', now())) AS dispensed_today,
+                WHERE d.pharmacy_id = $1 AND d.dispensed_at >= date_trunc('day', util.demo_now())) AS dispensed_today,
               (SELECT low_batches FROM pharmacy.v_stock_overview WHERE pharmacy_id = $1) AS low_batches,
               (SELECT count(*)::int FROM pharmacy.v_expiry_watch WHERE pharmacy_id = $1 AND bucket IN ('expired','within_30_days')) AS expiring`,
       [pharmacyId],
@@ -141,7 +142,7 @@ export class PharmacistService {
     await this.ctx.tx(actor, async (c) => {
       const has = (await c.query('SELECT 1 FROM pharmacy.prescription_delivery WHERE prescription_id = $1 AND pharmacy_id = $2', [rx.id, pharmacyId])).rows
       if (has.length === 0) {
-        await c.query(`INSERT INTO pharmacy.prescription_delivery (prescription_id, pharmacy_id, sent_by, received_at) VALUES ($1,$2,'patient',now())`, [rx.id, pharmacyId])
+        await c.query(`INSERT INTO pharmacy.prescription_delivery (prescription_id, pharmacy_id, sent_by, received_at) VALUES ($1,$2,'patient',util.demo_now())`, [rx.id, pharmacyId])
       }
       await this.ctx.audit(c, 'pharmacy.rx.scan', { entityType: 'pharmacy.prescription', entityId: rx.id })
     })
@@ -183,8 +184,8 @@ export class PharmacistService {
       expiryDate: dateStr(b.expiry_date)!,
       quantity: b.quantity,
       unitPrice: b.unit_price,
-      blocked: !!b.blocked_reason || new Date(b.expiry_date).getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime(),
-      blockedReason: b.blocked_reason ?? (new Date(b.expiry_date).getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime() ? 'Expired' : null),
+      blocked: !!b.blocked_reason || new Date(b.expiry_date).getTime() < new Date(new Date(demoNowMs()).toISOString().slice(0, 10)).getTime(),
+      blockedReason: b.blocked_reason ?? (new Date(b.expiry_date).getTime() < new Date(new Date(demoNowMs()).toISOString().slice(0, 10)).getTime() ? 'Expired' : null),
     }))
   }
 
@@ -264,7 +265,7 @@ export class PharmacistService {
         ? { code: 'hpr', passed: true, severity: rx.hpr_verified_at ? 'ok' : 'warning', detail: `Prescriber ${rx.hpr_id}${rx.hpr_verified_at ? ' (HPR verified, mock connector)' : ' (not yet verified in the HPR mock)'}` }
         : { code: 'hpr', passed: false, severity: 'blocker', detail: 'Prescriber HPR ID missing' },
     )
-    const valid = new Date(rx.valid_until).getTime() > Date.now() && UNRESOLVED.includes(rx.status)
+    const valid = new Date(rx.valid_until).getTime() > demoNowMs() && UNRESOLVED.includes(rx.status)
     out.push({ code: 'validity', passed: valid, severity: valid ? 'ok' : 'blocker', detail: valid ? `Issued ${iso(rx.issued_at)?.slice(0, 10)}, valid until ${iso(rx.valid_until)?.slice(0, 10)}` : `Prescription is ${rx.status} / past its validity date` })
 
     const ids = items.map((i) => i.medicine_id)
@@ -295,7 +296,7 @@ export class PharmacistService {
       const left = Math.max(0, it.quantity - it.dispensed)
       if (left === 0) continue
       const r = await run(
-        `SELECT COALESCE(sum(quantity),0)::float AS q FROM pharmacy.stock_item WHERE pharmacy_id = $1 AND medicine_id = $2 AND blocked_reason IS NULL AND expiry_date >= current_date`,
+        `SELECT COALESCE(sum(quantity),0)::float AS q FROM pharmacy.stock_item WHERE pharmacy_id = $1 AND medicine_id = $2 AND blocked_reason IS NULL AND expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date`,
         [pharmacyId, it.medicine_id],
       )
       if (r[0].q < left) short.push(`${it.generic_name} ${it.strength} (${r[0].q} of ${left})`)
@@ -309,11 +310,11 @@ export class PharmacistService {
     const rows = await this.db.query<any>(
       `WITH me AS (SELECT generic_name FROM pharmacy.medicine WHERE id = $2)
        SELECT m.id, m.generic_name, m.form, m.strength, 'generic' AS kind, NULL AS note, false AS requires_doctor_ok,
-              COALESCE((SELECT sum(quantity) FROM pharmacy.stock_item s WHERE s.pharmacy_id = $1 AND s.medicine_id = m.id AND s.blocked_reason IS NULL AND s.expiry_date >= current_date), 0)::float AS in_stock
+              COALESCE((SELECT sum(quantity) FROM pharmacy.stock_item s WHERE s.pharmacy_id = $1 AND s.medicine_id = m.id AND s.blocked_reason IS NULL AND s.expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date), 0)::float AS in_stock
          FROM pharmacy.medicine m, me WHERE m.generic_name = me.generic_name AND m.id <> $2 AND m.is_active
        UNION ALL
        SELECT m.id, m.generic_name, m.form, m.strength, ms.kind, ms.note, ms.requires_doctor_ok,
-              COALESCE((SELECT sum(quantity) FROM pharmacy.stock_item s WHERE s.pharmacy_id = $1 AND s.medicine_id = m.id AND s.blocked_reason IS NULL AND s.expiry_date >= current_date), 0)::float AS in_stock
+              COALESCE((SELECT sum(quantity) FROM pharmacy.stock_item s WHERE s.pharmacy_id = $1 AND s.medicine_id = m.id AND s.blocked_reason IS NULL AND s.expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date), 0)::float AS in_stock
          FROM pharmacy.medicine_substitute ms JOIN pharmacy.medicine m ON m.id = ms.substitute_medicine_id WHERE ms.medicine_id = $2`,
       [pharmacyId, medicineId],
     )
@@ -345,14 +346,14 @@ export class PharmacistService {
         return { verified: false, blockers, checks }
       }
       await c.query(
-        `INSERT INTO pharmacy.rx_fulfilment (prescription_id, pharmacy_id, verified_by_user_id, verified_at) VALUES ($1,$2,$3,now())
+        `INSERT INTO pharmacy.rx_fulfilment (prescription_id, pharmacy_id, verified_by_user_id, verified_at) VALUES ($1,$2,$3,util.demo_now())
          ON CONFLICT (prescription_id) DO UPDATE SET verified_by_user_id = COALESCE(pharmacy.rx_fulfilment.verified_by_user_id, EXCLUDED.verified_by_user_id),
-                                                    verified_at = COALESCE(pharmacy.rx_fulfilment.verified_at, now())`,
+                                                    verified_at = COALESCE(pharmacy.rx_fulfilment.verified_at, util.demo_now())`,
         [prescriptionId, pharmacyId, actor.userId],
       )
       let tok = (await c.query('SELECT token_label FROM pharmacy.queue_token WHERE prescription_id = $1 AND pharmacy_id = $2', [prescriptionId, pharmacyId])).rows[0]
       if (!tok) {
-        const n = (await c.query(`SELECT COALESCE(max(token_no), 0) + 1 AS n FROM pharmacy.queue_token WHERE pharmacy_id = $1 AND token_date = current_date`, [pharmacyId])).rows[0].n
+        const n = (await c.query(`SELECT COALESCE(max(token_no), 0) + 1 AS n FROM pharmacy.queue_token WHERE pharmacy_id = $1 AND token_date = (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date`, [pharmacyId])).rows[0].n
         tok = (
           await c.query(`INSERT INTO pharmacy.queue_token (prescription_id, pharmacy_id, token_no, token_label) VALUES ($1,$2,$3,$4) RETURNING token_label`, [prescriptionId, pharmacyId, n, 'P-' + String(n).padStart(3, '0')])
         ).rows[0]
@@ -413,7 +414,7 @@ export class PharmacistService {
           const bs = (
             await c.query(
               `SELECT id, batch_no, quantity::float AS quantity FROM pharmacy.stock_item
-                WHERE pharmacy_id = $1 AND medicine_id = $2 AND quantity > 0 AND blocked_reason IS NULL AND expiry_date >= current_date
+                WHERE pharmacy_id = $1 AND medicine_id = $2 AND quantity > 0 AND blocked_reason IS NULL AND expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date
                 ORDER BY expiry_date, batch_no FOR UPDATE`,
               [pharmacyId, medicineId],
             )
@@ -491,7 +492,7 @@ export class PharmacistService {
 
   private async makeReady(c: PoolClient, actor: StaffActor, rx: any, pharmacyId: string, allFull: boolean) {
     const pName = (await c.query('SELECT name FROM org.pharmacy WHERE id = $1', [pharmacyId])).rows[0].name
-    await c.query(`UPDATE pharmacy.rx_fulfilment SET ready_at = now(), sms_sent_at = now() WHERE prescription_id = $1`, [rx.id]) // sms_sent_at: mock SMS connector
+    await c.query(`UPDATE pharmacy.rx_fulfilment SET ready_at = util.demo_now(), sms_sent_at = util.demo_now() WHERE prescription_id = $1`, [rx.id]) // sms_sent_at: mock SMS connector
     await this.ctx.emitEvent(c, actor, {
       type: 'dispensed',
       toRoles: ['citizen'],
@@ -547,8 +548,8 @@ export class PharmacistService {
       if (t !== rx.qr_token && t.toUpperCase() !== code && t !== `CFHO|${rx.rx_number}|${code}`) throw new ConflictException({ success: false, errorMessage: 'The scanned code does not match this prescription' })
     }
     return this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE pharmacy.rx_fulfilment SET collected_at = now(), collected_by_person_id = COALESCE($2::uuid, $3::uuid) WHERE prescription_id = $1`, [prescriptionId, dto.collectedByPersonId ?? null, rx.patient_person_id])
-      await c.query(`UPDATE pharmacy.queue_token SET served_at = now() WHERE prescription_id = $1 AND pharmacy_id = $2`, [prescriptionId, pharmacyId])
+      await c.query(`UPDATE pharmacy.rx_fulfilment SET collected_at = util.demo_now(), collected_by_person_id = COALESCE($2::uuid, $3::uuid) WHERE prescription_id = $1`, [prescriptionId, dto.collectedByPersonId ?? null, rx.patient_person_id])
+      await c.query(`UPDATE pharmacy.queue_token SET served_at = util.demo_now() WHERE prescription_id = $1 AND pharmacy_id = $2`, [prescriptionId, pharmacyId])
       await this.ctx.emitEvent(c, actor, {
         type: 'collected',
         toRoles: ['citizen'],
@@ -620,8 +621,8 @@ export class PharmacistService {
          JOIN identity.person p ON p.id = rx.patient_person_id
         WHERE d.pharmacy_id = $1 AND d.outcome::text IN ('dispensed','substitute')
         GROUP BY rx.patient_person_id, p.full_name, rx.rx_number, m.generic_name, m.strength, i.duration_days, i.id
-       HAVING max(d.dispensed_at) + (i.duration_days * interval '1 day') <= now() + ($2::int * interval '1 day')
-          AND max(d.dispensed_at) + (i.duration_days * interval '1 day') >= now() - interval '30 days'
+       HAVING max(d.dispensed_at) + (i.duration_days * interval '1 day') <= util.demo_now() + ($2::int * interval '1 day')
+          AND max(d.dispensed_at) + (i.duration_days * interval '1 day') >= util.demo_now() - interval '30 days'
         ORDER BY refill_due`,
       [pharmacyId, withinDays],
     )
@@ -632,7 +633,7 @@ export class PharmacistService {
       medicine: `${r.generic_name} ${r.strength}`,
       lastDispensedAt: iso(r.last_dispensed),
       refillDueAt: iso(r.refill_due),
-      overdue: new Date(r.refill_due).getTime() < Date.now(),
+      overdue: new Date(r.refill_due).getTime() < demoNowMs(),
     }))
   }
 
@@ -641,11 +642,11 @@ export class PharmacistService {
     const pharmacyId = this.pharmacy(actor)
     const rows = await this.db.query<any>(
       `SELECT m.id, m.generic_name, m.form, m.strength, m.schedule::text AS schedule, m.category,
-              COALESCE(sum(s.quantity) FILTER (WHERE s.blocked_reason IS NULL AND s.expiry_date >= current_date), 0)::float AS on_hand,
+              COALESCE(sum(s.quantity) FILTER (WHERE s.blocked_reason IS NULL AND s.expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date), 0)::float AS on_hand,
               max(s.low_threshold)::float AS reorder_at, count(s.id)::int AS batches,
-              min(s.expiry_date) FILTER (WHERE s.quantity > 0 AND s.expiry_date >= current_date) AS nearest_expiry,
+              min(s.expiry_date) FILTER (WHERE s.quantity > 0 AND s.expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date) AS nearest_expiry,
               COALESCE((SELECT sum(-mv.quantity_delta) FROM pharmacy.stock_movement mv JOIN pharmacy.stock_item si ON si.id = mv.stock_item_id
-                         WHERE mv.pharmacy_id = $1 AND si.medicine_id = m.id AND mv.movement_type = 'dispense' AND mv.at >= now() - interval '14 days'), 0)::float / 14 AS used_per_day,
+                         WHERE mv.pharmacy_id = $1 AND si.medicine_id = m.id AND mv.movement_type = 'dispense' AND mv.at >= util.demo_now() - interval '14 days'), 0)::float / 14 AS used_per_day,
               (SELECT min(po.expected_on) FROM pharmacy.purchase_order po JOIN pharmacy.po_line pl ON pl.po_id = po.id
                 WHERE po.pharmacy_id = $1 AND pl.medicine_id = m.id AND po.status IN ('approved','sent','in_transit')) AS next_supply
          FROM pharmacy.stock_item s JOIN pharmacy.medicine m ON m.id = s.medicine_id
@@ -693,7 +694,7 @@ export class PharmacistService {
     if (!s) notFound('Stock batch')
     return this.ctx.tx(actor, async (c) => {
       if (dto.action === 'quarantine') {
-        await c.query(`UPDATE pharmacy.stock_item SET blocked_reason = $2, blocked_at = now(), is_published = false WHERE id = $1`, [stockItemId, dto.reason])
+        await c.query(`UPDATE pharmacy.stock_item SET blocked_reason = $2, blocked_at = util.demo_now(), is_published = false WHERE id = $1`, [stockItemId, dto.reason])
         await this.ctx.audit(c, 'pharmacy.stock.quarantine', { entityType: 'pharmacy.stock_item', entityId: stockItemId, details: { reason: dto.reason } })
         return { stockItemId, action: 'quarantine', batchNo: s.batch_no }
       }
@@ -716,7 +717,7 @@ export class PharmacistService {
     const list = await this.db.query<any>(
       `SELECT w.medicine_id, w.generic_name, w.batch_no, w.expiry_date, w.quantity::float AS quantity, w.value_at_cost::float AS value_at_cost, w.bucket,
               (SELECT s.id FROM pharmacy.stock_item s WHERE s.pharmacy_id = w.pharmacy_id AND s.medicine_id = w.medicine_id AND s.batch_no = w.batch_no) AS stock_item_id,
-              (w.expiry_date - current_date) AS days_left
+              (w.expiry_date - (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date) AS days_left
          FROM pharmacy.v_expiry_watch w WHERE w.pharmacy_id = $1 ORDER BY w.expiry_date`,
       [this.pharmacy(actor)],
     )
@@ -744,8 +745,8 @@ export class PharmacistService {
     return this.db.query<any>(
       `SELECT dispensed_at, rx_number, pharmacist, generic_name, strength, outcome::text AS outcome, quantity::float AS quantity, batch_no, batch_override_reason
          FROM pharmacy.v_dispensing_log
-        WHERE pharmacy_id = $1 AND dispensed_at >= COALESCE($2::date, (now() AT TIME ZONE 'Asia/Kolkata')::date)::timestamp AT TIME ZONE 'Asia/Kolkata'
-          AND dispensed_at < (COALESCE($3::date, COALESCE($2::date, (now() AT TIME ZONE 'Asia/Kolkata')::date)) + 1)::timestamp AT TIME ZONE 'Asia/Kolkata'
+        WHERE pharmacy_id = $1 AND dispensed_at >= COALESCE($2::date, (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date)::timestamp AT TIME ZONE 'Asia/Kolkata'
+          AND dispensed_at < (COALESCE($3::date, COALESCE($2::date, (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date)) + 1)::timestamp AT TIME ZONE 'Asia/Kolkata'
         ORDER BY dispensed_at DESC LIMIT 1000`,
       [pharmacyId, from ?? null, to ?? null],
     )
@@ -786,7 +787,7 @@ export class PharmacistService {
     if (r.length === 0) notFound('Recall')
     await this.ctx.tx(actor, async (c) => {
       await c.query(
-        `UPDATE pharmacy.recall_ack SET status = $3, qty_on_shelf = COALESCE($4, qty_on_shelf), confirmed_by_user_id = $5, confirmed_at = now(), note = $6 WHERE recall_id = $1 AND pharmacy_id = $2`,
+        `UPDATE pharmacy.recall_ack SET status = $3, qty_on_shelf = COALESCE($4, qty_on_shelf), confirmed_by_user_id = $5, confirmed_at = util.demo_now(), note = $6 WHERE recall_id = $1 AND pharmacy_id = $2`,
         [recallId, pharmacyId, dto.status, dto.qtyOnShelf ?? null, actor.userId, dto.note ?? null],
       )
       await this.ctx.audit(c, 'pharmacy.recall.confirm', { entityType: 'pharmacy.drug_recall', entityId: recallId })
@@ -818,7 +819,7 @@ export class PharmacistService {
       let need = req.quantity
       const bs = (
         await c.query(
-          `SELECT id, quantity::float AS quantity FROM pharmacy.stock_item WHERE pharmacy_id = $1 AND medicine_id = $2 AND quantity > 0 AND blocked_reason IS NULL AND expiry_date >= current_date ORDER BY expiry_date FOR UPDATE`,
+          `SELECT id, quantity::float AS quantity FROM pharmacy.stock_item WHERE pharmacy_id = $1 AND medicine_id = $2 AND quantity > 0 AND blocked_reason IS NULL AND expiry_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date ORDER BY expiry_date FOR UPDATE`,
           [pharmacyId, req.medicine_id],
         )
       ).rows
@@ -833,7 +834,7 @@ export class PharmacistService {
         `INSERT INTO org.ward_stock (ward_id, medicine_id, quantity) VALUES ($1,$2,$3) ON CONFLICT (ward_id, medicine_id) DO UPDATE SET quantity = org.ward_stock.quantity + EXCLUDED.quantity`,
         [req.ward_id, req.medicine_id, req.quantity],
       )
-      await c.query(`UPDATE org.ward_stock_request SET status = 'issued', decided_by_user_id = $2, fulfilled_at = now(), note = COALESCE($3, note) WHERE id = $1`, [requestId, actor.userId, dto.note ?? null])
+      await c.query(`UPDATE org.ward_stock_request SET status = 'issued', decided_by_user_id = $2, fulfilled_at = util.demo_now(), note = COALESCE($3, note) WHERE id = $1`, [requestId, actor.userId, dto.note ?? null])
       await this.ctx.audit(c, 'pharmacy.ward_request.issue', { entityType: 'org.ward_stock_request', entityId: requestId })
       return { id: requestId, status: 'issued' }
     })

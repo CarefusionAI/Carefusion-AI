@@ -16,6 +16,7 @@ import type {
   StaffRejectRequest,
 } from '../common/shared'
 import { ageYears, forbidden, iso, notFound, num, dateStr } from '../common/staff.util'
+import { demoNowMs } from '../common/demo-clock'
 
 /** Turnaround targets in minutes by priority (design: STAT 60 min, routine 4 h). */
 const TAT_TARGET_MIN: Record<string, number> = { stat: 60, urgent: 120, routine: 240 }
@@ -65,7 +66,7 @@ export class LabService {
         ORDER BY CASE o.priority::text WHEN 'stat' THEN 0 WHEN 'urgent' THEN 1 ELSE 2 END, o.created_at`,
       [hospitalId],
     )
-    const now = Date.now()
+    const now = demoNowMs()
     let list = rows.map((r) => {
       let stage: Stage
       if (r.status === 'open') stage = 'new'
@@ -100,11 +101,11 @@ export class LabService {
     const [today] = await this.db.query<any>(
       `SELECT
          (SELECT count(*) FROM lab.specimen s JOIN records.clinical_order o ON o.id = s.order_id
-           WHERE o.hospital_id = $1 AND s.rejected_at >= date_trunc('day', now())) AS rejected_today,
+           WHERE o.hospital_id = $1 AND s.rejected_at >= date_trunc('day', util.demo_now())) AS rejected_today,
          (SELECT count(*) FROM lab.result r JOIN records.clinical_order o ON o.id = r.order_id
-           WHERE o.hospital_id = $1 AND r.released_at >= date_trunc('day', now())) AS released_today,
+           WHERE o.hospital_id = $1 AND r.released_at >= date_trunc('day', util.demo_now())) AS released_today,
          (SELECT count(*) FROM lab.specimen s JOIN records.clinical_order o ON o.id = s.order_id
-           WHERE o.hospital_id = $1 AND s.collected_at >= date_trunc('day', now())) AS collected_today`,
+           WHERE o.hospital_id = $1 AND s.collected_at >= date_trunc('day', util.demo_now())) AS collected_today`,
       [hospitalId],
     )
     const awaiting = all.filter((x) => x.stage === 'awaiting_sample' || x.stage === 'new')
@@ -258,7 +259,7 @@ export class LabService {
     const o = await this.labOrder(orderId, this.hospital(actor))
     if (o.status !== 'open') throw new ConflictException({ success: false, errorMessage: `Order is already ${o.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_order SET status = 'accepted', accepted_by_user_id = $2, accepted_at = now(), assigned_to_user_id = $2 WHERE id = $1`, [orderId, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'accepted', accepted_by_user_id = $2, accepted_at = util.demo_now(), assigned_to_user_id = $2 WHERE id = $1`, [orderId, actor.userId])
       await this.ctx.audit(c, 'lab.order.accept', { entityType: 'records.clinical_order', entityId: orderId, patientPersonId: o.patient_person_id })
     })
     return { id: orderId, status: 'accepted' }
@@ -268,7 +269,7 @@ export class LabService {
     const o = await this.labOrder(orderId, this.hospital(actor))
     if (!['open', 'accepted'].includes(o.status)) throw new ConflictException({ success: false, errorMessage: `Order is already ${o.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_order SET status = 'rejected', rejected_reason = $2, accepted_by_user_id = $3, accepted_at = now() WHERE id = $1`, [orderId, dto.reason, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'rejected', rejected_reason = $2, accepted_by_user_id = $3, accepted_at = util.demo_now() WHERE id = $1`, [orderId, dto.reason, actor.userId])
       await this.ctx.emitEvent(c, actor, {
         type: 'message',
         toRoles: ['doctor'],
@@ -294,12 +295,12 @@ export class LabService {
     return this.ctx.tx(actor, async (c) => {
       const s = await c.query(
         `INSERT INTO lab.specimen (order_id, patient_person_id, barcode, tube_type, tube_count, fasting, status, collected_by_user_id, collected_at, send_by)
-         VALUES ($1,$2,$3,$4,$5,$6,'collected',$7,now(),$8) RETURNING id, barcode, collected_at`,
+         VALUES ($1,$2,$3,$4,$5,$6,'collected',$7,util.demo_now(),$8) RETURNING id, barcode, collected_at`,
         [orderId, o.patient_person_id, barcode, dto.tubeType ?? null, dto.tubeCount, dto.fasting ?? null, actor.userId, dto.sendBy ?? null],
       )
       await c.query(`UPDATE lab.order_item SET status = 'collected' WHERE order_id = $1 AND status = 'ordered'`, [orderId])
       await c.query(
-        `UPDATE records.clinical_order SET status = 'in_progress', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, now()), assigned_to_user_id = COALESCE(assigned_to_user_id, $2) WHERE id = $1 AND status::text IN ('open','accepted')`,
+        `UPDATE records.clinical_order SET status = 'in_progress', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, util.demo_now()), assigned_to_user_id = COALESCE(assigned_to_user_id, $2) WHERE id = $1 AND status::text IN ('open','accepted')`,
         [orderId, actor.userId],
       )
       await this.ctx.audit(c, 'lab.specimen.collect', { entityType: 'lab.specimen', entityId: s.rows[0].id, patientPersonId: o.patient_person_id })
@@ -321,7 +322,7 @@ export class LabService {
     const s = await this.specimen(specimenId, this.hospital(actor))
     if (s.status !== 'collected') throw new ConflictException({ success: false, errorMessage: `Specimen is ${s.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE lab.specimen SET status = 'in_lab', received_at = now() WHERE id = $1`, [specimenId])
+      await c.query(`UPDATE lab.specimen SET status = 'in_lab', received_at = util.demo_now() WHERE id = $1`, [specimenId])
       await this.ctx.audit(c, 'lab.specimen.receive', { entityType: 'lab.specimen', entityId: specimenId, patientPersonId: s.patient_person_id })
     })
     return { id: specimenId, status: 'in_lab' }
@@ -331,7 +332,7 @@ export class LabService {
     const s = await this.specimen(specimenId, this.hospital(actor))
     if (!['pending', 'collected', 'in_lab'].includes(s.status)) throw new ConflictException({ success: false, errorMessage: `Specimen is ${s.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE lab.specimen SET status = 'rejected', rejected_reason = $2, rejected_at = now() WHERE id = $1`, [specimenId, dto.reason])
+      await c.query(`UPDATE lab.specimen SET status = 'rejected', rejected_reason = $2, rejected_at = util.demo_now() WHERE id = $1`, [specimenId, dto.reason])
       await c.query(`UPDATE lab.order_item SET status = 'ordered' WHERE order_id = $1 AND status = 'collected'`, [s.order_id])
       await this.ctx.emitEvent(c, actor, {
         type: 'message',
@@ -386,7 +387,7 @@ export class LabService {
         )
       }
       await c.query(
-        `UPDATE records.clinical_order SET status = 'in_progress', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, now()) WHERE id = $1 AND status::text IN ('open','accepted')`,
+        `UPDATE records.clinical_order SET status = 'in_progress', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, util.demo_now()) WHERE id = $1 AND status::text IN ('open','accepted')`,
         [orderId, actor.userId],
       )
       await this.ctx.audit(c, 'lab.result.save', { entityType: 'lab.result', entityId: res.id, patientPersonId: o.patient_person_id })
@@ -439,13 +440,13 @@ export class LabService {
     }
     if (res.status !== 'verified') throw new ConflictException({ success: false, errorMessage: 'Verify the result before releasing it' })
     await c.query(
-      `UPDATE lab.result SET status = 'released', released_at = now(), released_by_user_id = $2, delivered_to_doctor_at = now() WHERE id = $1`,
+      `UPDATE lab.result SET status = 'released', released_at = util.demo_now(), released_by_user_id = $2, delivered_to_doctor_at = util.demo_now() WHERE id = $1`,
       [resultId, actor.userId],
     )
     await c.query(`UPDATE lab.order_item SET status = 'resulted' WHERE order_id = $1 AND test_code IN (SELECT test_code FROM lab.result_value WHERE result_id = $2)`, [o.id, resultId])
     await c.query(`UPDATE lab.specimen SET status = 'done' WHERE order_id = $1 AND status IN ('collected','in_lab')`, [o.id])
     await c.query(
-      `UPDATE records.clinical_order SET status = 'done', completed_by_user_id = $2, completed_at = now() WHERE id = $1`,
+      `UPDATE records.clinical_order SET status = 'done', completed_by_user_id = $2, completed_at = util.demo_now() WHERE id = $1`,
       [o.id, actor.userId],
     )
     const vals = (
@@ -502,7 +503,7 @@ export class LabService {
         entityId: resultId,
         patientPersonId: o.patient_person_id,
       })
-      await c.query('UPDATE lab.result SET delivered_to_patient_at = now() WHERE id = $1', [resultId])
+      await c.query('UPDATE lab.result SET delivered_to_patient_at = util.demo_now() WHERE id = $1', [resultId])
     }
     await this.ctx.audit(c, 'lab.result.release', { entityType: 'lab.result', entityId: resultId, patientPersonId: o.patient_person_id, details: { critical: critical.length } })
   }
@@ -528,7 +529,7 @@ export class LabService {
               (SELECT string_agg(v.test_code::text, ', ' ORDER BY v.test_code) FROM lab.result_value v WHERE v.result_id = r.id) AS tests,
               EXISTS (SELECT 1 FROM lab.result_value v WHERE v.result_id = r.id AND v.is_critical) AS has_critical
          FROM lab.result r JOIN records.clinical_order o ON o.id = r.order_id JOIN identity.person p ON p.id = r.patient_person_id
-        WHERE o.hospital_id = $1 AND r.status IN ('released','amended') AND r.released_at >= now() - ($2::int * interval '1 hour')
+        WHERE o.hospital_id = $1 AND r.status IN ('released','amended') AND r.released_at >= util.demo_now() - ($2::int * interval '1 hour')
         ORDER BY r.released_at DESC LIMIT 50`,
       [this.hospital(actor), hours],
     )
@@ -585,7 +586,7 @@ export class LabService {
            JOIN identity.person p ON p.id = c.patient_person_id
            JOIN identity.app_user cu ON cu.id = c.called_by_user_id JOIN identity.person cp ON cp.id = cu.person_id
            LEFT JOIN identity.app_user tu ON tu.id = c.called_to_user_id LEFT JOIN identity.person tp ON tp.id = tu.person_id
-          WHERE o.hospital_id = $1 AND c.called_at >= now() - interval '7 days'
+          WHERE o.hospital_id = $1 AND c.called_at >= util.demo_now() - interval '7 days'
           ORDER BY c.called_at DESC LIMIT 100`,
         [hospitalId],
       ),
@@ -643,7 +644,7 @@ export class LabService {
     return this.ctx.tx(actor, async (c) => {
       const r = await c.query(
         `INSERT INTO lab.critical_call (result_value_id, patient_person_id, called_by_user_id, called_to_user_id, called_to_name, note, read_back_confirmed, read_back_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7, CASE WHEN $7 THEN now() END) RETURNING id, called_at`,
+         VALUES ($1,$2,$3,$4,$5,$6,$7, CASE WHEN $7 THEN util.demo_now() END) RETURNING id, called_at`,
         [dto.resultValueId, rows[0].patient_person_id, actor.userId, dto.calledToUserId ?? null, dto.calledToName ?? null, dto.note ?? null, dto.readBackConfirmed],
       )
       await this.ctx.audit(c, 'lab.critical.call', { entityType: 'lab.critical_call', entityId: r.rows[0].id, patientPersonId: rows[0].patient_person_id })
@@ -662,7 +663,7 @@ export class LabService {
     if (!rows[0]) notFound('Critical call')
     if (rows[0].read_back_confirmed) throw new ConflictException({ success: false, errorMessage: 'Read-back is already confirmed' })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE lab.critical_call SET read_back_confirmed = true, read_back_at = now(), note = COALESCE($2, note) WHERE id = $1`, [callId, dto.note ?? null])
+      await c.query(`UPDATE lab.critical_call SET read_back_confirmed = true, read_back_at = util.demo_now(), note = COALESCE($2, note) WHERE id = $1`, [callId, dto.note ?? null])
       await this.ctx.audit(c, 'lab.critical.ack', { entityType: 'lab.critical_call', entityId: callId, patientPersonId: rows[0].patient_person_id })
     })
     return { id: callId, readBackConfirmed: true }
@@ -686,7 +687,7 @@ export class LabService {
     await this.ctx.tx(actor, async (c) => {
       await c.query(
         `UPDATE lab.instrument SET status = $2,
-                last_calibrated_at = CASE WHEN $3 = 'calibrating' AND $2 = 'ok' THEN now() ELSE last_calibrated_at END,
+                last_calibrated_at = CASE WHEN $3 = 'calibrating' AND $2 = 'ok' THEN util.demo_now() ELSE last_calibrated_at END,
                 next_calibration_due = COALESCE($4::date, next_calibration_due)
           WHERE id = $1`,
         [instrumentId, dto.status, r[0].status, dto.nextCalibrationDue ?? null],
@@ -711,7 +712,7 @@ export class LabService {
       `SELECT q.id, q.run_at, q.test_code::text AS test_code, t.name AS test_name, q.qc_level, q.value_num::float AS value_num, q.target_mean::float AS target_mean,
               q.target_sd::float AS target_sd, q.z_score::float AS z_score, q.westgard_rule, q.accepted, q.comment, i.name AS instrument, i.id AS instrument_id, t.unit
          FROM lab.qc_run q JOIN lab.instrument i ON i.id = q.instrument_id JOIN lab.test_catalogue t ON t.code = q.test_code
-        WHERE i.hospital_id = $1 AND q.run_at >= now() - ($2::int * interval '1 day')
+        WHERE i.hospital_id = $1 AND q.run_at >= util.demo_now() - ($2::int * interval '1 day')
         ORDER BY q.run_at DESC LIMIT 300`,
       [hospitalId, days],
     )
@@ -720,7 +721,7 @@ export class LabService {
       targetMean: q.target_mean, targetSd: q.target_sd, zScore: q.z_score, westgardRule: q.westgard_rule, accepted: q.accepted,
       result: !q.accepted ? 'reject' : q.westgard_rule ? 'warning' : 'pass', comment: q.comment, instrument: q.instrument, instrumentId: q.instrument_id,
     })
-    const today = runs.filter((q) => new Date(q.run_at).getTime() >= Date.now() - 24 * 3600_000)
+    const today = runs.filter((q) => new Date(q.run_at).getTime() >= demoNowMs() - 24 * 3600_000)
     const series: Record<string, ReturnType<typeof mapRun>[]> = {}
     for (const q of runs) {
       const k = `${q.instrument_id}|${q.test_code}|${q.qc_level}`
@@ -775,33 +776,33 @@ export class LabService {
     const byPriority = await this.db.query<any>(
       `SELECT priority::text AS priority, count(*)::int AS n,
               percentile_cont(0.5) WITHIN GROUP (ORDER BY tat_minutes)::float AS median_minutes
-         FROM lab.v_order_tat WHERE hospital_id = $1 AND released_at >= now() - ($2::int * interval '1 day') AND tat_minutes IS NOT NULL
+         FROM lab.v_order_tat WHERE hospital_id = $1 AND released_at >= util.demo_now() - ($2::int * interval '1 day') AND tat_minutes IS NOT NULL
         GROUP BY priority::text`,
       [hospitalId, days],
     )
     const within = await this.db.query<any>(
       `SELECT priority::text AS priority, count(*)::int AS n,
               count(*) FILTER (WHERE tat_minutes <= CASE priority::text WHEN 'stat' THEN 60 WHEN 'urgent' THEN 120 ELSE 240 END)::int AS ok
-         FROM lab.v_order_tat WHERE hospital_id = $1 AND released_at >= now() - ($2::int * interval '1 day') AND tat_minutes IS NOT NULL GROUP BY priority::text`,
+         FROM lab.v_order_tat WHERE hospital_id = $1 AND released_at >= util.demo_now() - ($2::int * interval '1 day') AND tat_minutes IS NOT NULL GROUP BY priority::text`,
       [hospitalId, days],
     )
     const daily = await this.db.query<any>(
       `SELECT (released_at AT TIME ZONE 'Asia/Kolkata')::date AS day, percentile_cont(0.5) WITHIN GROUP (ORDER BY tat_minutes)::float AS median_minutes, count(*)::int AS n
-         FROM lab.v_order_tat WHERE hospital_id = $1 AND priority::text = 'stat' AND released_at >= now() - ($2::int * interval '1 day') AND tat_minutes IS NOT NULL
+         FROM lab.v_order_tat WHERE hospital_id = $1 AND priority::text = 'stat' AND released_at >= util.demo_now() - ($2::int * interval '1 day') AND tat_minutes IS NOT NULL
         GROUP BY 1 ORDER BY 1`,
       [hospitalId, days],
     )
     const slowest = await this.db.query<any>(
       `SELECT i.test_code::text AS test_code, t.name, count(*)::int AS n, percentile_cont(0.5) WITHIN GROUP (ORDER BY tt.tat_minutes)::float AS median_minutes
          FROM lab.v_order_tat tt JOIN lab.order_item i ON i.order_id = tt.order_id JOIN lab.test_catalogue t ON t.code = i.test_code
-        WHERE tt.hospital_id = $1 AND tt.released_at >= now() - ($2::int * interval '1 day') AND tt.tat_minutes IS NOT NULL
+        WHERE tt.hospital_id = $1 AND tt.released_at >= util.demo_now() - ($2::int * interval '1 day') AND tt.tat_minutes IS NOT NULL
         GROUP BY i.test_code, t.name ORDER BY median_minutes DESC LIMIT 5`,
       [hospitalId, days],
     )
     const [rej] = await this.db.query<any>(
       `SELECT count(*) FILTER (WHERE s.status = 'rejected')::int AS rejected, count(*)::int AS total
          FROM lab.specimen s JOIN records.clinical_order o ON o.id = s.order_id
-        WHERE o.hospital_id = $1 AND s.created_at >= now() - ($2::int * interval '1 day')`,
+        WHERE o.hospital_id = $1 AND s.created_at >= util.demo_now() - ($2::int * interval '1 day')`,
       [hospitalId, days],
     )
     const totalN = within.reduce((s, r) => s + r.n, 0)

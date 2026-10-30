@@ -12,6 +12,7 @@ import type { QueueRow } from '../../../api/doctor'
 import { useDoctorSession } from '../session'
 import { Box, ErrorNote, Header, Kv, Loading, Row, SectionLink, Tok, sectionHref } from '../parts'
 import { fmtDayTime, fmtLongDate, fmtTime } from '../format'
+import { demoDate } from '../../../lib/demoClock'
 
 const QUEUE_TONE: Record<string, BadgeTone> = {
   success: 'success',
@@ -23,7 +24,7 @@ const QUEUE_TONE: Record<string, BadgeTone> = {
 
 function greeting(isToday: boolean): string {
   if (!isToday) return 'Good afternoon'
-  const h = new Date().getHours()
+  const h = demoDate().getHours()
   return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
 }
 

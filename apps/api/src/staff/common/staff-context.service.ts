@@ -3,6 +3,7 @@ import type { PoolClient } from 'pg'
 import { DatabaseService } from '../../database/database.service'
 import type { AuthenticatedUser } from '../../auth/types'
 import { mapDbError } from './staff.util'
+import { demoNowIso } from './demo-clock'
 
 export type StaffKind = 'nurse' | 'lab' | 'radiology' | 'pharmacist'
 
@@ -105,6 +106,8 @@ export class StaffContextService {
       await client.query("SELECT set_config('app.user_id', $1, true)", [actor.userId])
       await client.query("SELECT set_config('app.person_id', $1, true)", [actor.personId])
       await client.query("SELECT set_config('app.account_type', $1, true)", [actor.accountType])
+      const demoNow = demoNowIso()
+      if (demoNow) await client.query("SELECT set_config('app.demo_now', $1, true)", [demoNow])
       const out = await fn(client)
       await client.query('COMMIT')
       return out

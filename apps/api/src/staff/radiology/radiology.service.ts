@@ -19,6 +19,7 @@ import type {
   WithdrawFileRequest,
 } from '../common/shared'
 import { ageYears, forbidden, iso, notFound, num, dateStr } from '../common/staff.util'
+import { demoNowMs } from '../common/demo-clock'
 
 const DONE_STATUSES = ['uploaded', 'awaiting_report', 'reported']
 
@@ -115,7 +116,7 @@ export class RadiologyService {
           AND NOT EXISTS (SELECT 1 FROM imaging.study s WHERE s.order_id = o.id)`,
       [hospitalId],
     )
-    const now = Date.now()
+    const now = demoNowMs()
     const rows = [
       ...studies.map((s) => ({
         studyId: s.study_id as string | null,
@@ -165,15 +166,15 @@ export class RadiologyService {
     if (opts.priority) list = list.filter((r) => r.priority === opts.priority)
 
     const [t] = await this.db.query<any>(
-      `SELECT count(*) FILTER (WHERE s.completed_at >= date_trunc('day', now()))::int AS done_today,
-              round(avg(extract(epoch FROM (s.completed_at - s.created_at)) / 60) FILTER (WHERE s.completed_at >= now() - interval '7 days'))::int AS avg_tat
+      `SELECT count(*) FILTER (WHERE s.completed_at >= date_trunc('day', util.demo_now()))::int AS done_today,
+              round(avg(extract(epoch FROM (s.completed_at - s.created_at)) / 60) FILTER (WHERE s.completed_at >= util.demo_now() - interval '7 days'))::int AS avg_tat
          FROM imaging.study s WHERE s.hospital_id = $1`,
       [hospitalId],
     )
     const byModality: Record<string, { done: number; pending: number }> = {}
     for (const r of rows) (byModality[r.modality] ??= { done: 0, pending: 0 }).pending += DONE_STATUSES.includes(r.status) ? 0 : 1
     const doneToday = await this.db.query<any>(
-      `SELECT modality, count(*)::int AS n FROM imaging.study WHERE hospital_id = $1 AND completed_at >= date_trunc('day', now()) GROUP BY modality`,
+      `SELECT modality, count(*)::int AS n FROM imaging.study WHERE hospital_id = $1 AND completed_at >= date_trunc('day', util.demo_now()) GROUP BY modality`,
       [hospitalId],
     )
     for (const d of doneToday) (byModality[d.modality] ??= { done: 0, pending: 0 }).done = d.n
@@ -224,7 +225,7 @@ export class RadiologyService {
       s.room_id ? this.db.query<any>('SELECT id, name, modality, status FROM imaging.room WHERE id = $1', [s.room_id]) : Promise.resolve([]),
       this.db.query<any>(`SELECT p.full_name FROM identity.app_user u JOIN identity.person p ON p.id = u.person_id WHERE u.id = $1`, [s.ordered_by_user_id]),
     ])
-    const now = Date.now()
+    const now = demoNowMs()
     const activeFiles = files.filter((f) => !f.withdrawn_at)
     return {
       study: {
@@ -295,7 +296,7 @@ export class RadiologyService {
     if (!o) notFound('Imaging order')
     if (!['open', 'accepted'].includes(o.status)) throw new ConflictException({ success: false, errorMessage: `Order is ${o.status}` })
     return this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_order SET status = 'accepted', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, now()), assigned_to_user_id = COALESCE(assigned_to_user_id, $2) WHERE id = $1`, [orderId, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'accepted', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, util.demo_now()), assigned_to_user_id = COALESCE(assigned_to_user_id, $2) WHERE id = $1`, [orderId, actor.userId])
       let st = (await c.query('SELECT id FROM imaging.study WHERE order_id = $1', [orderId])).rows[0]
       if (!st) {
         st = (
@@ -322,7 +323,7 @@ export class RadiologyService {
     if (!o) notFound('Imaging order')
     if (!['open', 'accepted'].includes(o.status)) throw new ConflictException({ success: false, errorMessage: `Order is ${o.status}` })
     await this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE records.clinical_order SET status = 'rejected', rejected_reason = $2, accepted_by_user_id = $3, accepted_at = now() WHERE id = $1`, [orderId, dto.reason, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'rejected', rejected_reason = $2, accepted_by_user_id = $3, accepted_at = util.demo_now() WHERE id = $1`, [orderId, dto.reason, actor.userId])
       await c.query(`UPDATE imaging.study SET status = 'withdrawn' WHERE order_id = $1 AND status IN ('waiting','scheduled')`, [orderId])
       await this.ctx.emitEvent(c, actor, {
         type: 'message',
@@ -376,8 +377,8 @@ export class RadiologyService {
       if (room.status !== 'ok') throw new ConflictException({ success: false, errorMessage: `${room.name} is out of service` })
     }
     return this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE imaging.study SET status = 'in_progress', started_at = now(), performed_by_user_id = $2, room_id = $3 WHERE id = $1`, [studyId, actor.userId, roomId ?? null])
-      await c.query(`UPDATE records.clinical_order SET status = 'in_progress', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, now()) WHERE id = $1 AND status::text IN ('open','accepted')`, [s.order_id, actor.userId])
+      await c.query(`UPDATE imaging.study SET status = 'in_progress', started_at = util.demo_now(), performed_by_user_id = $2, room_id = $3 WHERE id = $1`, [studyId, actor.userId, roomId ?? null])
+      await c.query(`UPDATE records.clinical_order SET status = 'in_progress', accepted_by_user_id = COALESCE(accepted_by_user_id, $2), accepted_at = COALESCE(accepted_at, util.demo_now()) WHERE id = $1 AND status::text IN ('open','accepted')`, [s.order_id, actor.userId])
       await this.ctx.audit(c, 'radiology.study.start', { entityType: 'imaging.study', entityId: studyId, patientPersonId: s.patient_person_id })
       return { studyId, status: 'in_progress' }
     })
@@ -460,7 +461,7 @@ export class RadiologyService {
     if (f[0].withdrawn_at) throw new ConflictException({ success: false, errorMessage: 'This file is already withdrawn' })
     if (['reported'].includes(s.status)) throw new ConflictException({ success: false, errorMessage: 'The study has been reported; ask the reporting doctor' })
     return this.ctx.tx(actor, async (c) => {
-      await c.query(`UPDATE imaging.study_file SET withdrawn_at = now(), withdrawn_by_user_id = $2, withdrawn_reason = $3 WHERE id = $1`, [fileId, actor.userId, dto.reason])
+      await c.query(`UPDATE imaging.study_file SET withdrawn_at = util.demo_now(), withdrawn_by_user_id = $2, withdrawn_reason = $3 WHERE id = $1`, [fileId, actor.userId, dto.reason])
       const left = (await c.query('SELECT count(*)::int AS n FROM imaging.study_file WHERE study_id = $1 AND withdrawn_at IS NULL', [studyId])).rows[0].n
       if (left === 0 && ['uploaded', 'awaiting_report'].includes(s.status)) await c.query(`UPDATE imaging.study SET status = 'in_progress', completed_at = NULL WHERE id = $1`, [studyId])
       await this.ctx.audit(c, 'radiology.file.withdraw', { entityType: 'imaging.study_file', entityId: fileId, patientPersonId: s.patient_person_id, details: { reason: dto.reason } })
@@ -473,7 +474,7 @@ export class RadiologyService {
     await this.ctx.tx(actor, async (c) => {
       await c.query(
         `INSERT INTO imaging.exposure (study_id, kvp, mas, dap_mgycm2, exposure_ms, operator_user_id) VALUES ($1,$2,$3,$4,$5,$6)
-         ON CONFLICT (study_id) DO UPDATE SET kvp = EXCLUDED.kvp, mas = EXCLUDED.mas, dap_mgycm2 = EXCLUDED.dap_mgycm2, exposure_ms = EXCLUDED.exposure_ms, operator_user_id = EXCLUDED.operator_user_id, recorded_at = now()`,
+         ON CONFLICT (study_id) DO UPDATE SET kvp = EXCLUDED.kvp, mas = EXCLUDED.mas, dap_mgycm2 = EXCLUDED.dap_mgycm2, exposure_ms = EXCLUDED.exposure_ms, operator_user_id = EXCLUDED.operator_user_id, recorded_at = util.demo_now()`,
         [studyId, dto.kvp ?? null, dto.mas ?? null, dto.dapMgycm2 ?? null, dto.exposureMs ?? null, actor.userId],
       )
       await this.ctx.audit(c, 'radiology.exposure.save', { entityType: 'imaging.exposure', entityId: studyId, patientPersonId: s.patient_person_id })
@@ -504,11 +505,11 @@ export class RadiologyService {
     if (problems.length) throw new ConflictException({ success: false, errorMessage: 'The study is not ready to send', problems })
     return this.ctx.tx(actor, async (c) => {
       await c.query(
-        `UPDATE imaging.study SET status = 'awaiting_report', completed_at = now(), performed_by_user_id = COALESCE(performed_by_user_id, $2),
+        `UPDATE imaging.study SET status = 'awaiting_report', completed_at = util.demo_now(), performed_by_user_id = COALESCE(performed_by_user_id, $2),
                 reporting_doctor_user_id = COALESCE(reporting_doctor_user_id, $3) WHERE id = $1`,
         [studyId, actor.userId, s.ordered_by_user_id],
       )
-      await c.query(`UPDATE records.clinical_order SET status = 'done', completed_by_user_id = $2, completed_at = now() WHERE id = $1 AND status::text <> 'done'`, [s.order_id, actor.userId])
+      await c.query(`UPDATE records.clinical_order SET status = 'done', completed_by_user_id = $2, completed_at = util.demo_now() WHERE id = $1 AND status::text <> 'done'`, [s.order_id, actor.userId])
       await this.ctx.emitEvent(c, actor, {
         type: 'imaging-result',
         toRoles: ['doctor'],
@@ -532,7 +533,7 @@ export class RadiologyService {
       `SELECT r.id, r.name, r.modality, r.status, r.out_of_service_reason, r.is_active,
               (SELECT s.body_part || ' · ' || p.full_name FROM imaging.study s JOIN identity.person p ON p.id = s.patient_person_id
                 WHERE s.room_id = r.id AND s.status = 'in_progress' ORDER BY s.started_at DESC LIMIT 1) AS now_scanning,
-              (SELECT count(*)::int FROM imaging.study s WHERE s.room_id = r.id AND s.created_at >= date_trunc('day', now())) AS studies_today
+              (SELECT count(*)::int FROM imaging.study s WHERE s.room_id = r.id AND s.created_at >= date_trunc('day', util.demo_now())) AS studies_today
          FROM imaging.room r WHERE r.hospital_id = $1 AND r.is_active ORDER BY r.modality, r.name`,
       [hospitalId],
     )
@@ -548,8 +549,8 @@ export class RadiologyService {
          LEFT JOIN imaging.study s ON s.id = sl.study_id LEFT JOIN identity.person p ON p.id = s.patient_person_id
         WHERE r.hospital_id = $1
           AND sl.during && tstzrange(
-                (COALESCE($2::date, (now() AT TIME ZONE 'Asia/Kolkata')::date)::timestamp AT TIME ZONE 'Asia/Kolkata'),
-                ((COALESCE($2::date, (now() AT TIME ZONE 'Asia/Kolkata')::date) + 1)::timestamp AT TIME ZONE 'Asia/Kolkata'))
+                (COALESCE($2::date, (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date)::timestamp AT TIME ZONE 'Asia/Kolkata'),
+                ((COALESCE($2::date, (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date) + 1)::timestamp AT TIME ZONE 'Asia/Kolkata'))
         ORDER BY lower(sl.during)`,
       [hospitalId, date ?? null],
     )
@@ -558,7 +559,7 @@ export class RadiologyService {
       [hospitalId],
     )
     return {
-      date: date ?? new Date(Date.now() + 5.5 * 3600_000).toISOString().slice(0, 10),
+      date: date ?? new Date(demoNowMs() + 5.5 * 3600_000).toISOString().slice(0, 10),
       unscheduledStudies: waiting[0]?.n ?? 0,
       rooms: rooms.map((r) => ({
         ...r,
@@ -574,9 +575,9 @@ export class RadiologyService {
     await this.ctx.tx(actor, async (c) => {
       await c.query(`UPDATE imaging.room SET status = $2, out_of_service_reason = CASE WHEN $2 = 'ok' THEN NULL ELSE $3 END WHERE id = $1`, [roomId, dto.status, dto.reason ?? null])
       if (dto.status !== 'ok') {
-        await c.query(`INSERT INTO imaging.equipment_event (room_id, kind, starts_at, note, recorded_by_user_id) VALUES ($1,'downtime',now(),$2,$3)`, [roomId, dto.reason ?? null, actor.userId])
+        await c.query(`INSERT INTO imaging.equipment_event (room_id, kind, starts_at, note, recorded_by_user_id) VALUES ($1,'downtime',util.demo_now(),$2,$3)`, [roomId, dto.reason ?? null, actor.userId])
       } else {
-        await c.query(`UPDATE imaging.equipment_event SET ends_at = now() WHERE room_id = $1 AND kind = 'downtime' AND ends_at IS NULL`, [roomId])
+        await c.query(`UPDATE imaging.equipment_event SET ends_at = util.demo_now() WHERE room_id = $1 AND kind = 'downtime' AND ends_at IS NULL`, [roomId])
       }
       await this.ctx.audit(c, 'radiology.room.status', { entityType: 'imaging.room', entityId: roomId, details: { from: room.status, to: dto.status } })
     })
@@ -588,7 +589,7 @@ export class RadiologyService {
     return this.ctx.tx(actor, async (c) => {
       const r = await c.query(
         `INSERT INTO imaging.equipment_event (room_id, kind, starts_at, ends_at, due_on, note, recorded_by_user_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`,
-        [dto.roomId, dto.kind, dto.startsAt ?? new Date().toISOString(), dto.endsAt ?? null, dto.dueOn ?? null, dto.note ?? null, actor.userId],
+        [dto.roomId, dto.kind, dto.startsAt ?? new Date(demoNowMs()).toISOString(), dto.endsAt ?? null, dto.dueOn ?? null, dto.note ?? null, actor.userId],
       )
       await this.ctx.audit(c, 'radiology.equipment.event', { entityType: 'imaging.equipment_event', entityId: r.rows[0].id })
       return { id: r.rows[0].id as string }
@@ -600,22 +601,22 @@ export class RadiologyService {
     const rooms = await this.db.query<any>(
       `SELECT r.id, r.name, r.modality, r.status, r.out_of_service_reason,
               (SELECT max(e.starts_at) FROM imaging.equipment_event e WHERE e.room_id = r.id AND e.kind IN ('calibration','flat_field')) AS last_qc,
-              (SELECT min(e.due_on) FROM imaging.equipment_event e WHERE e.room_id = r.id AND e.due_on >= current_date) AS next_due,
-              (SELECT count(*)::int FROM imaging.study s WHERE s.room_id = r.id AND s.created_at >= date_trunc('day', now())) AS studies_today,
-              COALESCE((SELECT sum(extract(epoch FROM (LEAST(COALESCE(e.ends_at, now()), now()) - GREATEST(e.starts_at, now() - interval '30 days'))))
+              (SELECT min(e.due_on) FROM imaging.equipment_event e WHERE e.room_id = r.id AND e.due_on >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date) AS next_due,
+              (SELECT count(*)::int FROM imaging.study s WHERE s.room_id = r.id AND s.created_at >= date_trunc('day', util.demo_now())) AS studies_today,
+              COALESCE((SELECT sum(extract(epoch FROM (LEAST(COALESCE(e.ends_at, util.demo_now()), util.demo_now()) - GREATEST(e.starts_at, util.demo_now() - interval '30 days'))))
                           FROM imaging.equipment_event e
-                         WHERE e.room_id = r.id AND e.kind = 'downtime' AND e.starts_at IS NOT NULL AND COALESCE(e.ends_at, now()) >= now() - interval '30 days'), 0)::float AS down_seconds
+                         WHERE e.room_id = r.id AND e.kind = 'downtime' AND e.starts_at IS NOT NULL AND COALESCE(e.ends_at, util.demo_now()) >= util.demo_now() - interval '30 days'), 0)::float AS down_seconds
          FROM imaging.room r WHERE r.hospital_id = $1 AND r.is_active ORDER BY r.modality, r.name`,
       [hospitalId],
     )
     const events = await this.db.query<any>(
       `SELECT e.id, e.room_id, e.kind, e.starts_at, e.ends_at, e.due_on, e.note FROM imaging.equipment_event e JOIN imaging.room r ON r.id = e.room_id
-        WHERE r.hospital_id = $1 AND (e.starts_at >= now() - interval '30 days' OR e.due_on >= current_date) ORDER BY COALESCE(e.starts_at, e.due_on::timestamptz) DESC LIMIT 100`,
+        WHERE r.hospital_id = $1 AND (e.starts_at >= util.demo_now() - interval '30 days' OR e.due_on >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date) ORDER BY COALESCE(e.starts_at, e.due_on::timestamptz) DESC LIMIT 100`,
       [hospitalId],
     )
     const thirty = 30 * 86400
     const list = rooms.map((r) => {
-      const needsAttention = r.status === 'ok' && r.next_due && new Date(r.next_due).getTime() <= Date.now() + 86400_000
+      const needsAttention = r.status === 'ok' && r.next_due && new Date(r.next_due).getTime() <= demoNowMs() + 86400_000
       return {
         id: r.id,
         name: r.name,

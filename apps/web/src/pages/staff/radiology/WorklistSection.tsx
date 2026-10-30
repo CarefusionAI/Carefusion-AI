@@ -8,9 +8,10 @@ import { Badge, Button, Card, EmptyState, PageHeader, StatCard } from '../../../
 import { ConfirmModal, ListSkeleton, LoadError } from '../../../components/ClinicalBits'
 import HandoverPanel from './HandoverPanel'
 import { MODALITY_LABEL, PRIORITY_LABEL, PRIORITY_TONE, STATUS_LABEL, STATUS_TONE, fmtMinutes, fmtTime, modClass } from './util'
+import { demoDate } from '../../../lib/demoClock'
 
 function greeting(): string {
-  const h = Number(new Date().toLocaleString('en-GB', { hour: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' }))
+  const h = Number(demoDate().toLocaleString('en-GB', { hour: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' }))
   return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
 }
 
@@ -57,7 +58,7 @@ export default function WorklistSection({
     setDeclining(false)
   }
 
-  const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })
+  const today = demoDate().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })
 
   return (
     <div className="rt-page">

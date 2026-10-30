@@ -92,7 +92,7 @@ export class HandoverService {
          LEFT JOIN identity.app_user su ON su.id = h.signed_by_user_id LEFT JOIN identity.person ps ON ps.id = su.person_id
         WHERE h.hospital_id = $1 AND h.unit_kind = $2
           AND ($3::uuid IS NULL OR h.ward_id = $3)
-          AND h.shift_date >= current_date - $4::int
+          AND h.shift_date >= (util.demo_now() AT TIME ZONE 'Asia/Kolkata')::date - $4::int
         ORDER BY h.created_at DESC
         LIMIT 20`,
       [actor.hospitalId, unit.kind, unit.wardId, days],
@@ -229,7 +229,7 @@ export class HandoverService {
     if (h.to_user_id && h.to_user_id !== actor.userId) forbidden('This handover is addressed to a colleague')
     await this.ctx.tx(actor, async (c) => {
       await c.query(
-        `UPDATE org.shift_handover SET signed_at = now(), signed_by_user_id = $2, to_user_id = COALESCE(to_user_id, $2) WHERE id = $1`,
+        `UPDATE org.shift_handover SET signed_at = util.demo_now(), signed_by_user_id = $2, to_user_id = COALESCE(to_user_id, $2) WHERE id = $1`,
         [id, actor.userId],
       )
       await this.ctx.emitEvent(c, actor, {
@@ -257,7 +257,7 @@ export class HandoverService {
     )
     if (rows.length === 0) notFound('Handover item')
     await this.ctx.tx(actor, async (c) => {
-      await c.query('UPDATE org.handover_item SET done_at = COALESCE(done_at, now()) WHERE id = $1', [itemId])
+      await c.query('UPDATE org.handover_item SET done_at = COALESCE(done_at, util.demo_now()) WHERE id = $1', [itemId])
     })
     return { ok: true }
   }

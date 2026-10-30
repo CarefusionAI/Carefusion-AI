@@ -3,9 +3,10 @@ import { useRooms, useScheduleStudy } from '../../../api/radiology'
 import { Alert, Button, Modal, Select, TextField } from '../../../components/ui'
 import { errorText } from '../../../api/clinicalHttp'
 import { istLocalToIso } from './util'
+import { demoNow } from '../../../lib/demoClock'
 
 function defaultStart(): string {
-  const d = new Date(Date.now() + 5.5 * 3600_000 + 30 * 60_000)
+  const d = new Date(demoNow() + 5.5 * 3600_000 + 30 * 60_000)
   d.setUTCMinutes(d.getUTCMinutes() < 30 ? 0 : 30, 0, 0)
   return d.toISOString().slice(0, 16)
 }

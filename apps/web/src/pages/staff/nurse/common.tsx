@@ -3,6 +3,7 @@ import { Alert, Button, EmptyState, Skeleton } from '../../../components/ui'
 import type { Acuity } from '../../../api/nurse'
 import { errMessage } from '../../../api/nurse'
 import './nurse.css'
+import { demoDate, demoNow } from '../../../lib/demoClock'
 
 /** All nurse screens show wall-clock times in India time. */
 const TZ = 'Asia/Kolkata'
@@ -22,13 +23,13 @@ export function fmtDateTime(iso: string | null | undefined): string {
   return `${date}, ${fmtTime(iso)}`
 }
 
-export function fmtDay(d: Date = new Date()): string {
+export function fmtDay(d: Date = demoDate()): string {
   return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: TZ })
 }
 
 export function minutesAgo(iso: string | null | undefined): string {
   if (!iso) return ''
-  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000)
+  const m = Math.round((demoNow() - new Date(iso).getTime()) / 60000)
   if (m < 1) return 'just now'
   if (m < 60) return `${m} min ago`
   const h = Math.floor(m / 60)

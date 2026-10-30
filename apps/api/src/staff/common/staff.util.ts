@@ -1,5 +1,6 @@
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import type { ZodType, ZodTypeDef } from 'zod'
+import { demoNowMs } from './demo-clock'
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -35,7 +36,7 @@ export function ageYears(dob: string | Date | null | undefined): number | null {
   if (!dob) return null
   const d = new Date(dob)
   if (Number.isNaN(d.getTime())) return null
-  const now = new Date()
+  const now = new Date(demoNowMs())
   let age = now.getFullYear() - d.getFullYear()
   const m = now.getMonth() - d.getMonth()
   if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--
@@ -65,7 +66,7 @@ export function forbidden(message: string): never {
 }
 
 /** Start of the given day in India time (the demo runs on IST wall-clock times). */
-export const IST_DAY_SQL = `(date_trunc('day', now() AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'Asia/Kolkata')`
+export const IST_DAY_SQL = `(date_trunc('day', util.demo_now() AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'Asia/Kolkata')`
 
 /** pg returns DATE columns as local-midnight Date objects; format them as YYYY-MM-DD without a time-zone shift. */
 export function dateStr(v: unknown): string | null {

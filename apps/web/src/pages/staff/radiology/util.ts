@@ -1,4 +1,5 @@
 import type { BadgeTone } from '../../../components/ui'
+import { demoNow } from '../../../lib/demoClock'
 
 const TZ = 'Asia/Kolkata'
 
@@ -91,7 +92,7 @@ export async function sha256Hex(file: File, maxBytes = 64 * 1024 * 1024): Promis
 }
 
 export function todayIst(): string {
-  return new Date().toLocaleDateString('en-CA', { timeZone: TZ })
+  return new Date(demoNow()).toLocaleDateString('en-CA', { timeZone: TZ })
 }
 
 /** "2026-10-17T14:30" in IST -> ISO with offset. */
