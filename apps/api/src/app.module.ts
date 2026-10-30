@@ -19,6 +19,7 @@ import { StaffModule } from './staff/staff.module'
 import { HospitalAdminModule } from './hospital-admin/hospital-admin.module'
 import { PharmacyAdminModule } from './pharmacy-admin/pharmacy-admin.module'
 import { GovAdminModule } from './gov-admin/gov-admin.module'
+import { CitizenExtrasModule } from './citizen-extras.module'
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { GovAdminModule } from './gov-admin/gov-admin.module'
     HospitalAdminModule,
     PharmacyAdminModule,
     GovAdminModule,
+    CitizenExtrasModule,
   ],
   controllers: [AppController],
   providers: [

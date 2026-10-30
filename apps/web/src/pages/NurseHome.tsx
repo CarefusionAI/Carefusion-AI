@@ -1,5 +1,5 @@
-import RolePage from '../components/RolePage'
+import NurseScreen from './staff/Nurse'
 
 export default function NurseHome() {
-  return <RolePage role="NURSE" />
+  return <NurseScreen />
 }

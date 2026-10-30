@@ -1,6 +1,9 @@
-import ScreenPlaceholder from '../../components/ScreenPlaceholder'
+import CitizenHome from './CitizenHome'
 
-// Placeholder for design screen Citizen.dc.html. Replace with the real screen.
+// Design screen Citizen.dc.html ("full prototype"). In the app every citizen screen is its own
+// route (/citizen/<screen>) inside the AppShell, so the prototype entry is simply the Home screen.
+// The shell parts (sidebar sections, badges, Activity log / bell / Share key) live in
+// components/AppShell.tsx, config/nav.ts and CitizenTopActions.tsx.
 export default function CitizenScreen() {
-  return <ScreenPlaceholder id="Citizen" />
+  return <CitizenHome />
 }

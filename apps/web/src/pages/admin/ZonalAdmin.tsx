@@ -1,6 +1,6 @@
-import ScreenPlaceholder from '../../components/ScreenPlaceholder'
+import GovConsole from './gov/GovConsole'
 
-// Placeholder for design screen ZonalAdmin.dc.html. Replace with the real screen.
+// Design screen ZonalAdmin.dc.html: the shared government console, level "zonal".
 export default function ZonalAdminScreen() {
-  return <ScreenPlaceholder id="ZonalAdmin" />
+  return <GovConsole level="zonal" />
 }

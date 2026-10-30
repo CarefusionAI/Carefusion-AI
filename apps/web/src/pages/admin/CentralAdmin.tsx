@@ -1,6 +1,6 @@
-import ScreenPlaceholder from '../../components/ScreenPlaceholder'
+import GovConsole from './gov/GovConsole'
 
-// Placeholder for design screen CentralAdmin.dc.html. Replace with the real screen.
+// Design screen CentralAdmin.dc.html: the shared government console, level "central".
 export default function CentralAdminScreen() {
-  return <ScreenPlaceholder id="CentralAdmin" />
+  return <GovConsole level="central" />
 }

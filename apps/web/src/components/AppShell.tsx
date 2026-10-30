@@ -7,6 +7,8 @@ import { getRoleConfig } from '../config/roles'
 import { ROLE_NAV, themeForRole } from '../config/nav'
 import type { NavConfigItem } from '../config/nav'
 import { useEvents } from '../hooks/useEvents'
+import { useCitizenBadges } from '../api/citizen1'
+import CitizenTopActions from '../pages/citizen/CitizenTopActions'
 import { useFocusTrap } from '../hooks/useFocusTrap'
 import CfBackground from './CfBackground'
 import DemoBanner from './DemoBanner'
@@ -71,6 +73,8 @@ export default function AppShell({ children, role: roleProp, badges, pageLabel }
   const drawerRef = useRef<HTMLDivElement>(null)
 
   const { toast, dismissToast } = useEvents(role)
+  const citizenBadges = useCitizenBadges(role === 'CITIZEN')
+  const liveBadges = badges ?? citizenBadges
   useFocusTrap(drawerRef, drawerOpen, () => setDrawerOpen(false))
 
   // Keep the sticky sidebar/toast offset equal to the banner + top bar height.
@@ -105,12 +109,12 @@ export default function AppShell({ children, role: roleProp, badges, pageLabel }
           activeId = it.id
           activeLabel = it.label
         }
-        const badge = badges && it.id in badges ? badges[it.id] : it.badge
+        const badge = liveBadges && it.id in liveBadges ? liveBadges[it.id] : it.badge
         return { id: it.id, label: it.label, href, icon: <NavIcon d={it.icon} />, badge: badge || null }
       }),
     }))
     return { cfg, nav, sections, activeId, activeLabel }
-  }, [role, badges, location.pathname, location.search])
+  }, [role, liveBadges, location.pathname, location.search])
 
   if (!role || !model) return <>{children}</>
   const { cfg, nav, sections, activeId, activeLabel } = model
@@ -209,7 +213,7 @@ export default function AppShell({ children, role: roleProp, badges, pageLabel }
               <strong>{pageLabel ?? (activeLabel || 'Home')}</strong>
             </p>
           </div>
-          <p className="cf-topbar-role">{cfg.label}</p>
+          {role === 'CITIZEN' ? <CitizenTopActions /> : <p className="cf-topbar-role">{cfg.label}</p>}
         </div>
       </div>
 
