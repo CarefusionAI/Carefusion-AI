@@ -22,7 +22,8 @@ export class StorageService {
     }
     const make = (ep: string) =>
       new S3Client({
-        region: 'ap-south-1', // must match the region LocalStack creates the bucket in (see docker-compose.yml)
+        // LocalStack: must match the region the bucket was created in (docker-compose.yml). Cloudflare R2: 'auto'.
+        region: config.get<string>('MINIO_REGION', 'ap-south-1'),
         endpoint: ep,
         forcePathStyle: true, // required for LocalStack and MinIO
         credentials,
