@@ -67,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-10-30: W5 merged to `main` (PRs #3 and #4). **Live demo: https://carefusion-roan.vercel.app** (Vercel: static web app + API as one serverless function; Neon Postgres in Singapore; access-code gate on; deploy with `scripts/build-vercel.sh && cd .vercel-deploy && vercel deploy --prod`). Demo clock follows `DEMO_NOW`. **Next: switch on Cloudflare R2 (dashboard) and connect file storage (`MINIO_*`, `MINIO_REGION=auto`), then browser click-through of every role, API tests, CI.**
+- 2026-10-30: W5 merged to `main` (PRs #3 and #4). **Live demo: https://carefusion-roan.vercel.app** (Vercel: static web app + API as one serverless function; Neon Postgres in Singapore; access-code gate on; deploy with `scripts/build-vercel.sh && cd .vercel-deploy && vercel deploy --prod`). Demo clock follows `DEMO_NOW`. File storage runs on Cloudflare R2 (bucket `carefusion-files`, upload and download tested on the live site). **Next: browser click-through of every role, API tests, CI, real staff/admin login.**
