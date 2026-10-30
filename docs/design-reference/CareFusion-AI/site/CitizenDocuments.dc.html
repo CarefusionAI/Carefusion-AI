@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Documents — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.lk:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.muted{color:var(--ink-muted);font-size:13px}
+.ttl{margin:0;font-family:var(--font-serif);font-size:32px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.eyb{margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--primary-text)}
+.ic{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.k0{transform:scaleX(0.0)}.k1{transform:scaleX(0.1)}.k2{transform:scaleX(0.2)}.k3{transform:scaleX(0.3)}.k4{transform:scaleX(0.4)}.k5{transform:scaleX(0.5)}.k6{transform:scaleX(0.6)}.k7{transform:scaleX(0.7)}.k8{transform:scaleX(0.8)}.k9{transform:scaleX(0.9)}.k10{transform:scaleX(1.0)}
+.is-live{color:var(--success)}
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media (max-width:980px){.lay{grid-template-columns:1fr}}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:14px}
+.thumb{height:84px;border-radius:12px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:10px}
+.thumb.lab{background:var(--tint-blue)}.thumb.img{background:#2f3e4a}.thumb.rx{background:var(--tint-teal)}.thumb.dis{background:var(--tint-peach)}.thumb.me{background:var(--surface-cream)}
+.thumb .ln{position:absolute;left:14px;right:40px;height:6px;border-radius:9999px;background:rgba(63,82,99,.14)}
+.thumb .ft{font-size:11px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:6px;background:var(--surface-raised);color:var(--ink-strong);position:relative}
+.dn{font-weight:600;color:var(--ink);font-size:14px;line-height:20px}
+.drop.is-over{background:var(--tint-sage);border-color:var(--primary)}
+.up{width:52px;height:52px;border-radius:16px;background:var(--surface-raised);display:flex;align-items:center;justify-content:center;color:var(--primary-text);box-shadow:var(--shadow-card);animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.prog{height:6px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--primary);width:68%;animation:pr 2.4s ease-in-out infinite alternate}
+@keyframes pr{from{width:30%}to{width:88%}}
+.vw{border:1px solid var(--border);background:var(--surface-raised);border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.vw.is-on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.lst .row{padding:12px 0}
+.store{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden;display:flex}
+.store i{display:block;height:100%}
+
+.cf-conn{gap:12px}
+.cf-conn-l{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.cf-ev{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:var(--ink-body);font-size:13px;line-height:18px;transition:border-color 180ms ease,transform 180ms ease,box-shadow 180ms ease}
+.cf-ev:hover{border-color:var(--primary-soft);transform:translateY(-1px);box-shadow:var(--shadow-card)}
+.cf-ev:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.cf-ev strong{color:var(--ink);font-size:14px}
+.cf-ev-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cf-ev-go{font-weight:600;color:var(--primary-text)}
+.cf-from{display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:600;letter-spacing:.04em;background:var(--surface-cream);color:var(--ink)}
+.f-blue{background:var(--tint-blue);color:var(--info)}.f-teal{background:var(--tint-teal);color:var(--primary-text)}.f-lav{background:var(--tint-lavender);color:var(--ai)}.f-sage{background:var(--tint-sage);color:var(--success)}.f-peach{background:var(--tint-peach);color:var(--peach-text)}.f-red{background:var(--danger-bg);color:var(--danger)}.f-gold{background:var(--warning-bg);color:var(--warning)}
+.cf-live{display:inline-block;width:8px;height:8px;border-radius:9999px;background:var(--success);margin-right:8px;vertical-align:middle;animation:cflive 1.8s infinite}
+@keyframes cflive{0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}100%{box-shadow:0 0 0 0 rgba(55,106,79,0)}}
+.cf-toast{position:fixed;top:20px;right:20px;z-index:50;max-width:340px;display:flex;flex-direction:column;gap:2px;padding:14px 16px 14px 18px;border-radius:16px;background:var(--ink-strong);color:var(--on-primary);font-size:13px;line-height:18px;box-shadow:0 18px 40px rgba(40,50,60,.25);opacity:0;transform:translateX(24px);pointer-events:none;transition:opacity 260ms ease,transform 260ms cubic-bezier(0.22,1,0.36,1)}
+.cf-toast strong{font-size:14px}
+.cf-toast.is-on{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.cf-live{animation:none}.cf-toast,.cf-ev{transition:none}}
+.labnote{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:var(--tint-sage);font-size:13px;color:var(--ink)}
+.frail{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.fwrap{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fold{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--surface);font:inherit;text-align:left;color:var(--ink);cursor:pointer;transition:transform 200ms cubic-bezier(0.22,1,0.36,1),box-shadow 200ms ease,border-color 200ms ease,background-color 200ms ease}
+.fold:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);border-color:var(--primary-soft)}
+.fold:focus-visible,.dhit:focus-visible,.mopt:focus-visible,.chip:focus-visible,.swb:focus-visible,.pick:focus-within{outline:2px solid var(--focus-ring);outline-offset:2px}
+.fold.is-sel{background:var(--surface-raised);border-color:var(--primary);box-shadow:0 0 0 3px rgba(58,114,109,.14)}
+.fold.is-drop{background:var(--tint-sage);border-color:var(--primary)}
+.fnew{border-style:dashed;border-color:var(--primary-soft);background:linear-gradient(135deg,var(--tint-teal),var(--surface))}
+.fname{font-weight:600;font-size:14px;line-height:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.fd-ic{width:36px;height:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;font-size:20px;font-weight:600}
+.c-all,.c-new{background:var(--surface-raised);color:var(--primary-text);box-shadow:var(--shadow-card)}
+.c-blue{background:var(--tint-blue);color:var(--info)}.c-lav{background:var(--tint-lavender);color:var(--ai)}.c-teal{background:var(--tint-teal);color:var(--primary-text)}.c-peach{background:var(--tint-peach);color:var(--peach-text)}.c-cream{background:var(--surface-cream);color:var(--ink)}.c-sage{background:var(--tint-sage);color:var(--success)}.c-gold{background:#f6e9cf;color:var(--accent-text)}
+.fact{display:flex;gap:2px;padding-left:4px}
+.lk-bad{color:var(--danger)}
+.tools{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:12px;align-items:end}
+@media (max-width:640px){.tools{grid-template-columns:1fr}}
+.doc{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:18px;border:1px solid var(--border);background:var(--surface);color:var(--ink-body);transition:transform 200ms cubic-bezier(0.22,1,0.36,1),box-shadow 200ms ease,border-color 200ms ease}
+.doc:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--primary-soft)}
+.doc.is-sel{border-color:var(--primary);box-shadow:0 0 0 3px rgba(58,114,109,.15);background:var(--surface-raised)}
+.doc.is-fresh{animation:pop 700ms cubic-bezier(0.34,1.4,0.64,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.92)}}
+.dhit{display:flex;flex-direction:column;gap:8px;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:12px}
+.dfoot{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.dbad{display:flex;gap:6px;flex-wrap:wrap}
+.mmenu{position:absolute;left:12px;right:12px;bottom:46px;z-index:6;display:flex;flex-direction:column;padding:6px;border-radius:14px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:in 220ms ease both}
+.mopt{display:flex;align-items:center;gap:8px;padding:8px 10px;border:0;border-radius:10px;background:none;font:inherit;font-size:13px;color:var(--ink);text-align:left;cursor:pointer}
+.mopt:hover{background:var(--surface-cream)}
+.dot{width:10px;height:10px;border-radius:4px;flex:none}
+.thumb .l1{top:16px}.thumb .l2{top:30px;right:70px}.thumb .l3{top:44px;right:56px}
+.thumb.c-blue,.thumb.c-lav,.thumb.c-teal,.thumb.c-peach,.thumb.c-cream,.thumb.c-sage,.thumb.c-gold{box-shadow:none}
+.thumb.img{background:#2f3e4a}
+.tsm{width:44px;height:44px;padding:0;justify-content:center;align-items:center}
+.drop{border:2px dashed var(--primary-soft);border-radius:18px;padding:18px;background:linear-gradient(135deg,var(--tint-teal),var(--surface-raised));display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:var(--ink-body);width:100%;box-sizing:border-box;transition:background-color 200ms ease,border-color 200ms ease}
+.pick{margin-top:6px;display:inline-flex;align-items:center;padding:8px 14px;border-radius:9999px;background:var(--surface-raised);border:1px solid var(--border-strong);font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.pick:hover{border-color:var(--primary);color:var(--primary-text)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prog2{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden;margin:6px 0}
+.prog2 span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-soft));transform-origin:left;transition:transform 260ms ease}
+.p0{transform:scaleX(0)}.p1{transform:scaleX(.1)}.p2{transform:scaleX(.2)}.p3{transform:scaleX(.3)}.p4{transform:scaleX(.4)}.p5{transform:scaleX(.5)}.p6{transform:scaleX(.6)}.p7{transform:scaleX(.7)}.p8{transform:scaleX(.8)}.p9{transform:scaleX(.9)}.p10{transform:scaleX(1)}
+.s-lab{width:8%;background:#45658a}.s-img{width:6%;background:#6a5a8c}.s-rx{width:3%;background:#3a726d}.s-me{width:2%;background:#c9a86a}
+.sugg{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:9999px;border:1px solid var(--border);background:var(--surface);font:inherit;font-size:13px;color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--primary-soft);background:var(--tint-teal)}
+.sw{border:0;margin:0;padding:0}
+.swl{display:flex;gap:10px;margin-top:6px}
+.swb{width:34px;height:34px;border-radius:11px;border:2px solid transparent;cursor:pointer}
+.swb.is-on{border-color:var(--ink-strong);box-shadow:0 0 0 3px var(--surface-raised) inset}
+.grow{flex:1;min-width:0}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+<div class="{{toastCls}}" role="status" aria-live="polite"><strong>{{toast.title}}</strong><span>{{toast.text}}</span></div>
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div><p class="eyb">Documents</p><h1 class="ttl">All your records, in one place</h1><p style="margin: 4px 0 0;">{{summary}}</p></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+      <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Encrypted</x-import>
+      <x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="md" icon="{{iFolder}}" on-click="{{openNew}}">New folder</x-import>
+      <x-import component-from-global-scope="CareFusion.Button" variant="primary" size="md" icon="{{iUp}}" on-click="{{focusUpload}}">Upload document</x-import>
+    </div>
+  </header>
+
+  <section class="box in" style="animation-delay: 60ms;" aria-label="Folders">
+    <div class="bh"><h2 class="bt">Folders</h2><span class="muted">{{folderNote}}</span></div>
+    <div class="frail" role="list">
+      <sc-for list="{{folders}}" as="f" hint-placeholder-count="7">
+        <div class="fwrap" role="listitem">
+          <button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}" onDragOver="{{f.dragOver}}" onDrop="{{f.drop}}">
+            <span class="{{f.icCls}}" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span>
+            <span class="fname">{{f.label}}</span>
+            <span class="muted">{{f.countText}}</span>
+          </button>
+          <sc-if value="{{f.custom}}" hint-placeholder-val="false">
+            <span class="fact"><button type="button" class="lk" onClick="{{f.rename}}" aria-label="{{f.renameAria}}">Rename</button><button type="button" class="lk lk-bad" onClick="{{f.del}}" aria-label="{{f.delAria}}">Delete</button></span>
+          </sc-if>
+        </div>
+      </sc-for>
+      <button type="button" class="fold fnew" onClick="{{openNew}}"><span class="fd-ic c-new" aria-hidden="true">+</span><span class="fname">New folder</span><span class="muted">Group your own files</span></button>
+    </div>
+  </section>
+
+<section class="box cf-conn in d1 " aria-label="New from labs & doctors">
+  <div class="bh"><h2 class="bt"><span class="cf-live" aria-hidden="true"></span>New from labs & doctors</h2><span class="muted">{{connNote}}</span></div>
+  <div class="cf-conn-l">
+    <sc-for list="{{conn}}" as="c" hint-placeholder-count="3">
+      <a class="cf-ev" href="{{c.href}}"><span class="cf-ev-top"><span class="{{c.fromCls}}">{{c.from}}</span><span class="muted num">{{c.at}}</span></span><strong>{{c.title}}</strong><span>{{c.text}}</span><span class="cf-ev-go">{{c.hrefLabel}} →</span></a>
+    </sc-for>
+  </div>
+</section>
+
+  <div class="lay in" style="animation-delay: 120ms;">
+    <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
+      <div class="box" style="gap: 16px;">
+        <div class="bh">
+          <div><h2 class="bt">{{curFolder}}</h2><span class="muted">{{listNote}}</span></div>
+          <div style="display: flex; gap: 6px;" role="group" aria-label="View">
+            <button type="button" class="{{gridBtn}}" aria-pressed="{{gridPressed}}" onClick="{{setGrid}}">Grid</button>
+            <button type="button" class="{{listBtn}}" aria-pressed="{{listPressed}}" onClick="{{setList}}">List</button>
+          </div>
+        </div>
+        <div class="tools">
+          <div class="srch"><x-import component-from-global-scope="CareFusion.TextField" label="Search documents" placeholder="Try “HbA1c” or “Dr. Arun”" type="search" value="{{q}}" on-change="{{setQ}}"></x-import></div>
+          <div class="tsel"><x-import component-from-global-scope="CareFusion.Select" label="Added by" options="{{whoOpts}}" value="{{who}}" on-change="{{setWho}}"></x-import></div>
+        </div>
+        <sc-if value="{{isEmpty}}" hint-placeholder-val="false">
+          <x-import component-from-global-scope="CareFusion.EmptyState" title="{{emptyTitle}}" description="Upload a file and choose this folder, or move documents here with “Move to”."></x-import>
+        </sc-if>
+        <sc-if value="{{isGrid}}" hint-placeholder-val="true">
+          <div class="dgrid">
+            <sc-for list="{{docs}}" as="d" hint-placeholder-count="6">
+              <div class="{{d.cls}}" draggable="true" onDragStart="{{d.dragStart}}">
+                <button type="button" class="dhit" onClick="{{d.pick}}" aria-label="{{d.aria}}">
+                  <span class="{{d.thumb}}" aria-hidden="true"><span class="ln l1"></span><span class="ln l2"></span><span class="ln l3"></span><span class="ft">{{d.ft}}</span></span>
+                  <span class="dn">{{d.name}}</span>
+                  <span class="muted">{{d.src}} · {{d.date}}</span>
+                </button>
+                <span class="dfoot">
+                  <span class="dbad"><x-import component-from-global-scope="CareFusion.Badge" tone="{{d.tone}}">{{d.by}}</x-import><sc-if value="{{d.isNew}}" hint-placeholder-val="false"><x-import component-from-global-scope="CareFusion.Badge" tone="gold">New</x-import></sc-if><sc-if value="{{d.fromLab}}" hint-placeholder-val="false"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">New from lab</x-import></sc-if></span>
+                  <button type="button" class="lk" aria-expanded="{{d.menuOpen}}" onClick="{{d.toggleMenu}}">Move to…</button>
+                </span>
+                <sc-if value="{{d.showMenu}}" hint-placeholder-val="false">
+                  <span class="mmenu" role="group" aria-label="{{d.menuAria}}">
+                    <sc-for list="{{d.targets}}" as="t" hint-placeholder-count="4"><button type="button" class="mopt" onClick="{{t.move}}"><span class="{{t.dot}}" aria-hidden="true"></span>{{t.label}}</button></sc-for>
+                  </span>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{isList}}" hint-placeholder-val="false">
+          <div class="lst">
+            <sc-for list="{{docs}}" as="d" hint-placeholder-count="6">
+              <div class="row"><span class="{{d.thumbSm}}" aria-hidden="true"><span class="ft">{{d.ft}}</span></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{d.name}}</strong><div class="muted">{{d.folderName}} · {{d.src}} · {{d.date}}</div></div><sc-if value="{{d.fromLab}}" hint-placeholder-val="false"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">New from lab</x-import></sc-if><x-import component-from-global-scope="CareFusion.Badge" tone="{{d.tone}}">{{d.by}}</x-import><button type="button" class="lk" onClick="{{d.pick}}">Open</button></div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <aside style="display: flex; flex-direction: column; gap: 20px;">
+      <section class="box upl" id="cf-upload" aria-labelledby="up-t">
+        <div class="bh"><h2 class="bt" id="up-t">Upload a document</h2><span class="muted">Step {{upStep}} of 2</span></div>
+        <div class="{{dropCls}}" onDragOver="{{over}}" onDragLeave="{{leave}}" onDrop="{{dropFile}}">
+          <span class="up" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg></span>
+          <strong style="color: var(--ink);">{{dropTitle}}</strong>
+          <span class="muted">PDF, JPG or PNG · up to 20 MB</span>
+          <label class="pick">Choose file<input class="cf-sr" type="file" accept=".pdf,.jpg,.jpeg,.png" onChange="{{chooseFile}}"></label>
+        </div>
+        <x-import component-from-global-scope="CareFusion.TextField" label="Document name" value="{{upName}}" on-change="{{setUpName}}" placeholder="e.g. Eye test, Vasan Eye Care"></x-import>
+        <x-import component-from-global-scope="CareFusion.Select" label="Save to folder" options="{{folderOpts}}" value="{{upFolder}}" on-change="{{setUpFolder}}" helper="Pick any folder, including ones you made."></x-import>
+        <div class="two">
+          <x-import component-from-global-scope="CareFusion.Select" label="Type" options="{{typeOpts}}" value="{{upType}}" on-change="{{setUpType}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.TextField" label="Date on document" type="date" value="{{upDate}}" on-change="{{setUpDate}}"></x-import>
+        </div>
+        <sc-if value="{{uploading}}" hint-placeholder-val="false">
+          <div aria-live="polite"><div style="display: flex; justify-content: space-between; font-size: 14px;"><strong style="color: var(--ink);">{{upName}}</strong><span class="muted">{{pctText}}</span></div><div class="prog2" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{pct}}" aria-label="Upload progress"><span class="{{pctCls}}"></span></div><span class="muted">Scanning for viruses · reading text for search</span></div>
+        </sc-if>
+        <x-import component-from-global-scope="CareFusion.Button" variant="primary" size="md" full-width="{{yes}}" loading="{{uploading}}" disabled="{{cantUpload}}" on-click="{{doUpload}}">{{upLabel}}</x-import>
+      </section>
+      <div class="box">
+        <div class="bh"><h2 class="bt">Selected</h2><x-import component-from-global-scope="CareFusion.Badge" tone="{{sel.tone}}">{{sel.by}}</x-import></div>
+        <strong style="color: var(--ink); font-size: 18px;">{{sel.name}}</strong>
+        <dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px;">
+          <dt class="muted">Folder</dt><dd style="margin: 0;">{{sel.folderName}}</dd>
+          <dt class="muted">Source</dt><dd style="margin: 0;">{{sel.src}}</dd>
+          <dt class="muted">Date</dt><dd style="margin: 0;">{{sel.date}}</dd>
+          <dt class="muted">Signed</dt><dd style="margin: 0;">{{sel.sign}}</dd>
+          <dt class="muted">Shared</dt><dd style="margin: 0;">With doctors you give a key to</dd>
+        </dl>
+        <x-import component-from-global-scope="CareFusion.Select" label="Move to folder" options="{{folderOpts}}" value="{{sel.folder}}" on-change="{{moveSel}}"></x-import>
+        <sc-if value="{{sel.fromLab}}" hint-placeholder-val="false">
+          <div class="labnote"><span class="cf-live" aria-hidden="true"></span><span class="grow">Arrived through Dr. Arun Nair's lab order at {{sel.at}}.</span><a class="lk" href="LabTech.dc.html">View lab order →</a></div>
+        </sc-if>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm">Open</x-import><x-import component-from-global-scope="CareFusion.Button" variant="outline" size="sm">Download</x-import><x-import component-from-global-scope="CareFusion.Button" variant="ai" size="sm" on-click="{{toAI}}">Ask AI about it</x-import></div>
+      </div>
+      <x-import component-from-global-scope="CareFusion.AIInsight" module="{{moduleText}}" status="verified" confidence="{{conf}}" title="{{sel.sumTitle}}" evidence="{{evidence}}">
+        <p style="margin: 0; font-size: 14px; line-height: 22px;">{{sel.sum}}</p>
+      </x-import>
+      <div class="box" style="gap: 10px;">
+        <div class="bh"><h2 class="bt">Storage</h2><span class="muted">186 MB of 1 GB</span></div>
+        <div class="store" aria-hidden="true"><i class="s-lab"></i><i class="s-img"></i><i class="s-rx"></i><i class="s-me"></i></div>
+        <div class="muted" style="display: flex; gap: 12px; flex-wrap: wrap;"><span>■ Lab 82 MB</span><span>■ Imaging 64 MB</span><span>■ Rx 24 MB</span><span>■ Mine 16 MB</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <x-import component-from-global-scope="CareFusion.Modal" open="{{fmOpen}}" title="{{fmTitle}}" size="sm" on-close="{{closeFm}}">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <sc-if value="{{fmIsDel}}" hint-placeholder-val="false">
+        <p style="margin: 0;">{{fmDelText}}</p>
+      </sc-if>
+      <sc-if value="{{fmIsEdit}}" hint-placeholder-val="true">
+        <x-import component-from-global-scope="CareFusion.TextField" label="Folder name" value="{{fmName}}" on-change="{{setFmName}}" placeholder="e.g. Insurance, Dental, Pregnancy" required="{{yes}}" error="{{fmErr}}"></x-import>
+        <div class="sugg" role="group" aria-label="Suggestions"><sc-for list="{{suggs}}" as="s" hint-placeholder-count="4"><button type="button" class="chip" onClick="{{s.pick}}">{{s.label}}</button></sc-for></div>
+        <fieldset class="sw"><legend class="cf-field-label">Colour</legend><div class="swl"><sc-for list="{{colours}}" as="c" hint-placeholder-count="6"><button type="button" class="{{c.cls}}" aria-pressed="{{c.pressed}}" aria-label="{{c.label}}" onClick="{{c.pick}}"></button></sc-for></div></fieldset>
+      </sc-if>
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="md" on-click="{{closeFm}}">Cancel</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="{{fmVariant}}" size="md" on-click="{{saveFm}}">{{fmCta}}</x-import>
+      </div>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":2700}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var CF_FROM = { citizen: 'Citizen', doctor: 'Doctor', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacy', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District', state: 'State', zonal: 'Zonal', central: 'MoHFW' };
+var CF_TONE = { doctor: 'cf-from f-blue', nurse: 'cf-from f-teal', labtech: 'cf-from f-teal', radiology: 'cf-from f-lav', pharmacist: 'cf-from f-sage', pharmacyadmin: 'cf-from f-sage', hospitaladmin: 'cf-from f-peach', district: 'cf-from f-red', state: 'cf-from f-red', zonal: 'cf-from f-red', central: 'cf-from f-red', citizen: 'cf-from f-gold' };
+var CF_LINK = { 'Doctor.dc.html': 'Open in Doctor app', 'Pharmacist.dc.html': 'Track at pharmacy', 'LabTech.dc.html': 'Open in Lab', 'HospitalAdmin.dc.html': 'Open in Hospital admin', 'DistrictAdmin.dc.html': 'Open in District console', 'CitizenMedicines.dc.html': 'See in Medicines', 'CitizenBlood.dc.html': 'See in Blood donation', 'CitizenAlerts.dc.html': 'See in Alerts', 'CitizenDocuments.dc.html': 'See in Documents' };
+function cfMix(C, cfg) {
+  var dm = C.prototype.componentDidMount, wu = C.prototype.componentWillUnmount, rv = C.prototype.renderVals;
+  C.prototype.componentDidMount = function () {
+    var self = this;
+    self.__seen = {}; busFor('citizen').forEach(function (e) { self.__seen[e.id] = true; });
+    var tick = function () {
+      var L = busFor('citizen'); var fresh = L.filter(function (e) { return !self.__seen[e.id]; });
+      L.forEach(function (e) { self.__seen[e.id] = true; });
+      var patch = { cfBus: L };
+      var shown = fresh.filter(function (e) { return e.from !== 'citizen'; });
+      if (shown.length) { patch.cfToast = shown[0]; clearTimeout(self.__tt); self.__tt = setTimeout(function () { self.setState({ cfToast: null }); }, 4000); }
+      self.setState(patch);
+      if (cfg.onFresh && fresh.length) cfg.onFresh.call(self, fresh);
+    };
+    self.__cfTick = tick;
+    self.__bt = setInterval(tick, 2000);
+    self.__bl = function (ev) { if (!ev || ev.key === CF_BUS) tick(); };
+    try { window.addEventListener('storage', self.__bl); } catch (e) {}
+    if (dm) dm.call(this);
+  };
+  C.prototype.componentWillUnmount = function () {
+    clearInterval(this.__bt); clearTimeout(this.__tt);
+    try { window.removeEventListener('storage', this.__bl); } catch (e) {}
+    if (wu) wu.call(this);
+  };
+  C.prototype.cfNote = function (title, text) {
+    var self = this; clearTimeout(self.__tt);
+    self.setState({ cfToast: { title: title, text: text, from: '' } });
+    self.__tt = setTimeout(function () { self.setState({ cfToast: null }); }, 3500);
+  };
+  C.prototype.cfPush = function (ev) {
+    var it = busPush(Object.assign({ from: 'citizen' }, ev));
+    if (this.__seen) this.__seen[it.id] = true;
+    this.setState({ cfBus: busFor('citizen') });
+    return it;
+  };
+  C.prototype.renderVals = function () {
+    var st = this.state || {};
+    var all = st.cfBus || busFor('citizen');
+    var pick = all.filter(function (e) { return !cfg.types || cfg.types.indexOf(e.type) >= 0; });
+    if (pick.length < (cfg.min || 3)) pick = pick.concat(all.filter(function (e) { return pick.indexOf(e) < 0; }));
+    var t = st.cfToast;
+    var base = {
+      conn: pick.slice(0, cfg.max || 3).map(function (e) {
+        return { from: CF_FROM[e.from] || e.from, fromCls: CF_TONE[e.from] || 'cf-from', at: e.at, title: e.title, text: e.text,
+          href: e.href || '#', hrefLabel: CF_LINK[e.href] || 'Open' };
+      }),
+      connNote: cfg.note || 'Live from the other CareFusion apps',
+      toastCls: t ? 'cf-toast is-on' : 'cf-toast',
+      toast: { title: t ? t.title : '', text: t ? (t.from ? (CF_FROM[t.from] || t.from) + ' · ' : '') + t.text : '' }
+    };
+    var v = rv.call(this);
+    return Object.assign(base, v);
+  };
+}
+var DOC_FOLDERS = [
+  { id: 'lab', label: 'Lab reports', c: 'c-blue' },
+  { id: 'img', label: 'Imaging', c: 'c-lav' },
+  { id: 'rx', label: 'Prescriptions', c: 'c-teal' },
+  { id: 'dis', label: 'Discharge', c: 'c-peach' },
+  { id: 'me', label: 'Uploaded by me', c: 'c-cream' },
+  { id: 'f-ins', label: 'Insurance & schemes', c: 'c-gold', custom: true }
+];
+var DOC_SEED = [
+  ['lab', 'Lipid profile', 'Demo General Hospital lab', '17 Oct 2026', 'Rahul Varghese · Lab', 'info', true, 'PDF', 'Lab seal + e-sign', 'Cholesterol slightly high', 'LDL 132 mg/dL is above the 100 target. HDL and triglycerides are normal. Your doctor may continue Atorvastatin and suggest diet changes.'],
+  ['img', 'Chest X-ray, PA view', 'Radiology · Demo General Hospital', '15 Oct 2026', 'Fathima Beevi · Radiology', 'ai', true, 'DCM', 'Reviewed by Dr. Arun Nair', 'No urgent findings', 'Mild hazy area in the right lower zone, likely from last month’s chest infection. Repeat X-ray in 2 weeks.'],
+  ['rx', 'Prescription — diabetes review', 'Dr. Arun Nair', '17 Oct 2026', 'Doctor', 'teal', true, 'Rx', 'e-Signed (DSC)', '3 medicines, 30 days', 'Metformin 500 mg twice daily, Atorvastatin 10 mg at night, Vitamin D weekly. Valid till 14 Nov 2026.'],
+  ['lab', 'HbA1c', 'District PHL, Pathanamthitta', '04 Oct 2026', 'Lab', 'info', false, 'PDF', 'Lab seal + e-sign', 'Sugar control improving', 'HbA1c 7.4%, down from 7.9% in June. Target is under 7%.'],
+  ['dis', 'Discharge summary', 'Taluk Hospital, Kozhencherry', '22 Sep 2026', 'Doctor', 'peach', false, 'PDF', 'e-Signed', '3-day stay for chest infection', 'Admitted with fever and cough, treated with antibiotics (non-penicillin). Discharged stable.'],
+  ['lab', 'Complete blood count', 'Taluk Hospital lab', '20 Sep 2026', 'Lab', 'info', false, 'PDF', 'Lab seal', 'Infection markers raised', 'White cells 13,200, consistent with an infection at the time. Repeat was normal.'],
+  ['img', 'Abdominal ultrasound', 'Demo General Hospital', '11 Jun 2026', 'Radiology', 'ai', false, 'IMG', 'Reported', 'Normal study', 'Liver, gallbladder and kidneys look normal.'],
+  ['me', 'Eye test — Vasan Eye Care', 'Uploaded by you', '08 May 2026', 'You', 'neutral', false, 'PDF', 'Not verified', 'Mild short sight', 'Glasses −0.75 both eyes. No diabetic eye changes noted.'],
+  ['me', 'Old vaccination card', 'Uploaded by you', '17 Oct 2026', 'You', 'neutral', true, 'JPG', 'Not verified', 'Childhood vaccines listed', 'Photo of a 1990s card: BCG, DPT, polio and measles. A doctor can confirm it.'],
+  ['f-ins', 'PM-JAY e-card', 'Uploaded by you', '02 Mar 2026', 'You', 'neutral', false, 'PDF', 'Not verified', 'Ayushman Bharat card', 'Family floater cover of ₹5 lakh a year at empanelled hospitals. Card holder: Anjali Menon.']
+].map(function (d, i) { return { id: 'd' + i, folder: d[0], name: d[1], src: d[2], date: d[3], by: d[4], tone: d[5], isNew: d[6], ft: d[7], sign: d[8], sumTitle: d[9], sum: d[10] }; });
+var DOC_COLOURS = [['c-blue', 'Blue'], ['c-teal', 'Teal'], ['c-lav', 'Lavender'], ['c-peach', 'Peach'], ['c-sage', 'Sage'], ['c-gold', 'Gold']];
+var DOC_TYPES = ['Lab report', 'Imaging', 'Prescription', 'Discharge summary', 'Insurance', 'Other'];
+function fmtDate(v) { if (!v) return '18 Oct 2026'; var p = v.split('-'); var M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; return p.length === 3 ? p[2] + ' ' + M[+p[1] - 1] + ' ' + p[0] : v; }
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'all', view: 'grid', selId: 'd0', over: false, folders: DOC_FOLDERS.slice(), docs: DOC_SEED.slice(), q: '', who: 'Anyone',
+      menu: null, dragId: null, dropOn: null, fm: null, fmName: '', fmColour: 'c-blue', fmErr: '',
+      upName: '', upFolder: 'me', upType: 'Other', upDate: '2026-10-18', uploading: false, pct: 0, fresh: null, hasFile: false };
+  }
+  componentWillUnmount() { clearInterval(this.ut); }
+  renderVals() {
+    var self = this, st = this.state;
+    var h = React.createElement;
+    var go = (s) => () => { if (this.props.go) this.props.go(s); };
+    var ic = function (d) { return h('svg', { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); };
+    var docs = st.docs.slice();
+    var fromLab = {};
+    (st.cfBus || busFor('citizen')).filter(function (e) { return e.type === 'lab-result'; }).forEach(function (e) {
+      var nm = e.title.replace(/^Result ready · /, '');
+      var hit = docs.filter(function (d) { return d.name === nm; })[0];
+      if (!hit) { hit = { id: 'bus-' + e.id, folder: 'lab', name: nm, src: 'Demo General Hospital lab', date: '18 Oct 2026', by: 'Lab', tone: 'info', ft: 'PDF', sign: 'Lab seal + e-sign', sumTitle: 'New result — your doctor will review it', sum: e.text }; docs.unshift(hit); }
+      if (!fromLab[nm]) fromLab[nm] = e.at;
+    });
+    var F = st.folders;
+    var fById = {}; F.forEach(function (f) { fById[f.id] = f; });
+    var cnt = function (id) { return docs.filter(function (d) { return d.folder === id; }).length; };
+    var cur = docs.filter(function (d) { return d.id === st.selId; })[0] || docs[0];
+    var q = st.q.trim().toLowerCase();
+    var whoMap = { Doctors: /doctor|dr\./i, Labs: /lab/i, Radiology: /radiolog/i, Me: /^you$/i };
+    var list = docs.filter(function (d) {
+      if (st.tab !== 'all' && d.folder !== st.tab) return false;
+      if (q && (d.name + ' ' + d.src + ' ' + d.by).toLowerCase().indexOf(q) < 0) return false;
+      if (st.who !== 'Anyone' && !whoMap[st.who].test(d.by)) return false;
+      return true;
+    });
+    var thumbOf = function (d) { var f = fById[d.folder]; return d.folder === 'img' ? 'img' : (f ? f.c : 'c-cream'); };
+    var openFm = function (mode, f) { self.setState({ fm: { mode: mode, id: f ? f.id : null }, fmName: f ? f.label : '', fmColour: f ? f.c : 'c-blue', fmErr: '' }); };
+    var move = function (id, folder) {
+      var d0 = docs.filter(function (d) { return d.id === id; })[0];
+      var base = self.state.docs.some(function (d) { return d.id === id; }) ? self.state.docs : [d0].concat(self.state.docs);
+      self.setState({ docs: base.map(function (d) { return d.id === id ? Object.assign({}, d, { folder: folder }) : d; }), menu: null, dropOn: null, fresh: id });
+      self.cfNote && self.cfNote('Moved to ' + (fById[folder] ? fById[folder].label : folder), d0 ? d0.name : '');
+    };
+    var folderOpts = F.map(function (f) { return { value: f.id, label: f.label }; });
+    var fm = st.fm;
+    var curFolderName = st.tab === 'all' ? 'All documents' : (fById[st.tab] ? fById[st.tab].label : 'All documents');
+    var startUpload = function () {
+      if (self.state.uploading) return;
+      var name = self.state.upName.trim() || 'Scanned document';
+      self.setState({ uploading: true, pct: 0, upName: name });
+      clearInterval(self.ut);
+      self.ut = setInterval(function () {
+        var p = self.state.pct + 1;
+        if (p >= 10) {
+          clearInterval(self.ut);
+          var id = 'u' + Date.now();
+          var nd = { id: id, folder: self.state.upFolder, name: name, src: 'Uploaded by you', date: fmtDate(self.state.upDate), by: 'You', tone: 'neutral', isNew: true, ft: /jpe?g|png/i.test(self.state.fileExt || '') ? 'JPG' : 'PDF', sign: 'Not verified', sumTitle: self.state.upType + ' · added by you', sum: 'Text will be readable by the AI chat in a minute. A doctor can verify it during a session.' };
+          self.setState({ uploading: false, pct: 0, docs: [nd].concat(self.state.docs), selId: id, tab: self.state.upFolder, fresh: id, upName: '', hasFile: false });
+          self.cfNote && self.cfNote('Uploaded to ' + (fById[nd.folder] ? fById[nd.folder].label : 'folder'), name);
+        } else self.setState({ pct: p });
+      }, 160);
+    };
+    return {
+      yes: true, conf: 0.86, moduleText: 'Report summary · ' + cur.name,
+      iFolder: ic('M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM12 11v5M9.5 13.5h5'),
+      iUp: ic('M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3'),
+      summary: docs.length + ' documents in ' + F.length + ' folders · ' + docs.filter(function (d) { return d.by === 'You'; }).length + ' uploaded by you',
+      folderNote: 'Drag a document onto a folder, or use “Move to”',
+      folders: [{ id: 'all', label: 'All documents', c: 'c-all' }].concat(F).map(function (f) {
+        var on = st.tab === f.id; var n = f.id === 'all' ? docs.length : cnt(f.id);
+        return { label: f.label, custom: !!f.custom, countText: n + (n === 1 ? ' file' : ' files'),
+          cls: 'fold' + (on ? ' is-sel' : '') + (st.dropOn === f.id ? ' is-drop' : ''), pressed: on ? 'true' : 'false', icCls: 'fd-ic ' + f.c,
+          pick: function () { self.setState({ tab: f.id, menu: null, upFolder: f.id === 'all' ? self.state.upFolder : f.id }); },
+          dragOver: function (e) { if (f.id === 'all') return; e.preventDefault(); if (self.state.dropOn !== f.id) self.setState({ dropOn: f.id }); },
+          drop: function (e) { e.preventDefault(); if (f.id !== 'all' && self.state.dragId) move(self.state.dragId, f.id); },
+          rename: function () { openFm('rename', f); }, del: function () { openFm('delete', f); },
+          renameAria: 'Rename folder ' + f.label, delAria: 'Delete folder ' + f.label };
+      }),
+      openNew: function () { openFm('new'); },
+      focusUpload: function () { try { document.getElementById('cf-upload').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {} },
+      curFolder: curFolderName, listNote: list.length + ' of ' + docs.length + ' shown',
+      q: st.q, setQ: function (e) { self.setState({ q: e && e.target ? e.target.value : '' }); },
+      who: st.who, setWho: function (v) { self.setState({ who: v }); }, whoOpts: ['Anyone', 'Doctors', 'Labs', 'Radiology', 'Me'],
+      isEmpty: list.length === 0, emptyTitle: q ? 'Nothing matches “' + st.q + '”' : 'This folder is empty',
+      isGrid: st.view === 'grid' && list.length > 0, isList: st.view === 'list' && list.length > 0,
+      gridBtn: st.view === 'grid' ? 'vw is-on' : 'vw', listBtn: st.view === 'list' ? 'vw is-on' : 'vw',
+      gridPressed: st.view === 'grid' ? 'true' : 'false', listPressed: st.view === 'list' ? 'true' : 'false',
+      setGrid: () => this.setState({ view: 'grid' }), setList: () => this.setState({ view: 'list' }),
+      docs: list.map(function (d) {
+        var open = st.menu === d.id;
+        return { name: d.name, src: d.src, date: d.date, by: d.by, tone: d.tone, ft: d.ft, isNew: d.isNew && !fromLab[d.name], fromLab: !!fromLab[d.name],
+          folderName: fById[d.folder] ? fById[d.folder].label : '',
+          thumb: 'thumb ' + thumbOf(d), thumbSm: 'thumb tsm ' + thumbOf(d),
+          cls: 'doc' + (d.id === cur.id ? ' is-sel' : '') + (st.fresh === d.id ? ' is-fresh' : ''), aria: d.name + ', ' + d.date,
+          pick: function () { self.setState({ selId: d.id, menu: null }); },
+          dragStart: function () { self.setState({ dragId: d.id }); },
+          menuOpen: open ? 'true' : 'false', showMenu: open, menuAria: 'Move ' + d.name + ' to',
+          toggleMenu: function () { self.setState({ menu: open ? null : d.id }); },
+          targets: F.filter(function (f) { return f.id !== d.folder; }).map(function (f) { return { label: f.label, dot: 'dot ' + f.c, move: function () { move(d.id, f.id); } }; }) };
+      }),
+      sel: { fromLab: !!fromLab[cur.name], at: fromLab[cur.name] || '', name: cur.name, src: cur.src, date: cur.date, by: cur.by, tone: cur.tone, sign: cur.sign, sumTitle: cur.sumTitle, sum: cur.sum, folder: cur.folder, folderName: fById[cur.folder] ? fById[cur.folder].label : '' },
+      moveSel: function (v) { move(cur.id, v); },
+      evidence: ['From the report text of “' + cur.name + '”', 'Compared with your earlier results', 'Not a diagnosis — your doctor decides'],
+      folderOpts: folderOpts,
+      dropCls: st.over ? 'drop is-over' : 'drop',
+      dropTitle: st.hasFile ? 'File ready: ' + st.upName : 'Drop a file here',
+      over: function (e) { e.preventDefault(); if (!self.state.over) self.setState({ over: true }); },
+      leave: function () { self.setState({ over: false }); },
+      dropFile: function (e) { e.preventDefault(); var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; self.setState({ over: false, hasFile: true, upName: f ? f.name.replace(/\.[^.]+$/, '') : 'Scanned report', fileExt: f ? f.name : '' }); },
+      chooseFile: function (e) { var f = e.target.files && e.target.files[0]; if (f) self.setState({ hasFile: true, upName: f.name.replace(/\.[^.]+$/, ''), fileExt: f.name }); },
+      upName: st.upName, setUpName: function (e) { self.setState({ upName: e.target.value }); },
+      upFolder: st.upFolder, setUpFolder: function (v) { self.setState({ upFolder: v }); },
+      typeOpts: DOC_TYPES, upType: st.upType, setUpType: function (v) { self.setState({ upType: v }); },
+      upDate: st.upDate, setUpDate: function (e) { self.setState({ upDate: e.target.value }); },
+      upStep: st.upName.trim() ? 2 : 1,
+      uploading: st.uploading, pct: st.pct * 10, pctText: st.pct * 10 + '%', pctCls: 'p' + st.pct,
+      cantUpload: !st.upName.trim() && !st.uploading,
+      upLabel: st.uploading ? 'Uploading' : 'Upload to ' + (fById[st.upFolder] ? fById[st.upFolder].label : 'folder'),
+      doUpload: startUpload,
+      fmOpen: !!fm, fmIsDel: !!fm && fm.mode === 'delete', fmIsEdit: !fm || fm.mode !== 'delete',
+      fmTitle: !fm ? 'New folder' : fm.mode === 'new' ? 'New folder' : fm.mode === 'rename' ? 'Rename folder' : 'Delete folder?',
+      fmDelText: fm && fm.mode === 'delete' ? 'Files in “' + (fById[fm.id] ? fById[fm.id].label : '') + '” (' + cnt(fm.id) + ') move to “Uploaded by me”. Nothing is deleted from your record.' : '',
+      fmName: st.fmName, setFmName: function (e) { self.setState({ fmName: e.target.value, fmErr: '' }); }, fmErr: st.fmErr || undefined,
+      suggs: ['Insurance', 'Dental', 'Pregnancy', 'Family — Ravi', 'Vaccinations'].map(function (l) { return { label: l, pick: function () { self.setState({ fmName: l, fmErr: '' }); } }; }),
+      colours: DOC_COLOURS.map(function (c) { var on = st.fmColour === c[0]; return { cls: 'swb ' + c[0] + (on ? ' is-on' : ''), pressed: on ? 'true' : 'false', label: c[1], pick: function () { self.setState({ fmColour: c[0] }); } }; }),
+      fmVariant: fm && fm.mode === 'delete' ? 'danger' : 'primary',
+      fmCta: !fm ? 'Create folder' : fm.mode === 'new' ? 'Create folder' : fm.mode === 'rename' ? 'Save name' : 'Delete folder',
+      closeFm: function () { self.setState({ fm: null }); },
+      saveFm: function () {
+        var f = self.state.fm; if (!f) return;
+        if (f.mode === 'delete') {
+          self.setState({ folders: self.state.folders.filter(function (x) { return x.id !== f.id; }), docs: self.state.docs.map(function (d) { return d.folder === f.id ? Object.assign({}, d, { folder: 'me' }) : d; }), fm: null, tab: self.state.tab === f.id ? 'all' : self.state.tab, upFolder: self.state.upFolder === f.id ? 'me' : self.state.upFolder });
+          return;
+        }
+        var nm = self.state.fmName.trim();
+        if (!nm) { self.setState({ fmErr: 'Give the folder a name.' }); return; }
+        if (self.state.folders.some(function (x) { return x.label.toLowerCase() === nm.toLowerCase() && x.id !== f.id; })) { self.setState({ fmErr: 'You already have a folder with this name.' }); return; }
+        if (f.mode === 'rename') { self.setState({ folders: self.state.folders.map(function (x) { return x.id === f.id ? Object.assign({}, x, { label: nm, c: self.state.fmColour }) : x; }), fm: null }); return; }
+        var id = 'f-' + Date.now();
+        self.setState({ folders: self.state.folders.concat([{ id: id, label: nm, c: self.state.fmColour, custom: true }]), fm: null, tab: id, upFolder: id });
+        self.cfNote && self.cfNote('Folder created', nm + ' · upload or move files into it');
+      },
+      toAI: go('ai')
+    };
+  }
+}
+cfMix(Component, { types: ['lab-result','prescription','dispensed'], note: 'Added to your folders automatically', min: 3 });
+</script>
+</body>
+</html>

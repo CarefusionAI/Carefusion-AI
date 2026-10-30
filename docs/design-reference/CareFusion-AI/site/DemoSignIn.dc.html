@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Demo sign-in — choose a role</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.role{position:relative;display:flex;gap:14px;align-items:center;padding:16px 18px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);text-decoration:none;color:var(--ink-body);transition:transform 200ms cubic-bezier(0.22,1,0.36,1),box-shadow 200ms ease,border-color 200ms ease}
+.role:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--primary-soft)}
+.role:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+.code{flex:none;width:52px;height:52px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:500;letter-spacing:.06em}
+.go{margin-left:auto;flex:none;color:var(--ink-muted);transition:transform 200ms ease,color 200ms ease}
+.role:hover .go{transform:translateX(3px);color:var(--primary-text)}
+.grp{margin:0 0 12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--ink-muted);display:flex;align-items:center;gap:10px}
+.grp::after{content:"";flex:1;height:1px;background:var(--border)}
+.rise{animation:rise 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce){.rise{animation:none}.role,.go{transition:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-pub" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Demo sign-in skips passwords and is never part of a production build.</x-import>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <aside style="flex: 1 1 380px; max-width: 520px; position: relative; overflow: hidden; background: var(--surface-raised); border-right: 1px solid var(--border); padding: 48px 48px 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px;">
+      <span aria-hidden="true" style="position: absolute; width: 420px; height: 420px; border-radius: 9999px; background: var(--tint-sage); filter: blur(80px); left: -160px; bottom: -160px;"></span>
+      <a href="Main.dc.html" aria-label="CareFusion AI home" style="position: relative; display: inline-flex; align-self: flex-start;"><img src="assets/logo.svg" alt="CareFusion AI" style="height: 34px; width: auto;"></a>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 14px;">
+        <p style="margin: 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--accent-text);">Alpha demo</p>
+        <h1 style="margin: 0; font-family: var(--font-serif); font-size: 44px; line-height: 50px; font-weight: 600; color: var(--ink-strong); letter-spacing: -0.01em;">Who are you signing in as today?</h1>
+        <p style="margin: 0; font-size: 17px; line-height: 28px;">Pick any of the twelve roles to open its workspace with synthetic data. In the real product each role signs in on its own page with a password and two-step verification.</p>
+      </div>
+      <div style="position: relative; display: flex; flex-direction: column; gap: 10px; margin-top: auto;">
+        <p style="margin: 0; font-weight: 600; color: var(--ink);">Prefer the real sign-in pages?</p>
+        <a class="cf-btn cf-btn-secondary cf-btn-md" href="Login.dc.html" style="justify-content: space-between; height: auto; min-height: 44px; padding-top: 10px; padding-bottom: 10px; text-align: left; white-space: normal; gap: 12px;">Citizens and doctors<span aria-hidden="true">→</span></a>
+        <a class="cf-btn cf-btn-secondary cf-btn-md" href="StaffLogin.dc.html" style="justify-content: space-between; height: auto; min-height: 44px; padding-top: 10px; padding-bottom: 10px; text-align: left; white-space: normal; gap: 12px;">Nurses, lab, radiology, pharmacists<span aria-hidden="true">→</span></a>
+        <a class="cf-btn cf-btn-secondary cf-btn-md" href="AdminLogin.dc.html" style="justify-content: space-between; height: auto; min-height: 44px; padding-top: 10px; padding-bottom: 10px; text-align: left; white-space: normal; gap: 12px;">Hospital, pharmacy &amp; government admins<span aria-hidden="true">→</span></a>
+      </div>
+    </aside>
+
+    <main style="flex: 999 1 560px; min-width: 0; padding: 48px 56px 64px; box-sizing: border-box;">
+      <div style="max-width: 980px; display: flex; flex-direction: column; gap: 32px;">
+        <section class="rise" aria-labelledby="g1">
+          <h2 id="g1" class="grp">Citizens</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+            <a class="role" href="Citizen.dc.html"><span class="code" style="background: var(--tint-peach); color: var(--peach-text);">CIT</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Citizen</strong><span style="font-size: 13px; color: var(--ink-muted);">Anjali Menon · Pathanamthitta</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+          </div>
+        </section>
+        <section class="rise" aria-labelledby="g2" style="animation-delay: 60ms;">
+          <h2 id="g2" class="grp">Medical staff</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+            <a class="role" href="Doctor.dc.html"><span class="code" style="background: var(--tint-teal); color: var(--primary-text);">DOC</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Doctor</strong><span style="font-size: 13px; color: var(--ink-muted);">Dr. Arun Nair · General medicine</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="Nurse.dc.html"><span class="code" style="background: var(--tint-teal); color: var(--primary-text);">NUR</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Nurse</strong><span style="font-size: 13px; color: var(--ink-muted);">Lekha Pillai · Ward 3</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="LabTech.dc.html"><span class="code" style="background: var(--tint-teal); color: var(--primary-text);">LAB</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Lab technician</strong><span style="font-size: 13px; color: var(--ink-muted);">Rahul Varghese · Pathology</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="RadiologyTech.dc.html"><span class="code" style="background: var(--tint-teal); color: var(--primary-text);">RAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Radiology technician</strong><span style="font-size: 13px; color: var(--ink-muted);">Fathima Beevi · Imaging</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+          </div>
+        </section>
+        <section class="rise" aria-labelledby="g3" style="animation-delay: 120ms;">
+          <h2 id="g3" class="grp">Pharmacy</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+            <a class="role" href="Pharmacist.dc.html"><span class="code" style="background: var(--tint-sage); color: var(--success);">PHA</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Pharmacist</strong><span style="font-size: 13px; color: var(--ink-muted);">Joseph Mathew · Hospital pharmacy</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="PharmacyAdmin.dc.html"><span class="code" style="background: var(--tint-sage); color: var(--success);">PAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Pharmacy admin</strong><span style="font-size: 13px; color: var(--ink-muted);">Suma Thomas · Licence DEMO-DL-2041</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+          </div>
+        </section>
+        <section class="rise" aria-labelledby="g4" style="animation-delay: 180ms;">
+          <h2 id="g4" class="grp">Administrators</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+            <a class="role" href="HospitalAdmin.dc.html"><span class="code" style="background: var(--tint-blue); color: var(--info);">HAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Hospital admin</strong><span style="font-size: 13px; color: var(--ink-muted);">Dr. Meera Krishnan · Demo General Hospital</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="DistrictAdmin.dc.html"><span class="code" style="background: var(--tint-lavender); color: var(--ai);">DAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">District admin</strong><span style="font-size: 13px; color: var(--ink-muted);">Ajay Kumar · Pathanamthitta</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="StateAdmin.dc.html"><span class="code" style="background: var(--tint-lavender); color: var(--ai);">SAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">State admin</strong><span style="font-size: 13px; color: var(--ink-muted);">Latha Nair · Kerala</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="ZonalAdmin.dc.html"><span class="code" style="background: var(--tint-lavender); color: var(--ai);">ZAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Zonal admin</strong><span style="font-size: 13px; color: var(--ink-muted);">R. Venkatesh · South zone</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+            <a class="role" href="CentralAdmin.dc.html"><span class="code" style="background: var(--tint-lavender); color: var(--ai);">CAD</span><span><strong style="display: block; color: var(--ink); font-size: 16px;">Central admin</strong><span style="font-size: 13px; color: var(--ink-muted);">S. Banerjee · National</span></span><svg class="go" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6l-6 6"></path></svg></a>
+          </div>
+        </section>
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Every demo sign-in is written to the audit log as <code style="font-family: var(--font-mono);">auth.demo_login</code>.</p>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return { yes: true }; }
+}
+</script>
+</body>
+</html>

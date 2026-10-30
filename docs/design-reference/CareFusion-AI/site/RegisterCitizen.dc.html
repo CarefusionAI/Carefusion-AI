@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Create your health account — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text);font-weight:600}a:hover{color:var(--ink-strong)}
+.rail-step{display:flex;gap:14px;align-items:flex-start;padding:10px 12px;border-radius:14px;transition:background-color 220ms ease}
+.rail-step.is-current{background:var(--surface-raised);box-shadow:var(--shadow-card)}
+.rail-dot{flex:none;width:30px;height:30px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;border:1.5px solid var(--border-strong);color:var(--ink-muted);background:var(--surface-raised);transition:all 260ms ease}
+.is-done .rail-dot{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.is-current .rail-dot{background:var(--tint-teal);border-color:var(--primary);color:var(--primary-text);box-shadow:0 0 0 4px rgba(134,189,184,.28)}
+.step-in{animation:stepIn 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px)}}
+.h2{margin:0 0 6px;font-size:26px;line-height:34px;font-weight:600;color:var(--ink-strong)}
+.lead{margin:0;color:var(--ink-muted)}
+.panel{padding:18px 20px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.scan{position:relative;width:240px;height:300px;border-radius:120px/150px;background:linear-gradient(160deg,var(--tint-blue),var(--tint-lavender));overflow:hidden;box-shadow:inset 0 0 0 3px var(--surface-raised),0 0 0 2px var(--primary-soft)}
+.scanline{position:absolute;left:0;right:0;height:3px;background:var(--primary);box-shadow:0 0 18px 6px rgba(134,189,184,.6);animation:scan 1.6s ease-in-out infinite}
+@keyframes scan{0%{top:10%}50%{top:88%}100%{top:10%}}
+.pw{flex:1;height:6px;border-radius:9999px;background:var(--surface-cream)}
+.pw.on{background:var(--success-soft)}
+.mini-steps{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.mini-steps li{display:flex;gap:10px;align-items:center;font-size:14px}
+.wm{position:absolute;pointer-events:none}
+.wm-a{right:-140px;bottom:-160px;width:640px;height:640px;opacity:.07;animation:wmr 120s linear infinite}
+.wm-b{left:42%;top:-70px;width:200px;height:200px;opacity:.06;animation:wmf 14s ease-in-out infinite}
+.wm-c{left:-60px;bottom:18%;width:120px;height:120px;opacity:.05;animation:wmf 18s ease-in-out infinite reverse}
+@keyframes wmr{to{transform:rotate(360deg)}}
+@keyframes wmf{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(26px) rotate(8deg)}}
+@media (prefers-reduced-motion: reduce){.step-in,.scanline,.wm{animation:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-pub" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Aadhaar e-KYC, face check and ABHA are mock connectors. Never enter a real Aadhaar number.</x-import>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <aside aria-label="Registration progress" style="flex: 1 1 300px; max-width: 360px; background: var(--tint-sage); padding: 40px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px;">
+      <a href="Main.dc.html" aria-label="CareFusion AI home" style="display: inline-flex; padding: 0 12px;"><img src="assets/logo.svg" alt="CareFusion AI" style="height: 32px; width: auto;"></a>
+      <div style="padding: 0 12px;">
+        <h1 style="margin: 0 0 6px; font-family: var(--font-serif); font-size: 30px; line-height: 36px; font-weight: 600; color: var(--ink-strong);">Create your health account</h1>
+        <p style="margin: 0; font-size: 14px;">About five minutes. Approved automatically when your checks pass.</p>
+      </div>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px;">
+        <sc-for list="{{rail}}" as="s" hint-placeholder-count="7">
+          <li class="{{s.cls}}" aria-current="{{s.current}}">
+            <span class="rail-dot" aria-hidden="true">{{s.mark}}</span>
+            <span><strong style="display: block; font-size: 15px; color: var(--ink);">{{s.label}}</strong><span style="font-size: 13px; color: var(--ink-muted);">{{s.desc}}</span></span>
+          </li>
+        </sc-for>
+      </ol>
+      <p style="margin: auto 0 0; padding: 0 12px; font-size: 13px;">Already registered? <a href="Login.dc.html">Log in</a><br>No smartphone? An ASHA worker or hospital help desk can register you and print a health card.</p>
+    </aside>
+
+    <main style="position: relative; overflow: hidden; flex: 999 1 560px; min-width: 0; background: var(--surface-raised); padding: 48px clamp(24px, 5vw, 72px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
+      <svg class="wm wm-a" viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="5" width="18" height="50" rx="9" fill="#5e9e98"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#d2b277"></rect><rect x="21" y="25" width="18" height="18" rx="2" fill="#3a726d"></rect></svg>
+      <svg class="wm wm-b" viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="5" width="18" height="50" rx="9" fill="#86bdb8"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#b7a6d4"></rect></svg>
+      <svg class="wm wm-c" viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="5" width="18" height="50" rx="9" fill="#c9a86a"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#86bdb8"></rect></svg>
+      <div style="position: relative; width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column;">
+
+        <sc-if value="{{s0}}" hint-placeholder-val="{{yes}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 22px;">
+            <div><p class="lead" style="font-size: 13px;">Step 1 of 7</p><h2 class="h2">Before you start</h2><p class="lead">How CareFusion AI uses your information, in plain words.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px;">
+              <div class="panel"><strong style="color: var(--ink);">Your record is yours</strong><p style="margin: 6px 0 0; font-size: 14px;">Doctors open it only with your key, for 30 minutes.</p></div>
+              <div class="panel"><strong style="color: var(--ink);">Aadhaar is never stored</strong><p style="margin: 6px 0 0; font-size: 14px;">UIDAI confirms you; we keep a token, not the number.</p></div>
+              <div class="panel"><strong style="color: var(--ink);">Everything is logged</strong><p style="margin: 6px 0 0; font-size: 14px;">You can see who opened your record and when.</p></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <x-import component-from-global-scope="CareFusion.Checkbox" label="I have read and accept the privacy notice (DPDP Act consent)" description="Required." checked="{{c1}}" on-change="{{setC1}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.Checkbox" label="Log my location area when I share my record or sign in" description="Required for the access log. Area only, never continuous tracking." checked="{{c2}}" on-change="{{setC2}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.Checkbox" label="Use my anonymised data to improve the AI" description="Optional and off by default. Change it any time in Settings." checked="{{c3}}" on-change="{{setC3}}"></x-import>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s1}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 2 of 7</p><h2 class="h2">About you</h2><p class="lead">Name, date of birth and sex will be locked after Aadhaar verification.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px;">
+              <x-import component-from-global-scope="CareFusion.TextField" label="Full name" default-value="Anjali Menon" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Date of birth" default-value="14/02/1991" placeholder="DD/MM/YYYY" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.Select" label="Sex" options="{{sexes}}" default-value="Female" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Mobile number" prefix="+91" default-value="98765 43210" required="{{yes}}" helper="Verified with a one-time code."></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Email" type="email" default-value="anjali.m@example.demo" optional="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.Select" label="District" options="{{districts}}" default-value="Pathanamthitta" required="{{yes}}"></x-import>
+            </div>
+            <x-import component-from-global-scope="CareFusion.TextField" label="Address" default-value="House 14, Temple Road, Adoor" required="{{yes}}"></x-import>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <x-import component-from-global-scope="CareFusion.TextField" label="Create a password" type="password" default-value="harbour-lamp-41" required="{{yes}}" helper="At least 12 characters. We check it against known leaked passwords."></x-import>
+              <div aria-hidden="true" style="display: flex; gap: 6px;"><span class="pw on"></span><span class="pw on"></span><span class="pw on"></span><span class="pw"></span></div>
+              <span style="font-size: 13px; color: var(--success); font-weight: 600;">Strong password</span>
+            </div>
+            <x-import component-from-global-scope="CareFusion.Switch" label="I'm registering a child under 18" description="A registered parent or guardian manages the account until the child turns 18." checked="{{minor}}" on-change="{{setMinor}}"></x-import>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s2}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 3 of 7</p><h2 class="h2">Verify with Aadhaar e-KYC</h2><p class="lead">UIDAI sends a code to your Aadhaar-linked mobile. We keep only a token.</p></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+              <div style="flex: 1 1 280px; min-width: 0;"><x-import component-from-global-scope="CareFusion.TextField" label="Aadhaar number (demo)" default-value="DEMO 0000 1234" helper="Demo only — a real number is never accepted."></x-import></div>
+              <x-import component-from-global-scope="CareFusion.Button" variant="soft" on-click="{{sendAadhaar}}">{{aadhaarBtn}}</x-import>
+            </div>
+            <sc-if value="{{aSent}}" hint-placeholder-val="{{no}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+                <div style="flex: 1 1 200px; min-width: 0;"><x-import component-from-global-scope="CareFusion.TextField" label="6-digit Aadhaar OTP" default-value="482913" input-mode="numeric"></x-import></div>
+                <x-import component-from-global-scope="CareFusion.Button" on-click="{{verifyAadhaar}}" loading="{{aLoading}}">Verify</x-import>
+              </div>
+            </sc-if>
+            <sc-if value="{{aDone}}" hint-placeholder-val="{{no}}">
+              <x-import component-from-global-scope="CareFusion.Alert" tone="success" title="e-KYC verified">Anjali Menon · born 14/02/1991 · Female. Stored as token <code style="font-family: var(--font-mono);">tok_DEMO_8f3a…c21</code> — Aadhaar shown as XXXX XXXX 1234.</x-import>
+            </sc-if>
+            <x-import component-from-global-scope="CareFusion.TextField" label="PAN" optional="{{yes}}" placeholder="DEMOP0000X"></x-import>
+            <sc-if value="{{minor}}" hint-placeholder-val="{{no}}">
+              <div class="panel" style="display: flex; flex-direction: column; gap: 14px; background: var(--tint-peach); border-color: transparent;">
+                <strong style="color: var(--ink);">Child under 18 — guardian details</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 14px; border: 1.5px dashed var(--border-strong); border-radius: 14px; background: var(--surface-raised);">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--peach-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M12 11v6M9 14l3-3l3 3"></path></svg>
+                  <span style="flex: 1; min-width: 160px;"><strong style="color: var(--ink);">Birth certificate</strong><br><span style="font-size: 13px; color: var(--ink-muted);">PDF or photo, up to 10 MB</span></span>
+                  <x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm">Upload</x-import>
+                </div>
+                <x-import component-from-global-scope="CareFusion.TextField" label="Guardian's registered mobile" prefix="+91" default-value="94470 11223" helper="The guardian must already have a CareFusion account."></x-import>
+                <x-import component-from-global-scope="CareFusion.Checkbox" label="The guardian gives recorded consent for this child's data to be processed" default-checked="{{yes}}"></x-import>
+              </div>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s3}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 4 of 7</p><h2 class="h2">Live face check</h2><p class="lead">We match a live photo to your Aadhaar photo with UIDAI face authentication.</p></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: center;">
+              <div class="scan" role="img" aria-label="Camera preview with an oval face guide">
+                <svg viewBox="0 0 240 300" width="240" height="300" aria-hidden="true" style="position: absolute; inset: 0;"><circle cx="120" cy="120" r="46" fill="rgba(250,245,239,.75)"></circle><path d="M44 300c6-62 38-96 76-96s70 34 76 96" fill="rgba(250,245,239,.75)"></path></svg>
+                <sc-if value="{{scanning}}" hint-placeholder-val="{{no}}"><span class="scanline"></span></sc-if>
+                <sc-if value="{{faceDone}}" hint-placeholder-val="{{no}}">
+                  <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(220, 235, 224, .7);"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12.5l2.5 2.5L16 9.5M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18z"></path></svg></span>
+                </sc-if>
+              </div>
+              <div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 16px;">
+                <ul class="mini-steps">
+                  <li><x-import component-from-global-scope="CareFusion.Badge" tone="{{f1}}">1</x-import>Face the camera in good light</li>
+                  <li><x-import component-from-global-scope="CareFusion.Badge" tone="{{f2}}">2</x-import>Blink twice when the line moves</li>
+                  <li><x-import component-from-global-scope="CareFusion.Badge" tone="{{f3}}">3</x-import>Hold still while we match</li>
+                </ul>
+                <p aria-live="polite" style="margin: 0; font-weight: 600; color: var(--ink);">{{faceStatus}}</p>
+                <x-import component-from-global-scope="CareFusion.Button" variant="soft" on-click="{{startFace}}" disabled="{{faceBusy}}">{{faceBtn}}</x-import>
+              </div>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s4}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 5 of 7</p><h2 class="h2">Your ABHA health ID</h2><p class="lead">We create or link your national ABHA ID so your records can move with consent.</p></div>
+            <sc-if value="{{abhaPending}}" hint-placeholder-val="{{yes}}">
+              <div class="panel" style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;">
+                <p style="margin: 0;">We found no existing ABHA for these details. We'll create one for you.</p>
+                <x-import component-from-global-scope="CareFusion.Button" on-click="{{makeAbha}}" loading="{{abhaLoading}}">Create my ABHA</x-import>
+              </div>
+            </sc-if>
+            <sc-if value="{{abhaDone}}" hint-placeholder-val="{{no}}">
+              <div style="position: relative; overflow: hidden; border-radius: 24px; padding: 28px; background: var(--primary); color: var(--on-primary); max-width: 460px; box-shadow: 0 24px 48px rgba(58,114,109,.24);">
+                <svg aria-hidden="true" viewBox="0 0 64 64" width="180" height="180" style="position: absolute; right: -40px; top: -40px; opacity: .14;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+                <p style="margin: 0 0 18px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;">ABHA health ID · demo</p>
+                <p style="margin: 0; font-family: var(--font-mono); font-size: 24px; letter-spacing: .08em;">DEMO-0000-1234</p>
+                <p style="margin: 6px 0 18px; font-size: 14px;">anjali.menon@abha-demo</p>
+                <p style="margin: 0; font-size: 18px; font-weight: 600;">Anjali Menon</p>
+                <p style="margin: 2px 0 0; font-size: 13px;">Pathanamthitta, Kerala</p>
+              </div>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s5}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 6 of 7</p><h2 class="h2">Health profile</h2><p class="lead">What a doctor needs in an emergency. You can add more later.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 18px;">
+              <x-import component-from-global-scope="CareFusion.Select" label="Blood group" options="{{blood}}" default-value="B+"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Allergies" default-value="Penicillin" optional="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.Select" label="Preferred language" options="{{langs}}" default-value="English" helper="Malayalam and Hindi arrive after the pilot."></x-import>
+            </div>
+            <div class="panel" style="display: flex; flex-direction: column; gap: 14px;">
+              <strong style="color: var(--ink);">Emergency contact <span style="color: var(--danger);">*</span></strong>
+              <p style="margin: 0; font-size: 14px; color: var(--ink-muted);">At least one. They must have their own CareFusion account and will set a separate emergency code.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+                <div style="flex: 1 1 220px; min-width: 0;"><x-import component-from-global-scope="CareFusion.TextField" label="Their registered mobile" prefix="+91" default-value="94470 55120"></x-import></div>
+                <div style="flex: 0 1 180px; min-width: 0;"><x-import component-from-global-scope="CareFusion.Select" label="Relation" options="{{relations}}" default-value="Husband"></x-import></div>
+              </div>
+              <div style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: var(--tint-sage);">
+                <x-import component-from-global-scope="CareFusion.Avatar" name="Ravi Menon" size="{{n36}}"></x-import>
+                <span style="flex: 1;"><strong style="color: var(--ink);">Ravi Menon</strong><br><span style="font-size: 13px;">Registered · will get an invite to set an emergency code</span></span>
+                <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Found</x-import>
+              </div>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s6}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 22px;">
+            <sc-if value="{{approved}}" hint-placeholder-val="{{yes}}">
+              <div style="display: flex; flex-direction: column; gap: 18px; align-items: flex-start;">
+                <span aria-hidden="true" style="width: 72px; height: 72px; border-radius: 24px; background: var(--tint-sage); display: inline-flex; align-items: center; justify-content: center;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+                <h2 class="h2" style="font-family: var(--font-serif); font-size: 36px; line-height: 42px;">You're all set, Anjali.</h2>
+                <p class="lead" style="font-size: 17px;">e-KYC and face check passed, so your account was approved automatically. Your ABHA ID is linked.</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;"><a class="cf-btn cf-btn-primary cf-btn-lg" href="Citizen.dc.html">Open my health record</a><a class="cf-btn cf-btn-secondary cf-btn-lg" href="Login.dc.html">Set up face ID login</a></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{flagged}}" hint-placeholder-val="{{no}}">
+              <div style="display: flex; flex-direction: column; gap: 18px; align-items: flex-start;">
+                <x-import component-from-global-scope="CareFusion.Badge" tone="warning" dot="{{yes}}">Under review</x-import>
+                <h2 class="h2" style="font-family: var(--font-serif); font-size: 34px; line-height: 40px;">We need a person to check your details</h2>
+                <p class="lead" style="font-size: 16px;">The face check did not match clearly. Nothing is wrong with your account — a reviewer will confirm it. We'll send an SMS when it's done.</p>
+                <ol class="mini-steps">
+                  <li><x-import component-from-global-scope="CareFusion.Badge" tone="success">Done</x-import>Submitted · 17 Oct, 15:12</li>
+                  <li><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Now</x-import>District admin, Pathanamthitta — first review</li>
+                  <li><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Next</x-import>State admin, Kerala — second review</li>
+                </ol>
+              </div>
+            </sc-if>
+            <div style="margin-top: 8px; padding: 14px 16px; border-radius: 14px; border: 1px dashed var(--border-strong);">
+              <x-import component-from-global-scope="CareFusion.Switch" label="Demo: show the flagged-case outcome" description="Face mismatch, duplicate or suspicious data goes to district, then state." checked="{{flagged}}" on-change="{{setFlag}}"></x-import>
+            </div>
+          </section>
+        </sc-if>
+
+        <div style="margin-top: auto; padding-top: 28px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--border); margin-top: 40px;">
+          <x-import component-from-global-scope="CareFusion.Button" variant="ghost" on-click="{{back}}" disabled="{{atStart}}">Back</x-import>
+          <sc-if value="{{notLast}}" hint-placeholder-val="{{yes}}">
+            <x-import component-from-global-scope="CareFusion.Button" size="lg" on-click="{{next}}" disabled="{{blocked}}">{{nextLabel}}</x-import>
+          </sc-if>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 0, c1: true, c2: true, c3: false, minor: false, aSent: false, aLoading: false, aDone: false, face: 'idle', abha: 'pending', flagged: false };
+  }
+  renderVals() {
+    var s = this.state.step, st = this.state;
+    var STEPS = [['Consent', 'Privacy and permissions'], ['Your details', 'Name, contact, password'], ['Aadhaar e-KYC', 'Token only'], ['Face check', 'Live match'], ['ABHA', 'Health ID'], ['Health profile', 'Blood group, contacts'], ['Done', 'Approval']];
+    var blocked = (s === 0 && !(st.c1 && st.c2)) || (s === 2 && !st.aDone) || (s === 3 && st.face !== 'done') || (s === 4 && st.abha !== 'done');
+    var faceStatus = { idle: 'Ready when you are.', scanning: 'Checking liveness…', done: 'Face matched to your Aadhaar photo.' }[st.face];
+    return {
+      yes: true, no: false, n36: 36,
+      rail: STEPS.map(function (x, i) { return { label: x[0], desc: x[1], mark: i < s ? '✓' : String(i + 1), cls: 'rail-step ' + (i < s ? 'is-done' : i === s ? 'is-current' : ''), current: i === s ? 'step' : undefined }; }),
+      s0: s === 0, s1: s === 1, s2: s === 2, s3: s === 3, s4: s === 4, s5: s === 5, s6: s === 6,
+      atStart: s === 0, notLast: s < 6, blocked: blocked,
+      nextLabel: s === 5 ? 'Submit' : 'Continue',
+      c1: st.c1, c2: st.c2, c3: st.c3,
+      setC1: (v) => this.setState({ c1: v }), setC2: (v) => this.setState({ c2: v }), setC3: (v) => this.setState({ c3: v }),
+      minor: st.minor, setMinor: (v) => this.setState({ minor: v }),
+      sexes: ['Female', 'Male', 'Other'],
+      districts: ['Pathanamthitta', 'Thiruvananthapuram', 'Kollam', 'Kottayam', 'Ernakulam'],
+      blood: ['A+', 'A−', 'B+', 'B−', 'AB+', 'AB−', 'O+', 'O−', 'Unknown'],
+      langs: ['English'],
+      relations: ['Husband', 'Wife', 'Parent', 'Child', 'Sibling', 'Friend'],
+      aSent: st.aSent, aLoading: st.aLoading, aDone: st.aDone,
+      aadhaarBtn: st.aSent ? 'Resend OTP' : 'Send Aadhaar OTP',
+      sendAadhaar: () => this.setState({ aSent: true }),
+      verifyAadhaar: () => { this.setState({ aLoading: true }); setTimeout(() => this.setState({ aLoading: false, aDone: true }), 1000); },
+      scanning: st.face === 'scanning', faceDone: st.face === 'done', faceBusy: st.face === 'scanning',
+      faceStatus: faceStatus,
+      faceBtn: st.face === 'done' ? 'Check again' : 'Start face check',
+      f1: st.face === 'idle' ? 'neutral' : 'success', f2: st.face === 'done' ? 'success' : st.face === 'scanning' ? 'teal' : 'neutral', f3: st.face === 'done' ? 'success' : 'neutral',
+      startFace: () => { this.setState({ face: 'scanning' }); setTimeout(() => this.setState({ face: 'done' }), 2200); },
+      abhaPending: st.abha !== 'done', abhaDone: st.abha === 'done', abhaLoading: st.abha === 'loading',
+      makeAbha: () => { this.setState({ abha: 'loading' }); setTimeout(() => this.setState({ abha: 'done' }), 1200); },
+      approved: !st.flagged, flagged: st.flagged, setFlag: (v) => this.setState({ flagged: v }),
+      next: () => this.setState({ step: Math.min(6, s + 1) }),
+      back: () => this.setState({ step: Math.max(0, s - 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

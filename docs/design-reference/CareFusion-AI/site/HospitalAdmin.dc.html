@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hospital admin — CareFusion AI Admin Console</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px;background:rgba(243,238,232,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;min-width:42px;padding:0 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);cursor:pointer;font:inherit;font-size:14px;font-weight:600;box-sizing:border-box}
+.topbtn:hover{border-color:var(--border-strong)}
+.topbtn:focus-visible,.lk:focus-visible,.chip:focus-visible,.rowbtn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:9999px;background:var(--danger)}
+.pill{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:var(--tint-peach);color:var(--peach-text);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.pg{padding:28px 40px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;max-width:1240px}
+.ph{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.ph h1{margin:0;font-family:var(--font-serif);font-size:30px;line-height:38px;font-weight:600;color:var(--ink-strong)}
+.ph p{margin:4px 0 0}
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))}
+.g21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+@media (max-width:1100px){.g21{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.muted{color:var(--ink-muted);font-size:13px}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.ico{flex:none;width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.t-teal{background:var(--tint-teal);color:var(--primary-text)}.t-blue{background:var(--tint-blue);color:var(--info)}.t-peach{background:var(--tint-peach);color:var(--peach-text)}.t-sage{background:var(--tint-sage);color:var(--success)}.t-warn{background:var(--warning-bg);color:var(--warning)}.t-danger{background:var(--danger-bg);color:var(--danger)}
+.bar{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:9999px;background:var(--primary-soft)}
+.w10{width:10%}.w20{width:20%}.w30{width:30%}.w40{width:40%}.w50{width:50%}.w60{width:60%}.w70{width:70%}.w80{width:80%}.w90{width:90%}.w100{width:100%}
+.bar span.low{background:var(--danger-soft)}.bar span.mid{background:var(--warning-soft)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--border);background:var(--surface-raised);border-radius:9999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.rowbtn{border:1px solid var(--border);background:var(--surface-raised);border-radius:10px;padding:6px 10px;font:inherit;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer}
+.rowbtn:hover{border-color:var(--border-strong)}
+.rowbtn.dng{color:var(--danger)}
+.search{display:flex;align-items:center;gap:8px;padding:0 12px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);min-width:240px}
+.search input{border:0;background:none;font:inherit;font-size:14px;color:var(--ink);outline:none;flex:1;min-width:0}
+.search:focus-within{outline:2px solid var(--focus-ring);outline-offset:2px}
+.spark{width:100%;height:auto}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:22px 24px;background:var(--primary);color:var(--on-primary);display:flex;flex-direction:column;gap:10px;box-shadow:0 22px 44px rgba(58,114,109,.22)}
+.hero h2{margin:0;font-family:var(--font-serif);font-size:22px;font-weight:600}
+.hero .big{font-size:34px;line-height:40px;font-weight:600;font-variant-numeric:tabular-nums}
+.mono{font-family:var(--font-mono);font-size:12.5px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.kv div{padding:10px 12px;border-radius:12px;background:var(--surface)}
+.kv dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.kv dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}
+.in{animation:in 500ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);animation:live 1.8s infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}100%{box-shadow:0 0 0 0 rgba(55,106,79,0)}}
+@media (max-width:900px){.shell-side{position:static;height:auto;width:100%}.top{padding:12px 16px}.pg{padding:20px 16px 40px}}
+@media (prefers-reduced-motion: reduce){.in,.live{animation:none}}
+.qi{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:14px;background:none;font:inherit;cursor:pointer;color:inherit}
+.qi:hover{background:var(--surface)}
+.qi.on{background:var(--tint-teal)}
+.qi:focus-visible,.cell:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.rowbtn.ok{background:var(--tint-sage);border-color:transparent;color:var(--success)}
+.mx{width:100%;border-collapse:collapse;font-size:14px}
+.mx th,.mx td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:center}
+.mx thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+.mx tbody th{text-align:left;font-weight:400}
+.cell{width:32px;height:32px;border-radius:10px;border:1.5px solid var(--border-strong);background:var(--surface-raised);color:var(--on-primary);font-weight:700;cursor:pointer}
+.cell.on{background:var(--primary);border-color:var(--primary)}
+.cell.lock{cursor:not-allowed;opacity:.55;border-style:dashed}
+.cell.lock.on{background:var(--ink-muted);border-color:var(--ink-muted)}
+
+.feed{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:var(--surface);text-decoration:none;color:inherit;transition:background-color 180ms ease}
+a.feed:hover{background:var(--surface-cream)}
+a.feed:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.feed .ft{font-size:14px;font-weight:600;color:var(--ink)}
+.feed .fx{font-size:13px;color:var(--ink-muted)}
+.from{flex:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:9999px;background:var(--tint-blue);color:var(--info);white-space:nowrap}
+.toast{position:fixed;top:72px;right:24px;z-index:50;display:flex;gap:12px;align-items:flex-start;max-width:360px;padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:toast 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes toast{from{opacity:0;transform:translateX(24px)}}
+.toast .ti{flex:none;width:34px;height:34px;border-radius:10px;background:var(--tint-teal);color:var(--primary-text);display:inline-flex;align-items:center;justify-content:center}
+.toast button{border:0;background:none;color:var(--ink-muted);cursor:pointer;font:inherit;font-size:18px;line-height:1;padding:2px 4px;border-radius:6px}
+.dtag{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink)}
+.dtag i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.d-med i{background:#86bdb8}.d-icu i{background:#d99a96}.d-ped i{background:#b7a6d4}.d-mat i{background:#e7c58e}.d-surg i{background:#8eb4d6}.d-ortho i{background:#8ebba5}
+.ros{width:100%;border-collapse:separate;border-spacing:6px;font-size:13px}
+.ros th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;text-align:center;padding:4px}
+.ros th.dn{text-align:left;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);font-weight:600;white-space:nowrap}
+.slot{width:100%;min-width:64px;height:40px;border-radius:10px;border:1.5px dashed var(--border-strong);background:transparent;color:var(--ink-muted);font:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background-color 180ms ease,border-color 180ms ease,transform 180ms ease}
+.slot:hover{border-color:var(--primary-text);transform:translateY(-1px)}
+.slot.on{border-style:solid;border-color:var(--primary);background:var(--primary);color:var(--on-primary)}
+.slot.night{border-style:solid;border-color:#6a5a8c;background:#6a5a8c;color:#faf5ef}
+.slot:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.rg{display:flex;flex-direction:column;gap:8px;min-width:640px}
+.rg-row{display:grid;grid-template-columns:150px repeat(7,minmax(0,1fr));gap:6px;align-items:center}
+.rg-head{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600}
+.rg-day{text-align:center}
+.rg-dn{font-size:14px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:0}
+.rg-head .rg-dn{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
+.stars{color:#b08d4a;letter-spacing:2px;font-size:15px}
+.rb{display:grid;grid-template-columns:44px 1fr 40px;gap:10px;align-items:center;font-size:13px}
+.rb .bar span{background:#d2b277}
+.rb .bar span.low{background:var(--danger-soft)}
+.cmp{display:flex;flex-direction:column;gap:10px;padding:16px 18px;border-radius:16px;border:1px solid var(--border);background:var(--surface-raised)}
+.cmp.urgent{border-color:var(--danger-soft);animation:shake 600ms ease 300ms 1}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.track{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.track span{height:6px;border-radius:9999px;background:var(--surface-cream)}
+.track span.on{background:var(--primary-soft)}
+@media (prefers-reduced-motion: reduce){.toast,.cmp.urgent{animation:none}.slot{transition:none}}
+.mxg{min-width:760px}.mxg-row{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(6,minmax(84px,1fr));align-items:center;gap:8px;padding:12px 8px;border-bottom:1px solid var(--border)}.mxg-row:last-child{border-bottom:0}.mxg-head{font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}.mxg-row [role=cell],.mxg-head [role=columnheader]:not(:first-child){text-align:center}.mxg-row:not(.mxg-head):hover{background:var(--surface-cream);border-radius:12px}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-adm" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Demo General Hospital, its staff and HFR ID are simulated.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Hospital admin"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div class="top">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Demo General Hospital <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span class="muted" style="display: inline-flex; align-items: center; gap: 8px;"><span class="live" aria-hidden="true"></span>{{onDuty}} staff on duty</span>
+          <button type="button" class="topbtn" aria-label="Break-glass reviews waiting" onClick="{{toBreak}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span class="dot" aria-hidden="true"></span></button>
+          <button type="button" class="topbtn" onClick="{{toApprovals}}" style="background: var(--primary); border-color: var(--primary); color: var(--on-primary);">Review approvals · {{pendingCount}}</button>
+        </div>
+      </div>
+      <sc-if value="{{toast}}" hint-placeholder-val="{{no}}">
+        <div class="toast" role="status" aria-live="polite"><span class="ti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg></span><div style="flex: 1; min-width: 0;"><div class="muted" style="font-weight: 600;">From {{toast.fromLabel}} · {{toast.at}}</div><strong style="display: block; color: var(--ink); font-size: 14px;">{{toast.title}}</strong><div class="muted">{{toast.text}}</div></div><button type="button" aria-label="Dismiss" onClick="{{closeToast}}">×</button></div>
+      </sc-if>
+      <main style="flex: 1;">
+
+        <!-- OVERVIEW -->
+        <sc-if value="{{is.overview}}" hint-placeholder-val="{{yes}}">
+          <div class="pg">
+            <div class="ph in">
+              <div><p class="muted" style="margin: 0;">Saturday, 17 October 2026 · Pathanamthitta</p><h1>Good afternoon, Dr. Meera</h1><p>{{pendingCount}} staff approvals, 2 break-glass reviews and bed occupancy at 84%.</p></div>
+              <div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">HFR verified</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="outline">IN3210DEMO0042</x-import></div>
+            </div>
+            <div class="grid g4 in">
+              <x-import component-from-global-scope="CareFusion.StatCard" label="OP visits today" value="{{c.op}}" trend="{{t1}}" icon="{{iUsers}}" tone="sage"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Beds occupied" value="{{c.beds}}" unit="of 200" hint="ICU 18 of 20" icon="{{iBed}}" tone="blue"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Active doctor sessions" value="{{c.sess}}" hint="Citizen-key sessions right now" icon="{{iKey}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Pending approvals" value="{{pendingCount}}" hint="Doctors and staff" icon="{{iCheck}}" tone="peach"></x-import>
+            </div>
+            <div class="grid g21 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Bed occupancy by department</h2><button type="button" class="lk" onClick="{{toBeds}}">Departments</button></div>
+                <sc-for list="{{deptBars}}" as="d" hint-placeholder-count="6">
+                  <div style="display: flex; flex-direction: column; gap: 6px;"><div style="display: flex; justify-content: space-between; font-size: 14px;"><strong style="color: var(--ink);">{{d.name}}</strong><span class="muted">{{d.text}}</span></div><div class="bar"><span class="{{d.cls}}"></span></div></div>
+                </sc-for>
+              </div>
+              <div class="hero">
+                <svg aria-hidden="true" viewBox="0 0 64 64" width="200" height="200" style="position: absolute; right: -50px; bottom: -60px; opacity: .12;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+                <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">Break-glass this week</span>
+                <span class="big">3</span>
+                <span style="font-size: 14px; position: relative;">emergency record openings without a citizen key. 2 still need your review within 72 hours.</span>
+                <div style="position: relative;"><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm" on-click="{{toBreak}}">Review now</x-import></div>
+              </div>
+            </div>
+            <div class="grid g3 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Approval queue</h2><button type="button" class="lk" onClick="{{toApprovals}}">Open</button></div>
+                <sc-for list="{{queuePeek}}" as="a" hint-placeholder-count="3">
+                  <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="{{a.name}}" size="{{n32}}"></x-import><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{a.name}}</strong><div class="muted">{{a.role}} · {{a.dept}}</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="{{a.tone}}">{{a.status}}</x-import></div>
+                </sc-for>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Staff on duty</h2><button type="button" class="lk" onClick="{{toStaff}}">Staff</button></div>
+                <dl class="kv"><div><dt>Doctors</dt><dd>48</dd></div><div><dt>Nurses</dt><dd>112</dd></div><div><dt>Lab</dt><dd>14</dd></div><div><dt>Radiology</dt><dd>9</dd></div><div><dt>Pharmacy</dt><dd>4</dd></div><div><dt>Admin</dt><dd>11</dd></div></dl>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Recent activity</h2><button type="button" class="lk" onClick="{{toAudit}}">Audit log</button></div>
+                <div>
+                  <div class="row"><span class="ico t-danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Break-glass · Casualty</strong><div class="muted">Dr. Vivek Menon · 14:02</div></div></div>
+                  <div class="row"><span class="ico t-sage"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg></span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Approved Lekha Pillai</strong><div class="muted">Nurse · Ward 3 · 11:40</div></div></div>
+                  <div class="row"><span class="ico t-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6a3 3 0 0 0 0 6z"></path></svg></span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Role updated</strong><div class="muted">Radiology tech can attach to orders · 09:12</div></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="grid g3 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Connected apps</h2><x-import component-from-global-scope="CareFusion.Badge" tone="teal" dot="{{yes}}">Live</x-import></div>
+                <sc-for list="{{feed}}" as="e" hint-placeholder-count="4">
+                  <a class="feed" href="{{e.href}}" style="flex-direction: column; gap: 4px;"><span style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><span class="from">{{e.fromLabel}}</span><span class="muted">{{e.at}}</span></span><span class="ft">{{e.title}}</span><span class="fx">{{e.text}}</span></a>
+                </sc-for>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Citizen complaints</h2><button type="button" class="lk" onClick="{{toComplaints}}">Inbox · {{openCmp}} open</button></div>
+                <sc-for list="{{cmpPeek}}" as="k" hint-placeholder-count="3">
+                  <div class="row"><span class="ico t-peach"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{k.title}}</strong><div class="muted">{{k.ticket}} · {{k.when}}</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="{{k.tone}}">{{k.status}}</x-import></div>
+                </sc-for>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Citizen rating</h2><button type="button" class="lk" onClick="{{toReviews}}">Reviews</button></div>
+                <div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-size: 36px; line-height: 40px; font-weight: 600; color: var(--ink-strong);">4.3</span><span class="stars" aria-hidden="true">★★★★☆</span><span class="muted">1,284 reviews</span></div>
+                <sc-for list="{{ratingBars}}" as="r" hint-placeholder-count="5">
+                  <div class="rb"><span class="muted">{{r.label}}</span><div class="bar"><span class="{{r.cls}}"></span></div><span class="muted" style="text-align: right;">{{r.pct}}</span></div>
+                </sc-for>
+                <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border);">
+                  <span class="muted" style="font-size: 12px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600;">Most mentioned</span>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;"><x-import component-from-global-scope="CareFusion.Badge" tone="success">Kind nurses · 41</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="success">Clean wards · 28</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="warning">OP wait · 22</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Parking · 9</x-import></div>
+                  <span class="muted" style="font-size: 13px;">212 verified reviews · 86% replied within 3 days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- APPROVALS -->
+        <sc-if value="{{is.approvals}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Staff approvals</h1><p>Check each document before approving. Doctors are also checked against the Healthcare Professionals Registry.</p></div>
+              <div class="chips" role="group" aria-label="Filter queue"><sc-for list="{{qFilters}}" as="f" hint-placeholder-count="4"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div></div>
+            <div class="grid in" style="grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); align-items: start;">
+              <div class="box" style="padding: 10px;">
+                <sc-for list="{{queue}}" as="a" hint-placeholder-count="5">
+                  <button type="button" class="{{a.cls}}" aria-pressed="{{a.pressed}}" onClick="{{a.pick}}"><x-import component-from-global-scope="CareFusion.Avatar" name="{{a.name}}" size="{{n36}}"></x-import><span style="flex: 1; min-width: 0; text-align: left;"><strong style="display: block; color: var(--ink); font-size: 14px;">{{a.name}}</strong><span class="muted">{{a.role}} · {{a.when}}</span></span><x-import component-from-global-scope="CareFusion.Badge" tone="{{a.tone}}">{{a.status}}</x-import></button>
+                </sc-for>
+              </div>
+              <div class="box">
+                <div class="bh">
+                  <div style="display: flex; gap: 14px; align-items: center;"><x-import component-from-global-scope="CareFusion.Avatar" name="{{cur.name}}" size="{{n48}}"></x-import><div><h2 class="bt" style="font-size: 20px;">{{cur.name}}</h2><div class="muted">{{cur.role}} · {{cur.dept}} · applied {{cur.when}}</div></div></div>
+                  <x-import component-from-global-scope="CareFusion.Badge" tone="{{cur.tone}}" dot="{{yes}}">{{cur.status}}</x-import>
+                </div>
+                <dl class="kv" style="grid-template-columns: repeat(3, minmax(0, 1fr));"><div><dt>Registry</dt><dd>{{cur.reg}}</dd></div><div><dt>Aadhaar e-KYC</dt><dd>Verified</dd></div><div><dt>Employment</dt><dd>{{cur.emp}}</dd></div></dl>
+                <h3 class="bt" style="font-size: 14px;">Documents</h3>
+                <sc-for list="{{curDocs}}" as="d" hint-placeholder-count="4">
+                  <div class="row"><span class="{{d.icoCls}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{d.name}}</strong><div class="muted">{{d.meta}}</div></div><button type="button" class="rowbtn" aria-label="{{d.viewLabel}}">View</button><button type="button" class="{{d.btnCls}}" aria-pressed="{{d.pressed}}" onClick="{{d.toggle}}">{{d.btn}}</button></div>
+                </sc-for>
+                <x-import component-from-global-scope="CareFusion.Alert" tone="{{hint.tone}}" title="{{hint.title}}">{{hint.text}}</x-import>
+                <sc-if value="{{rejecting}}" hint-placeholder-val="{{no}}">
+                  <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 14px; background: var(--danger-bg);">
+                    <x-import component-from-global-scope="CareFusion.Select" label="Reason for rejection" options="{{reasons}}" value="{{reason}}" on-change="{{pickReason}}"></x-import>
+                    <x-import component-from-global-scope="CareFusion.Textarea" label="Note to applicant" placeholder="This is sent with the decision." rows="{{n3}}"></x-import>
+                    <div style="display: flex; gap: 8px;"><x-import component-from-global-scope="CareFusion.Button" variant="danger" on-click="{{confirmReject}}">Send rejection</x-import><x-import component-from-global-scope="CareFusion.Button" variant="ghost" on-click="{{cancelReject}}">Cancel</x-import></div>
+                  </div>
+                </sc-if>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <x-import component-from-global-scope="CareFusion.Button" variant="primary" disabled="{{cantApprove}}" on-click="{{approve}}">Approve and activate</x-import>
+                  <x-import component-from-global-scope="CareFusion.Button" variant="secondary" on-click="{{startReject}}">Reject</x-import>
+                  <x-import component-from-global-scope="CareFusion.Button" variant="ghost">Ask for more documents</x-import>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- STAFF -->
+        <sc-if value="{{is.staff}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Staff directory</h1><p>198 active accounts across 9 departments.</p></div><div style="display: flex; gap: 10px;"><x-import component-from-global-scope="CareFusion.Button" variant="secondary">Bulk import</x-import><x-import component-from-global-scope="CareFusion.Button" variant="primary">Invite staff</x-import></div></div>
+            <div class="grid g4 in">
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Doctors" value="62" hint="48 on duty" icon="{{iUsers}}" tone="sage"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Nurses" value="128" hint="112 on duty" icon="{{iUsers}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Technicians" value="31" hint="Lab 18 · Radiology 13" icon="{{iUsers}}" tone="blue"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Two-step on" value="100%" hint="Required" icon="{{iKey}}" tone="peach"></x-import>
+            </div>
+            <div class="box in">
+              <div class="bh"><div class="chips" role="group" aria-label="Filter by role"><sc-for list="{{roleFilters}}" as="f" hint-placeholder-count="5"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div><span class="muted">Showing {{staffCount}}</span></div>
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{staffCols}}" rows="{{staffRows}}" caption="Staff" striped="{{yes}}"></x-import>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- BEDS -->
+        <sc-if value="{{is.beds}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Departments &amp; beds</h1><p>Bed counts update from admissions. Published to the district dashboard every 15 minutes.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="primary">Add department</x-import></div>
+            <div class="grid g3 in">
+              <sc-for list="{{depts}}" as="d" hint-placeholder-count="6">
+                <div class="box">
+                  <div class="bh"><h2 class="bt">{{d.name}}</h2><x-import component-from-global-scope="CareFusion.Badge" tone="{{d.tone}}">{{d.pct}}</x-import></div>
+                  <div style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 30px; font-weight: 600; color: var(--ink-strong);">{{d.occ}}</span><span class="muted">of {{d.total}} beds · {{d.free}} free</span></div>
+                  <div class="bar"><span class="{{d.cls}}"></span></div>
+                  <div class="muted">Head: {{d.head}} · {{d.staff}} staff</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ROLES -->
+        <sc-if value="{{is.roles}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Roles &amp; permissions</h1><p>What each role can do inside this hospital. National rules (grey) can't be changed here.</p></div><x-import component-from-global-scope="CareFusion.Badge" tone="{{saveTone}}">{{saveLabel}}</x-import></div>
+            <div class="box in" style="overflow-x: auto;">
+              <div class="mxg" role="table" aria-label="Permission matrix">
+                <div class="mxg-row mxg-head" role="row"><span role="columnheader">Permission</span><sc-for list="{{roleNames}}" as="r" hint-placeholder-count="6"><span role="columnheader">{{r}}</span></sc-for></div>
+                <sc-for list="{{matrix}}" as="m" hint-placeholder-count="8">
+                  <div class="mxg-row" role="row"><span role="rowheader"><span style="display: block; font-weight: 600; color: var(--ink);">{{m.label}}</span><span class="muted">{{m.note}}</span></span>
+                    <sc-for list="{{m.cells}}" as="c" hint-placeholder-count="6"><span role="cell"><button type="button" class="{{c.cls}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}" disabled="{{c.locked}}" onClick="{{c.toggle}}">{{c.mark}}</button></span></sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- BREAK-GLASS -->
+        <sc-if value="{{is.breakglass}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Break-glass reviews</h1><p>Emergency openings without a citizen key must be reviewed within 72 hours. Citizens are notified either way.</p></div></div>
+            <sc-for list="{{bg}}" as="b" hint-placeholder-count="3">
+              <div class="box in">
+                <div class="bh"><div style="display: flex; gap: 12px; align-items: center;"><x-import component-from-global-scope="CareFusion.Avatar" name="{{b.doc}}" size="{{n36}}"></x-import><div><strong style="color: var(--ink);">{{b.doc}} opened {{b.patient}}'s record</strong><div class="muted">{{b.meta}}</div></div></div><x-import component-from-global-scope="CareFusion.Badge" tone="{{b.tone}}">{{b.status}}</x-import></div>
+                <div class="grid g3">
+                  <div style="padding: 12px 14px; border-radius: 14px; background: var(--surface);"><div class="muted" style="font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .08em;">Reason given</div><div style="font-size: 14px; margin-top: 4px;">{{b.reason}}</div></div>
+                  <div style="padding: 12px 14px; border-radius: 14px; background: var(--surface);"><div class="muted" style="font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .08em;">What was viewed</div><div style="font-size: 14px; margin-top: 4px;">{{b.viewed}}</div></div>
+                  <div style="padding: 12px 14px; border-radius: 14px; background: var(--surface);"><div class="muted" style="font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .08em;">Evidence</div><div style="font-size: 14px; margin-top: 4px;">{{b.evidence}}</div></div>
+                </div>
+                <sc-if value="{{b.open}}" hint-placeholder-val="{{yes}}"><div style="display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{b.justify}}">Justified</x-import><x-import component-from-global-scope="CareFusion.Button" variant="danger" size="sm" on-click="{{b.flag}}">Not justified — escalate to district</x-import></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- AUDIT -->
+        <sc-if value="{{is.audit}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Audit log</h1><p>Every record access and admin change in this hospital. Read-only.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="secondary">Export CSV</x-import></div>
+            <div class="box in">
+              <div class="chips" role="group" aria-label="Filter audit log"><sc-for list="{{auditFilters}}" as="f" hint-placeholder-count="4"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div>
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{auditCols}}" rows="{{auditRows}}" caption="Audit log" density="compact" striped="{{yes}}"></x-import>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- PROFILE -->
+        <sc-if value="{{is.profile}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Hospital profile</h1><p>Shown to citizens in Find care. Changes to legal details need district approval.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="primary">Save changes</x-import></div>
+            <div class="grid g21 in">
+              <div class="box">
+                <div class="grid g2">
+                  <x-import component-from-global-scope="CareFusion.TextField" label="Hospital name" default-value="Demo General Hospital" disabled="{{yes}}" helper="Legal detail · request a change"></x-import>
+                  <x-import component-from-global-scope="CareFusion.TextField" label="HFR facility ID" default-value="IN3210DEMO0042" disabled="{{yes}}"></x-import>
+                  <x-import component-from-global-scope="CareFusion.Select" label="Ownership" options="{{own}}"></x-import>
+                  <x-import component-from-global-scope="CareFusion.TextField" label="Public phone" default-value="0468 222 0000"></x-import>
+                  <x-import component-from-global-scope="CareFusion.TextField" label="Address" default-value="College Road, Pathanamthitta, Kerala 689645"></x-import>
+                  <x-import component-from-global-scope="CareFusion.TextField" label="OP hours" default-value="08:00 – 14:00 · Casualty 24×7"></x-import>
+                </div>
+                <x-import component-from-global-scope="CareFusion.Textarea" label="About" default-value="District-level government hospital with 200 beds, 24×7 casualty, dialysis and a blood bank." rows="{{n3}}"></x-import>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <x-import component-from-global-scope="CareFusion.Switch" label="Show in Find care" description="Citizens can book OP appointments here." default-checked="{{yes}}"></x-import>
+                  <x-import component-from-global-scope="CareFusion.Switch" label="Accept referrals from other hospitals" default-checked="{{yes}}"></x-import>
+                  <x-import component-from-global-scope="CareFusion.Switch" label="Publish blood bank stock" default-checked="{{yes}}"></x-import>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 18px;">
+                <div class="hero">
+                  <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">Health Facility Registry</span>
+                  <span class="big mono" style="font-size: 22px;">IN3210DEMO0042</span>
+                  <span style="font-size: 14px;">Verified 12 Jan 2026 · Government · District hospital</span>
+                </div>
+                <div class="box">
+                  <h2 class="bt">Services</h2>
+                  <div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Casualty 24×7</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="teal">ICU</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Dialysis</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Blood bank</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="teal">CT · X-ray</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Maternity</x-import></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ADMISSIONS -->
+        <sc-if value="{{is.admissions}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Admissions</h1><p>Patients admitted right now. Ward staff can open these records only while the admission is active.</p></div><div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="teal">{{admCount}} shown</x-import></div></div>
+            <div class="grid g4 in">
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Admitted" value="168" hint="12 since midnight" tone="blue"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Discharges planned" value="21" hint="Before 14:00 today" tone="sage"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Critical" value="6" hint="ICU 4 · Casualty 2" tone="peach"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Avg stay" value="3.8" unit="days" hint="District target 4.0"></x-import>
+            </div>
+            <div class="box in">
+              <div class="bh"><div class="chips" role="group" aria-label="Filter by department"><sc-for list="{{admFilters}}" as="f" hint-placeholder-count="5"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div><span class="muted">Colour + name show the department</span></div>
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{admCols}}" rows="{{admRows}}" caption="Current admissions" density="compact" striped="{{yes}}"></x-import>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ROSTER -->
+        <sc-if value="{{is.roster}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Doctor roster</h1><p>Week of 19–25 October. Click a slot to assign or remove a doctor. OP 08:00–14:00 · Night = casualty on-call.</p></div><div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="{{rosterTone}}">{{rosterLabel}}</x-import><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{publishRoster}}">Publish roster</x-import></div></div>
+            <div class="grid g21 in">
+              <div class="box" style="overflow-x: auto;">
+                <div class="rg" role="group" aria-label="Doctor roster for the week">
+                  <div class="rg-row rg-head"><span class="rg-dn">Doctor</span><sc-for list="{{days}}" as="d" hint-placeholder-count="7"><span class="rg-day">{{d}}</span></sc-for></div>
+                  <sc-for list="{{roster}}" as="r" hint-placeholder-count="6">
+                    <div class="rg-row"><span class="rg-dn">{{r.name}}<span class="muted" style="display: block; font-weight: 400;">{{r.dept}}</span></span><sc-for list="{{r.cells}}" as="c" hint-placeholder-count="7"><button type="button" class="{{c.cls}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}" onClick="{{c.toggle}}">{{c.label}}</button></sc-for></div>
+                  </sc-for>
+                </div>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;" class="muted"><span style="display: inline-flex; gap: 6px; align-items: center;"><span class="slot on" style="width: 18px; min-width: 18px; height: 14px;"></span>OP shift</span><span style="display: inline-flex; gap: 6px; align-items: center;"><span class="slot night" style="width: 18px; min-width: 18px; height: 14px;"></span>Night on-call</span><span style="display: inline-flex; gap: 6px; align-items: center;"><span class="slot" style="width: 18px; min-width: 18px; height: 14px;"></span>Free</span></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 18px;">
+                <div class="box">
+                  <h2 class="bt">Coverage this week</h2>
+                  <sc-for list="{{coverage}}" as="v" hint-placeholder-count="7">
+                    <div class="rb"><span class="muted">{{v.day}}</span><div class="bar"><span class="{{v.cls}}"></span></div><span class="muted" style="text-align: right;">{{v.n}}</span></div>
+                  </sc-for>
+                </div>
+                <x-import component-from-global-scope="CareFusion.Alert" tone="{{gapTone}}" title="{{gapTitle}}">{{gapText}}</x-import>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- COMPLAINTS -->
+        <sc-if value="{{is.complaints}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Citizen complaints</h1><p>Filed by citizens in the app. Reply within 7 days; unresolved complaints go to the district grievance officer.</p></div><div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="warning">{{openCmp}} open</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="success">{{doneCmp}} resolved</x-import></div></div>
+            <div class="grid g21 in">
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                <sc-for list="{{complaints}}" as="k" hint-placeholder-count="4">
+                  <div class="{{k.cls}}">
+                    <div class="bh"><div><strong style="color: var(--ink);">{{k.title}}</strong><div class="muted">{{k.ticket}} · {{k.who}} · {{k.when}}</div></div><div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="{{k.catTone}}">{{k.cat}}</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="{{k.tone}}">{{k.status}}</x-import></div></div>
+                    <p style="margin: 0; font-size: 14px; line-height: 21px;">{{k.text}}</p>
+                    <div class="track" aria-label="{{k.trackLabel}}"><span class="on"></span><span class="{{k.s2}}"></span><span class="{{k.s3}}"></span></div>
+                    <div class="muted" style="display: flex; justify-content: space-between;"><span>Filed</span><span>Under review</span><span>Resolved</span></div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                      <sc-if value="{{k.canAssign}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm" on-click="{{k.assign}}">Assign to PRO desk</x-import></sc-if>
+                      <sc-if value="{{k.canResolve}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{k.resolve}}">Resolve &amp; notify citizen</x-import></sc-if>
+                      <span class="muted">{{k.note}}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 18px;">
+                <div class="box">
+                  <h2 class="bt">By category · 30 days</h2>
+                  <sc-for list="{{cmpCats}}" as="r" hint-placeholder-count="5">
+                    <div class="rb" style="grid-template-columns: 110px 1fr 28px;"><span class="muted">{{r.label}}</span><div class="bar"><span class="{{r.cls}}"></span></div><span class="muted" style="text-align: right;">{{r.n}}</span></div>
+                  </sc-for>
+                </div>
+                <div class="box">
+                  <h2 class="bt">Response time</h2>
+                  <div style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 32px; line-height: 38px; font-weight: 600; color: var(--ink-strong);">2.4</span><span class="muted">days average · target 7</span></div>
+                  <p class="muted" style="margin: 0;">Resolving sends the citizen an update in their Complaints page and closes the ticket for the district.</p>
+                  <a href="CitizenComplaints.dc.html" style="font-size: 13px; font-weight: 600;">See what the citizen sees →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- REVIEWS -->
+        <sc-if value="{{is.reviews}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Reviews</h1><p>What citizens say after a visit. Reviews are verified — only people with a completed visit can post.</p></div></div>
+            <div class="grid g21 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Recent reviews</h2><span class="muted">Newest first</span></div>
+                <sc-for list="{{reviews}}" as="r" hint-placeholder-count="4">
+                  <div class="row" style="align-items: flex-start;"><x-import component-from-global-scope="CareFusion.Avatar" name="{{r.name}}" size="{{n36}}"></x-import><div style="flex: 1; min-width: 0;"><div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;"><strong style="color: var(--ink); font-size: 14px;">{{r.name}}</strong><span class="stars" aria-label="{{r.aria}}">{{r.stars}}</span><span class="muted">{{r.when}} · {{r.dept}}</span></div><p style="margin: 4px 0 0; font-size: 14px; line-height: 21px;">{{r.text}}</p></div></div>
+                </sc-for>
+                <div style="margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border);">
+                  <h3 class="bt" style="font-size: 14px; margin: 0;">This month at a glance</h3>
+                  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+                    <div style="padding: 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 20px; color: var(--ink-strong);">38</strong><span class="muted">New reviews</span></div>
+                    <div style="padding: 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 20px; color: var(--ink-strong);">+0.2</strong><span class="muted">Rating vs September</span></div>
+                    <div style="padding: 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 20px; color: var(--ink-strong);">1.6 d</strong><span class="muted">Average reply time</span></div>
+                  </div>
+                  <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--tint-blue); font-size: 13px;"><span aria-hidden="true">ⓘ</span><span>Replies are public and signed as the hospital. Reviews can't be edited or removed by the hospital — report abuse to the district admin instead.</span></div>
+                  <div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--tint-peach); font-size: 13px;"><span aria-hidden="true">!</span><span><strong style="color: var(--ink);">OP waiting time</strong> came up in 22 reviews this month. Linked complaints: CMP-0412, CMP-0398 — see Complaints.</span></div>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 18px;">
+                <div class="box">
+                  <h2 class="bt">Rating distribution</h2>
+                  <div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-size: 40px; line-height: 44px; font-weight: 600; color: var(--ink-strong);">4.3</span><span class="stars" aria-hidden="true">★★★★☆</span></div>
+                  <sc-for list="{{ratingBars}}" as="r" hint-placeholder-count="5">
+                    <div class="rb"><span class="muted">{{r.label}}</span><div class="bar"><span class="{{r.cls}}"></span></div><span class="muted" style="text-align: right;">{{r.pct}}</span></div>
+                  </sc-for>
+                </div>
+                <div class="box">
+                  <h2 class="bt">By department</h2>
+                  <sc-for list="{{deptRatings}}" as="d" hint-placeholder-count="5">
+                    <div class="row"><span style="flex: 1; font-size: 14px; color: var(--ink);">{{d.name}}</span><span class="stars" aria-hidden="true">{{d.stars}}</span><strong style="width: 32px; text-align: right; color: var(--ink);">{{d.score}}</strong></div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var CF_FROM = { citizen: 'Citizen', doctor: 'Doctor', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacist', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District', state: 'State', zonal: 'Zonal', central: 'Central' };
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { section: 'overview', sel: 'a1', dec: {}, checked: { a1: { 0: true, 1: true } }, rejecting: false, reason: 'Registration could not be verified', qF: 'pending', roleF: 'all', perms: {}, bg: {}, auditF: 'all', duty: 198, bus: busFor('hospitaladmin'), toast: null, cnt: 0, roster: {}, cmp: {}, admF: 'all', rosterPub: false };
+  }
+  componentDidMount() {
+    this.t = setInterval(() => this.setState({ duty: 196 + Math.floor(Math.random() * 5) }), 4000);
+    var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (reduce) this.setState({ cnt: 1 }); else this.ct = setInterval(() => { var c = Math.min(1, this.state.cnt + 0.05); this.setState({ cnt: c }); if (c >= 1) clearInterval(this.ct); }, 40);
+    this.seen = {}; this.state.bus.forEach((e) => { this.seen[e.id] = 1; });
+    this.poll = () => { var L = busFor('hospitaladmin'); var fresh = L.filter((e) => !this.seen[e.id]); L.forEach((e) => { this.seen[e.id] = 1; }); var o = { bus: L }; if (fresh.length) { o.toast = fresh[0]; clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 4000); } this.setState(o); };
+    this.bt = setInterval(this.poll, 2000);
+    window.addEventListener('storage', this.poll);
+  }
+  componentWillUnmount() { clearInterval(this.t); clearInterval(this.ct); clearInterval(this.bt); clearTimeout(this.tt); window.removeEventListener('storage', this.poll); }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion, st = this.state;
+    var set = (o) => this.setState(o);
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var badge = (tone, text, dot) => h(C.Badge, { tone: tone, dot: dot }, text);
+    var chipsOf = (list, cur, key) => list.map((f) => ({ label: f[1], cls: cur === f[0] ? 'chip on' : 'chip', pressed: cur === f[0] ? 'true' : 'false', pick: () => { var o = {}; o[key] = f[0]; set(o); } }));
+
+    var APPS = [
+      { id: 'a1', name: 'Dr. Nisha Abraham', role: 'Doctor', dept: 'Paediatrics', when: 'today 10:12', reg: 'HPR 71-DEMO-4410', emp: 'Government', docs: ['MBBS degree certificate|University of Kerala · 2014', 'MD Paediatrics|AIIMS demo · 2018', 'TCMC registration|Valid till 2029', 'Appointment order|DHS Kerala · 02 Oct 2026'] },
+      { id: 'a2', name: 'Dr. Rajeev Pillai', role: 'Doctor', dept: 'Orthopaedics', when: 'yesterday', reg: 'HPR 71-DEMO-3982', emp: 'Visiting · private', docs: ['MBBS degree certificate|Calicut University · 2009', 'MS Orthopaedics|2013', 'TCMC registration|Expired Aug 2026', 'Visiting consultant agreement|Signed 30 Sep'] },
+      { id: 'a3', name: 'Sreelakshmi K.', role: 'Nurse', dept: 'ICU', when: '15 Oct', reg: 'KNMC DEMO-88231', emp: 'Contract', docs: ['B.Sc Nursing|2019', 'KNMC registration|Valid till 2028', 'Appointment order|NHM · 10 Oct'] },
+      { id: 'a4', name: 'Arjun Das', role: 'Lab tech', dept: 'Laboratory', when: '14 Oct', reg: 'KPMC DEMO-1140', emp: 'Government', docs: ['DMLT certificate|2020', 'Appointment order|DHS Kerala'] },
+      { id: 'a5', name: 'Mini Joseph', role: 'Radiology tech', dept: 'Radiology', when: '12 Oct', reg: 'AERB DEMO-RT-221', emp: 'Government', docs: ['Diploma in Radiography|2016', 'AERB certificate|Valid', 'Appointment order|DHS Kerala'] }
+    ];
+    var statusOf = (a) => st.dec[a.id] || 'pending';
+    var SB = { pending: ['warning', 'Pending'], approved: ['success', 'Approved'], rejected: ['danger', 'Rejected'] };
+    var pending = APPS.filter((a) => statusOf(a) === 'pending').length;
+    var shown = APPS.filter((a) => st.qF === 'all' || (st.qF === 'doctors' ? a.role === 'Doctor' : st.qF === 'pending' ? statusOf(a) === 'pending' : statusOf(a) !== 'pending'));
+    var cur = APPS.find((a) => a.id === st.sel) || APPS[0];
+    var curChecked = st.checked[cur.id] || {};
+    var allChecked = cur.docs.every((d, i) => curChecked[i]);
+    var expired = cur.docs.some((d) => d.indexOf('Expired') >= 0);
+    var curStatus = statusOf(cur);
+    var hint = curStatus === 'approved' ? { tone: 'success', title: 'Approved', text: cur.name + ' can now sign in to the Staff Portal. They were told by SMS and email.' }
+      : curStatus === 'rejected' ? { tone: 'danger', title: 'Rejected', text: 'Reason sent: ' + st.reason + '.' }
+      : expired ? { tone: 'warning', title: 'Registration expired', text: 'TCMC registration expired in Aug 2026. Approving is blocked until a renewed certificate is uploaded.' }
+      : allChecked ? { tone: 'success', title: 'All documents checked', text: 'HPR match confirmed. You can approve.' }
+      : { tone: 'info', title: 'Check every document', text: 'Mark each one as checked to enable approval.' };
+
+    var DEPTS = [['Casualty', 18, 20, 'Dr. Vivek Menon', 22], ['General medicine', 52, 60, 'Dr. Arun Nair', 41], ['ICU', 18, 20, 'Dr. Sameer Ali', 26], ['Paediatrics', 21, 30, 'Dr. Rekha S.', 19], ['Maternity', 24, 30, 'Dr. Ann Mary', 23], ['Orthopaedics', 15, 20, 'Dr. Thomas K.', 12], ['Surgery', 20, 20, 'Dr. Hari Prasad', 18]];
+    var pctCls = (o, t) => { var p = Math.max(1, Math.min(10, Math.round(o / t * 10))); return 'w' + p * 10 + (p >= 10 ? ' low' : p >= 9 ? ' mid' : ''); };
+    var depts = DEPTS.map((d) => { var p = Math.round(d[1] / d[2] * 100); return { name: d[0], occ: d[1], total: d[2], free: d[2] - d[1], head: d[3], staff: d[4], pct: p + '% full', tone: p >= 100 ? 'danger' : p >= 85 ? 'warning' : 'success', cls: pctCls(d[1], d[2]), text: d[1] + ' / ' + d[2] }; });
+
+    var ROLES = ['Doctor', 'Nurse', 'Lab tech', 'Radiology', 'Pharmacist', 'Front desk'];
+    var PERMS = [
+      ['Open record with citizen key', 'National rule', [1, 0, 0, 0, 0, 0], true],
+      ['Break-glass emergency access', 'National rule · logged', [1, 0, 0, 0, 0, 0], true],
+      ['View admission records (ward)', 'Hospital setting', [1, 1, 0, 0, 0, 0], false],
+      ['Upload results to an order', 'Hospital setting', [0, 0, 1, 1, 0, 0], false],
+      ['Attach images to an order', 'Hospital setting', [0, 0, 0, 1, 0, 0], false],
+      ['Dispense e-signed prescriptions', 'National rule', [0, 0, 0, 0, 1, 0], true],
+      ['Book and reschedule OP visits', 'Hospital setting', [1, 0, 0, 0, 0, 1], false],
+      ['Record vitals at triage', 'Hospital setting', [1, 1, 0, 0, 0, 0], false],
+      ['Use AI clinical assistant', 'Hospital setting', [1, 0, 0, 0, 0, 0], false]
+    ];
+    var changed = Object.keys(st.perms).length;
+    var matrix = PERMS.map((p, pi) => ({ label: p[0], note: p[1], cells: ROLES.map((r, ri) => { var k = pi + '-' + ri; var on = st.perms[k] !== undefined ? st.perms[k] : !!p[2][ri]; return { mark: on ? '✓' : '', cls: 'cell' + (on ? ' on' : '') + (p[3] ? ' lock' : ''), pressed: on ? 'true' : 'false', locked: p[3], aria: (on ? 'Remove ' : 'Allow ') + p[0] + ' for ' + r, toggle: () => { var o = Object.assign({}, st.perms); o[k] = !on; set({ perms: o }); } }; }) }));
+
+    var BG = [
+      { id: 'b1', doc: 'Dr. Vivek Menon', patient: 'Unknown male, ~45', meta: 'Casualty · today 14:02 · 22 min', reason: 'Unconscious road accident patient. Identified by Aadhaar biometric. Needed allergies and blood group.', viewed: 'Emergency card, allergies, last discharge summary', evidence: 'Casualty register entry #C-4471 · ambulance 108 handover' },
+      { id: 'b2', doc: 'Dr. Sameer Ali', patient: 'Thankamma P.', meta: 'ICU · 15 Oct 23:40 · 41 min', reason: 'Transferred from PHC at night, family unreachable. Needed medication history.', viewed: 'Medicines, lab reports (90 days), discharge summaries', evidence: 'Referral note DEMO-REF-2210' },
+      { id: 'b3', doc: 'Dr. Arun Nair', patient: 'Anjali Menon', meta: 'General medicine · 11 Oct 09:10 · 6 min', reason: 'Citizen key not working, patient present and consenting verbally.', viewed: 'Lab reports only', evidence: 'Citizen confirmed in app afterwards' }
+    ];
+    st.bus.filter((e) => e.type === 'break-glass').forEach((e) => { var p = String(e.text || '').split(' · '); BG.unshift({ id: e.id, doc: p[0] || 'A doctor', patient: p[1] || 'a patient', meta: 'From the Doctor app · ' + e.at + ' · live', reason: p[2] ? p[2].charAt(0).toUpperCase() + p[2].slice(1) + '.' : 'Emergency access without a citizen key.', viewed: 'Emergency card, allergies, medicines', evidence: 'Logged automatically · citizen notified' }); });
+    var bgS = { justified: ['success', 'Justified'], flagged: ['danger', 'Escalated to district'] };
+    var bg = BG.map((b, i) => { var s = st.bg[b.id] || (i === 2 ? 'justified' : null); return Object.assign({}, b, { open: !s, tone: s ? bgS[s][0] : 'warning', status: s ? bgS[s][1] : 'Review due in ' + (i === 0 ? '71 h' : i === 1 ? '70 h' : '38 h'), justify: () => { var o = Object.assign({}, st.bg); o[b.id] = 'justified'; set({ bg: o }); }, flag: () => { var o = Object.assign({}, st.bg); o[b.id] = 'flagged'; set({ bg: o }); } }); });
+
+    var STAFF = [
+      ['Dr. Arun Nair', 'Doctor', 'General medicine', 'HPR 71-DEMO-1022', 'On duty'], ['Dr. Vivek Menon', 'Doctor', 'Casualty', 'HPR 71-DEMO-2871', 'On duty'], ['Lekha Pillai', 'Nurse', 'Ward 3', 'KNMC DEMO-55102', 'On duty'],
+      ['Rahul Varghese', 'Lab tech', 'Laboratory', 'KPMC DEMO-0981', 'On duty'], ['Fathima Beevi', 'Radiology', 'Radiology', 'AERB DEMO-RT-118', 'Off'], ['Joseph Mathew', 'Pharmacist', 'Pharmacy', 'KSPC DEMO-30214', 'On duty'],
+      ['Dr. Sameer Ali', 'Doctor', 'ICU', 'HPR 71-DEMO-3310', 'Off'], ['Asha Mohan', 'Nurse', 'ICU', 'KNMC DEMO-60218', 'On duty']
+    ];
+    var staffRows = STAFF.filter((s) => st.roleF === 'all' || s[1] === st.roleF).map((s) => ({ name: s[0], role: s[1], dept: s[2], reg: s[3], st: s[4] }));
+    var staffCols = [
+      { key: 'name', header: 'Name', render: (r) => h('div', { style: { display: 'flex', gap: 10, alignItems: 'center' } }, h(C.Avatar, { name: r.name, size: 30 }), h('strong', { style: { color: 'var(--ink)' } }, r.name)) },
+      { key: 'role', header: 'Role' }, { key: 'dept', header: 'Department' }, { key: 'reg', header: 'Registration', mono: true },
+      { key: 'st', header: 'Status', render: (r) => badge(r.st === 'On duty' ? 'success' : 'neutral', r.st, r.st === 'On duty') },
+      { key: 'a', header: '', render: (r) => h('button', { type: 'button', className: 'rowbtn', 'aria-label': 'Manage ' + r.name }, 'Manage') }
+    ];
+
+    var AUD = [
+      ['15:44', 'Lekha Pillai', 'Denied', 'Tried to open record outside admission · 403', 'access'],
+      ['15:20', 'Dr. Arun Nair', 'Session', 'Citizen key · Anjali Menon · 30 min', 'access'],
+      ['14:02', 'Dr. Vivek Menon', 'Break-glass', 'Unknown male ~45 · Casualty', 'access'],
+      ['11:40', 'Dr. Meera Krishnan', 'Approved', 'Lekha Pillai · Nurse · Ward 3', 'admin'],
+      ['10:05', 'Rahul Varghese', 'Upload', 'Lipid profile to order DEMO-ORD-5521', 'access'],
+      ['09:12', 'Dr. Meera Krishnan', 'Permission', 'Radiology · attach images to an order', 'admin'],
+      ['08:01', 'System', 'Sync', 'Bed counts sent to district dashboard', 'system']
+    ];
+    var auditRows = AUD.filter((a) => st.auditF === 'all' || a[4] === st.auditF).map((a) => ({ t: a[0], who: a[1], what: a[2], d: a[3] }));
+    var auditCols = [{ key: 't', header: 'Time', mono: true }, { key: 'who', header: 'Who' }, { key: 'what', header: 'Action', render: (r) => badge(r.what === 'Denied' || r.what === 'Break-glass' ? 'danger' : r.what === 'Approved' ? 'success' : 'neutral', r.what) }, { key: 'd', header: 'Detail' }];
+
+    var fromL = (f) => CF_FROM[f] || f;
+    var feed = st.bus.slice(0, 3).map((e) => Object.assign({}, e, { fromLabel: fromL(e.from), href: e.href || '#' }));
+    var CMP0 = [
+      { id: 'k1', ticket: 'CMP-0398', title: 'Medicine out of stock at hospital pharmacy', who: 'Suresh K.', when: '16 Oct', cat: 'Pharmacy', catTone: 'teal', text: 'Told to buy Insulin glargine outside for the second time this month.', urgent: false, def: 'assigned' },
+      { id: 'k2', ticket: 'CMP-0391', title: 'Rude behaviour at casualty registration', who: 'Mariamma J.', when: '15 Oct', cat: 'Staff conduct', catTone: 'peach', text: 'Night shift registration staff refused to help my elderly father fill the form.', urgent: true, def: 'new' },
+      { id: 'k3', ticket: 'CMP-0377', title: 'Lab report delayed by 5 days', who: 'Biju George', when: '11 Oct', cat: 'Lab', catTone: 'info', text: 'Thyroid test report promised in 1 day, arrived after 5.', urgent: false, def: 'resolved' }
+    ];
+    st.bus.filter((e) => e.type === 'complaint').forEach((e) => { var tk = (String(e.text).match(/CMP-\d+/) || ['CMP-' + String(e.id).slice(-4)])[0]; CMP0.unshift({ id: e.id, ticket: tk, title: String(e.title).replace(/^Complaint filed · /, '').replace(/^./, (c) => c.toUpperCase()), who: 'Anjali Menon', when: 'today ' + e.at, cat: 'OP services', catTone: 'blue', text: e.text + ' — filed from the Citizen app.', urgent: true, def: 'new', live: true }); });
+    var CST = { 'new': ['warning', 'New'], assigned: ['warning', 'Under review'], resolved: ['success', 'Resolved'] };
+    var complaints = CMP0.map((k) => { var s = st.cmp[k.id] || k.def; return Object.assign({}, k, { cls: 'cmp' + (k.urgent && s === 'new' ? ' urgent' : ''), tone: CST[s][0], status: CST[s][1], s2: s !== 'new' ? 'on' : '', s3: s === 'resolved' ? 'on' : '', trackLabel: 'Progress: ' + CST[s][1], canAssign: s === 'new', canResolve: s !== 'resolved', note: s === 'resolved' ? 'Citizen notified' : s === 'assigned' ? 'With PRO desk · Sindhu V.' : (k.live ? 'Live from the Citizen app' : 'Waiting for triage'),
+      assign: () => { var o = Object.assign({}, st.cmp); o[k.id] = 'assigned'; set({ cmp: o }); },
+      resolve: () => { var o = Object.assign({}, st.cmp); o[k.id] = 'resolved'; set({ cmp: o }); busPush({ type: 'complaint-update', from: 'hospitaladmin', to: ['citizen'], title: 'Complaint resolved · ' + k.ticket, text: 'Demo General Hospital replied: ' + k.title, href: 'CitizenComplaints.dc.html' }); } }); });
+    var openCmp = complaints.filter((k) => k.status !== 'Resolved').length;
+    var RB = [[5, 58], [4, 22], [3, 9], [2, 5], [1, 6]];
+    var ratingBars = RB.map((r) => ({ label: r[0] + ' ★', pct: r[1] + '%', cls: 'w' + Math.max(10, Math.round(r[1] / 10) * 10) }));
+    var REV = [['Lakshmi Amma', 5, 'today', 'General medicine', 'Dr. Arun Nair explained my sugar results clearly and the OP queue moved fast.'], ['Thomas Varghese', 4, 'yesterday', 'Casualty', 'Quick attention at night. Waiting area needs more fans.'], ['Fathima N.', 5, '15 Oct', 'Maternity', 'Nurses were kind and the discharge summary came to my app the same day.'], ['Ramesh Pillai', 2, '14 Oct', 'Pharmacy', 'Two of my medicines were out of stock and I had to buy outside.']];
+    var reviews = REV.map((r) => ({ name: r[0], stars: '★★★★★'.slice(0, r[1]) + '☆☆☆☆☆'.slice(0, 5 - r[1]), aria: r[1] + ' out of 5 stars', when: r[2], dept: r[3], text: r[4] }));
+    var deptRatings = [['General medicine', 4.6], ['Maternity', 4.5], ['Casualty', 4.1], ['Laboratory', 3.9], ['Pharmacy', 3.4]].map((d) => ({ name: d[0], score: d[1].toFixed(1), stars: '★★★★★'.slice(0, Math.round(d[1])) + '☆☆☆☆☆'.slice(0, 5 - Math.round(d[1])) }));
+    var cmpCats = [['OP waiting', 14], ['Pharmacy stock', 9], ['Staff conduct', 6], ['Lab delays', 5], ['Cleanliness', 3]].map((c) => ({ label: c[0], n: String(c[1]), cls: 'w' + Math.max(10, Math.round(c[1] / 14 * 10) * 10) }));
+
+    var DEPTC = { 'General medicine': 'd-med', ICU: 'd-icu', Paediatrics: 'd-ped', Maternity: 'd-mat', Surgery: 'd-surg', Orthopaedics: 'd-ortho' };
+    var ADM = [['Thomas Kurian', 'Bed 7 · Ward 3', 'General medicine', 'Critical', 'Dr. Arun Nair', '15 Oct'], ['Thankamma P.', 'ICU-4', 'ICU', 'Critical', 'Dr. Sameer Ali', '15 Oct'], ['Baby of Reshma', 'NICU-2', 'Paediatrics', 'Stable', 'Dr. Rekha S.', '16 Oct'], ['Reshma S.', 'Maternity 11', 'Maternity', 'Recovering', 'Dr. Ann Mary', '16 Oct'], ['Gopi M.', 'Bed 11 · Ward 3', 'General medicine', 'Stable', 'Dr. Arun Nair', '14 Oct'], ['Abdul R.', 'Surgical 5', 'Surgery', 'Post-op', 'Dr. Hari Prasad', '17 Oct'], ['Usha D.', 'Ortho 3', 'Orthopaedics', 'Discharge today', 'Dr. Thomas K.', '12 Oct'], ['Kunjumon', 'ICU-7', 'ICU', 'Stable', 'Dr. Sameer Ali', '13 Oct']];
+    var ADMT = { Critical: 'danger', Stable: 'success', Recovering: 'teal', 'Post-op': 'warning', 'Discharge today': 'info' };
+    var admRows = ADM.filter((a) => st.admF === 'all' || a[2] === st.admF).map((a) => ({ p: a[0], bed: a[1], dept: a[2], st: a[3], doc: a[4], since: a[5] }));
+    var admCols = [{ key: 'p', header: 'Patient', render: (r) => h('strong', { style: { color: 'var(--ink)' } }, r.p) }, { key: 'bed', header: 'Bed', mono: true }, { key: 'dept', header: 'Department', render: (r) => h('span', { className: 'dtag ' + (DEPTC[r.dept] || '') }, h('i', { 'aria-hidden': 'true' }), r.dept) }, { key: 'doc', header: 'Treating doctor' }, { key: 'since', header: 'Admitted', mono: true }, { key: 'st', header: 'Status', render: (r) => badge(ADMT[r.st] || 'neutral', r.st) }];
+
+    var DAYS = ['Mon 19', 'Tue 20', 'Wed 21', 'Thu 22', 'Fri 23', 'Sat 24', 'Sun 25'];
+    var DOCS = [['Dr. Arun Nair', 'General medicine', 'oooooxn'.split('')], ['Dr. Vivek Menon', 'Casualty', 'nxnxnox'.split('')], ['Dr. Sameer Ali', 'ICU', 'ooxoonx'.split('')], ['Dr. Rekha S.', 'Paediatrics', 'oooxoox'.split('')], ['Dr. Ann Mary', 'Maternity', 'xoooonx'.split('')], ['Dr. Hari Prasad', 'Surgery', 'oxoooxx'.split('')]];
+    var roster = DOCS.map((d, di) => ({ name: d[0], dept: d[1], cells: DAYS.map((day, i) => { var k = di + '-' + i; var v = st.roster[k] !== undefined ? st.roster[k] : d[2][i]; var nxt = v === 'x' ? 'o' : v === 'o' ? 'n' : 'x'; return { label: v === 'o' ? 'OP' : v === 'n' ? 'Night' : 'Off', cls: 'slot' + (v === 'o' ? ' on' : v === 'n' ? ' night' : ''), pressed: v === 'x' ? 'false' : 'true', aria: d[0] + ', ' + day + ': ' + (v === 'o' ? 'OP shift' : v === 'n' ? 'night on-call' : 'off') + '. Click to change', toggle: () => { var o = Object.assign({}, st.roster); o[k] = nxt; set({ roster: o, rosterPub: false }); } }; }) }));
+    var cov = DAYS.map((day, i) => roster.filter((r) => r.cells[i].label !== 'Off').length);
+    var coverage = DAYS.map((day, i) => ({ day: day.slice(0, 3), n: cov[i] + '/6', cls: 'w' + Math.max(10, Math.round(cov[i] / 6 * 10) * 10) + (cov[i] < 4 ? ' low' : '') }));
+    var gapDay = DAYS.filter((d, i) => cov[i] < 4);
+    var nights = DAYS.map((d, i) => roster.filter((r) => r.cells[i].label === 'Night').length);
+    var noNight = DAYS.filter((d, i) => nights[i] === 0);
+    var NAV = [
+      { items: [
+        { id: 'overview', label: 'Overview', icon: ic('M3 11l9-7l9 7M5 10v10h5v-6h4v6h5V10') },
+        { id: 'approvals', label: 'Approvals', icon: ic('M9 12l2 2l4-4M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z'), badge: pending || undefined },
+        { id: 'staff', label: 'Staff', icon: ic('M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM2 21c1-4 3.5-6 7-6s6 2 7 6M17 11a3 3 0 1 0 0-6M22 21c-.6-2.6-2-4.3-4-5') }
+      ] },
+      { title: 'Hospital', items: [
+        { id: 'admissions', label: 'Admissions', icon: ic('M4 4h16v16H4zM4 9h16M9 4v16') },
+        { id: 'roster', label: 'Doctor roster', icon: ic('M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M12 14h2M16 14h0') },
+        { id: 'beds', label: 'Departments & beds', icon: ic('M3 18V7M3 13h18v5M21 18v-3a3 3 0 0 0-3-3h-8v1M7 11a2 2 0 1 0 0-4a2 2 0 0 0 0 4z') },
+        { id: 'roles', label: 'Roles & permissions', icon: ic('M15 7a4 4 0 1 1-3.9 4.9L4 19v2h3v-2h2v-2h2l1.1-1.1A4 4 0 0 1 15 7z') },
+        { id: 'profile', label: 'Hospital profile', icon: ic('M4 21V5l8-3l8 3v16M9 21v-5h6v5M12 7v4M10 9h4') }
+      ] },
+      { title: 'Citizens', items: [
+        { id: 'complaints', label: 'Complaints', icon: ic('M4 5h16v11H8l-4 4z'), badge: openCmp || undefined },
+        { id: 'reviews', label: 'Reviews', icon: ic('M12 3l2.7 5.6l6.1.9l-4.4 4.3l1 6.1L12 17l-5.4 2.9l1-6.1L3.2 9.5l6.1-.9z') }
+      ] },
+      { title: 'Oversight', items: [
+        { id: 'breakglass', label: 'Break-glass reviews', icon: ic('M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'), badge: bg.filter((b) => b.open).length || undefined },
+        { id: 'audit', label: 'Audit log', icon: ic('M4 5h16M4 10h16M4 15h10M4 20h7') }
+      ] }
+    ];
+    var labels = {}; NAV.forEach(function (g) { g.items.forEach(function (i) { labels[i.id] = i.label; }); });
+    var is = {}; Object.keys(labels).forEach(function (k) { is[k] = k === st.section; });
+    var go = (id) => set({ section: id });
+
+    return {
+      yes: true, no: false, n32: 32, n36: 36, n48: 48, n3: 3,
+      nav: NAV, section: st.section, is: is, crumb: labels[st.section], go: go, onDuty: String(st.duty),
+      toBreak: () => go('breakglass'), toApprovals: () => go('approvals'), toBeds: () => go('beds'), toStaff: () => go('staff'), toAudit: () => go('audit'),
+      pendingCount: String(pending),
+      c: { op: String(Math.round(642 * st.cnt)), beds: String(Math.round(168 * st.cnt)), sess: String(Math.round(37 * st.cnt)) },
+      toast: st.toast ? Object.assign({}, st.toast, { fromLabel: fromL(st.toast.from) }) : null, closeToast: () => set({ toast: null }),
+      feed: feed, toComplaints: () => go('complaints'), toReviews: () => go('reviews'),
+      complaints: complaints, cmpPeek: complaints.slice(0, 3), openCmp: String(openCmp), doneCmp: String(complaints.length - openCmp), cmpCats: cmpCats,
+      ratingBars: ratingBars, reviews: reviews, deptRatings: deptRatings,
+      admFilters: chipsOf([['all', 'All'], ['General medicine', 'Medicine'], ['ICU', 'ICU'], ['Maternity', 'Maternity'], ['Surgery', 'Surgery']], st.admF, 'admF'), admRows: admRows, admCols: admCols, admCount: String(admRows.length),
+      days: DAYS, roster: roster, coverage: coverage,
+      rosterTone: st.rosterPub ? 'success' : 'warning', rosterLabel: st.rosterPub ? 'Published · staff notified' : 'Draft · not published',
+      publishRoster: () => set({ rosterPub: true }),
+      gapTone: gapDay.length || noNight.length ? 'warning' : 'success',
+      gapTitle: gapDay.length ? 'Thin cover on ' + gapDay.join(', ') : noNight.length ? 'No night on-call on ' + noNight.join(', ') : 'Every day is covered',
+      gapText: gapDay.length || noNight.length ? 'At least 4 doctors and 1 night on-call are needed each day.' : 'At least 4 doctors and one night on-call each day.',
+      t1: { direction: 'up', text: '8% vs last Saturday' },
+      iUsers: ic('M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM2 21c1-4 3.5-6 7-6s6 2 7 6'), iBed: ic('M3 18V7M3 13h18v5M21 18v-3a3 3 0 0 0-3-3h-8v1'), iKey: ic('M15 7a4 4 0 1 1-3.9 4.9L4 19v2h3v-2h2v-2h2l1.1-1.1A4 4 0 0 1 15 7z'), iCheck: ic('M9 12l2 2l4-4M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z'),
+      deptBars: depts.slice(0, 6),
+      queuePeek: APPS.slice(0, 3).map((a) => ({ name: a.name, role: a.role, dept: a.dept, tone: SB[statusOf(a)][0], status: SB[statusOf(a)][1] })),
+      qFilters: chipsOf([['pending', 'Pending'], ['doctors', 'Doctors'], ['done', 'Decided'], ['all', 'All']], st.qF, 'qF'),
+      queue: shown.map((a) => ({ name: a.name, role: a.role, when: a.when, tone: SB[statusOf(a)][0], status: SB[statusOf(a)][1], cls: 'qi' + (a.id === cur.id ? ' on' : ''), pressed: a.id === cur.id ? 'true' : 'false', pick: () => set({ sel: a.id, rejecting: false }) })),
+      cur: { name: cur.name, role: cur.role, dept: cur.dept, when: cur.when, reg: cur.reg, emp: cur.emp, tone: SB[curStatus][0], status: SB[curStatus][1] },
+      curDocs: cur.docs.map((d, i) => { var p = d.split('|'); var on = !!curChecked[i]; var bad = p[1].indexOf('Expired') >= 0; return { name: p[0], meta: p[1], icoCls: 'ico ' + (bad ? 't-danger' : on ? 't-sage' : 't-blue'), viewLabel: 'View ' + p[0], btn: on ? '✓ Checked' : 'Mark checked', btnCls: on ? 'rowbtn ok' : 'rowbtn', pressed: on ? 'true' : 'false', toggle: () => { var c = Object.assign({}, st.checked); var m = Object.assign({}, c[cur.id] || {}); m[i] = !on; c[cur.id] = m; set({ checked: c }); } }; }),
+      hint: hint,
+      cantApprove: !allChecked || expired || curStatus !== 'pending',
+      approve: () => { var d = Object.assign({}, st.dec); d[cur.id] = 'approved'; set({ dec: d, rejecting: false }); },
+      startReject: () => set({ rejecting: true }), cancelReject: () => set({ rejecting: false }),
+      confirmReject: () => { var d = Object.assign({}, st.dec); d[cur.id] = 'rejected'; set({ dec: d, rejecting: false }); },
+      rejecting: st.rejecting, reason: st.reason, pickReason: (v) => set({ reason: v }),
+      reasons: ['Registration could not be verified', 'Registration expired', 'Document unreadable or incomplete', 'Not employed at this hospital', 'Other'],
+      roleFilters: chipsOf([['all', 'All'], ['Doctor', 'Doctors'], ['Nurse', 'Nurses'], ['Lab tech', 'Lab'], ['Radiology', 'Radiology']], st.roleF, 'roleF'),
+      staffCols: staffCols, staffRows: staffRows, staffCount: String(staffRows.length) + ' of 198',
+      depts: depts,
+      roleNames: ROLES, matrix: matrix, saveTone: changed ? 'warning' : 'success', saveLabel: changed ? changed + ' unsaved change' + (changed > 1 ? 's' : '') : 'All changes saved',
+      bg: bg,
+      auditFilters: chipsOf([['all', 'All'], ['access', 'Record access'], ['admin', 'Admin changes'], ['system', 'System']], st.auditF, 'auditF'),
+      auditCols: auditCols, auditRows: auditRows,
+      own: ['Government · State', 'Government · Central', 'Private', 'Trust / NGO'],
+      logo: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } }, h('a', { href: 'AdminLogin.dc.html', 'aria-label': 'Admin Console sign-in', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 28 })), h('span', { className: 'pill' }, 'Admin Console')),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Dr. Meera Krishnan', size: 38, tone: 'peach' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Dr. Meera Krishnan'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Hospital admin · Demo General Hospital')),
+        h('a', { href: 'AdminLogin.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+}
+</script>
+</body>
+</html>

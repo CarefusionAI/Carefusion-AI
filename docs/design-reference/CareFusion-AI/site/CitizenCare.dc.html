@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Find care — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:22px}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media (max-width: 900px){.lay{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.muted{color:var(--ink-muted);font-size:13px}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:22px;background:linear-gradient(120deg,var(--tint-teal),var(--tint-blue));display:flex;flex-direction:column;gap:14px}
+.sbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--surface-raised);border-radius:16px;padding:8px;box-shadow:var(--shadow-card);position:relative}
+.sbar input{flex:1 1 240px;border:0;background:transparent;font:inherit;font-size:15px;padding:10px 8px;color:var(--ink);min-width:0}
+.sbar:focus-within{outline:2px solid var(--focus-ring);outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.chip{border:1px solid rgba(63,82,99,.18);background:rgba(250,245,239,.75);border-radius:9999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink-body);cursor:pointer}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.chip:focus-visible,.slot:focus-visible,.res:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.res{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px;border-radius:16px;border:1px solid var(--border);background:var(--surface-raised);font:inherit;text-align:left;color:inherit;cursor:pointer;width:100%;transition:border-color 200ms ease,box-shadow 200ms ease,transform 200ms cubic-bezier(0.22,1,0.36,1)}
+.res:hover{transform:translateY(-1px);box-shadow:var(--shadow-lift)}
+.res.on{border-color:var(--primary);box-shadow:0 0 0 3px rgba(58,114,109,.15)}
+.km{font-size:13px;font-weight:600;color:var(--ink-strong);text-align:right;white-space:nowrap}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.day{border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:8px 0;font:inherit;text-align:center;cursor:pointer;color:var(--ink-body)}
+.day b{display:block;font-size:17px;color:var(--ink-strong)}.day i{font-style:normal;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.day.on{background:var(--ink-strong);border-color:var(--ink-strong);color:var(--on-primary)}.day.on b{color:var(--on-primary)}
+.day:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot{border:1px solid var(--border);background:var(--surface-raised);border-radius:12px;padding:10px 0;font:inherit;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-variant-numeric:tabular-nums}
+.slot.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.slot.off{opacity:.45;cursor:not-allowed;text-decoration:line-through}
+.map{position:relative;height:170px;border-radius:16px;overflow:hidden;background:#e6efe6}
+.pin{position:absolute;width:14px;height:14px;border-radius:9999px;background:var(--primary);border:3px solid #faf5ef;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.pin.me{background:var(--info);animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(69,101,138,0)}}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.dt{flex:none;width:52px;text-align:center;padding:6px 0;border-radius:12px;font-weight:600;line-height:1.1}
+.dt b{display:block;font-size:18px}.dt i{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.sum{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:14px;margin:0}
+.sum dt{color:var(--ink-muted)}.sum dd{margin:0;font-weight:600;color:var(--ink-strong)}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.cf-srx{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion: reduce){.in,.pin.me{animation:none}.res:hover{transform:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.PageHeader" eyebrow="Health" title="Find care & appointments" subtitle="Government OPs are free. Booking holds your token — pay any fees at the hospital."></x-import>
+
+  <section class="hero in" aria-label="Search">
+    <svg aria-hidden="true" viewBox="0 0 64 64" width="260" height="260" style="position: absolute; right: -40px; top: -70px; opacity: .1;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#3a726d"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#3a726d"></rect></svg>
+    <form class="sbar" onSubmit="{{noop}}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="margin-left: 8px;"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 0 0 0-14zM21 21l-5-5"></path></svg>
+      <label for="q" class="cf-srx">Search doctors, hospitals or specialities</label>
+      <input id="q" placeholder="Doctor, hospital or speciality" value="General medicine">
+      <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 12px; background: var(--surface); font-size: 13px; font-weight: 600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"></path></svg>Pathanamthitta · 10 km</span>
+      <x-import component-from-global-scope="CareFusion.Button" type="submit">Search</x-import>
+    </form>
+    <div class="chips" role="group" aria-label="Filters">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="6"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+    </div>
+  </section>
+
+  <div class="lay in" style="animation-delay: 80ms;">
+    <section class="box" aria-label="Results">
+      <div class="bh"><h2 class="bt">{{count}} places near you</h2><span class="muted">Sorted by distance</span></div>
+      <sc-for list="{{results}}" as="r" hint-placeholder-count="5">
+        <button type="button" class="{{r.cls}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}">
+          <x-import component-from-global-scope="CareFusion.Avatar" name="{{r.doc}}" size="{{n48}}"></x-import>
+          <span style="min-width: 0;"><strong style="color: var(--ink); display: block;">{{r.doc}}</strong><span class="muted">{{r.spec}} · {{r.place}}</span><span class="tags"><x-import component-from-global-scope="CareFusion.Badge" tone="{{r.tone}}">{{r.type}}</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="outline">{{r.next}}</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">{{r.lang}}</x-import></span></span>
+          <span class="km">{{r.km}}<br><span class="muted" style="font-weight: 400;">{{r.fee}}</span></span>
+        </button>
+      </sc-for>
+      <div class="map" role="img" aria-label="Map showing 5 places within 10 km of you">
+        <svg width="100%" height="100%" viewBox="0 0 600 170" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C120 90 200 140 320 100 S520 60 600 80" stroke="#cfe0e9" stroke-width="18" fill="none"></path><path d="M80 0 L140 170 M380 0 L300 170 M0 40 H600" stroke="#faf5ef" stroke-width="6"></path></svg>
+        <span class="pin me" style="left: 46%; top: 52%;" title="You"></span><span class="pin" style="left: 38%; top: 30%;"></span><span class="pin" style="left: 62%; top: 62%;"></span><span class="pin" style="left: 22%; top: 70%;"></span><span class="pin" style="left: 78%; top: 24%;"></span><span class="pin" style="left: 55%; top: 18%;"></span>
+      </div>
+    </section>
+
+    <aside class="box" aria-label="Pick a time" style="position: sticky; top: 16px;">
+      <div style="display: flex; gap: 12px; align-items: center;"><x-import component-from-global-scope="CareFusion.Avatar" name="{{sel.doc}}" size="{{n44}}"></x-import><div style="min-width: 0;"><strong style="color: var(--ink);">{{sel.doc}}</strong><div class="muted">{{sel.place}}</div></div></div>
+      <div class="days" role="radiogroup" aria-label="Day">
+        <sc-for list="{{days}}" as="d" hint-placeholder-count="5"><button type="button" role="radio" aria-checked="{{d.checked}}" class="{{d.cls}}" onClick="{{d.pick}}"><i>{{d.w}}</i><b>{{d.n}}</b></button></sc-for>
+      </div>
+      <div class="muted">Morning OP · token system</div>
+      <div class="slots" role="radiogroup" aria-label="Time">
+        <sc-for list="{{slots}}" as="s" hint-placeholder-count="9"><button type="button" role="radio" aria-checked="{{s.checked}}" aria-disabled="{{s.dis}}" class="{{s.cls}}" onClick="{{s.pick}}">{{s.t}}</button></sc-for>
+      </div>
+      <x-import component-from-global-scope="CareFusion.Select" label="Reason for visit" options="{{reasons}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Switch" label="Share my key at check-in" description="Opens a 30-minute session when you arrive" default-checked="{{yes}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Button" size="lg" on-click="{{book}}">Book {{sel.slotLabel}}</x-import>
+    </aside>
+  </div>
+
+  <section class="grid g2 in" style="animation-delay: 160ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Upcoming</h2><x-import component-from-global-scope="CareFusion.Badge" tone="info">{{upCount}}</x-import></div>
+      <div>
+        <sc-for list="{{upcoming}}" as="u" hint-placeholder-count="2">
+          <div class="row"><span class="dt" style="background: var(--tint-blue); color: var(--info);"><b>{{u.d}}</b><i>{{u.m}}</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">{{u.title}}</strong><div class="muted">{{u.sub}}</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">{{u.st}}</x-import></div>
+        </sc-for>
+        <div class="row"><span class="dt" style="background: var(--tint-peach); color: var(--peach-text);"><b>30</b><i>Oct</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">HbA1c test · Demo Diagnostics</strong><div class="muted">Walk-in 07:00–10:00 · fasting</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Not booked</x-import></div>
+      </div>
+      <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <div class="bh"><h3 class="bt" style="font-size: 14px;">Tue 21 Oct · Dr. Arun Nair</h3><span class="muted">Step 2 of 3</span></div>
+        <ol aria-label="Booking progress" style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; font-size: 12px; font-weight: 600;">
+          <li style="padding: 8px 10px; border-radius: 10px; background: var(--tint-sage); color: var(--success);">✓ Requested</li>
+          <li style="padding: 8px 10px; border-radius: 10px; background: #f6e9cf; color: var(--accent-text);">✓ Confirmed</li>
+          <li style="padding: 8px 10px; border-radius: 10px; background: var(--surface); color: var(--ink-muted);">Completed</li>
+        </ol>
+        <p class="muted" style="margin: 0; font-size: 13px;">Bring your fasting sugar log. Show your key at the OP desk — the doctor opens your record only then.</p>
+      </div>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Past visits</h2><span class="muted">Last 6 months</span></div>
+      <div>
+        <div class="row"><span class="dt" style="background: var(--surface-cream); color: var(--ink-muted);"><b>15</b><i>Oct</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Chest X-ray · Radiology</strong><div class="muted">Demo General Hospital · report in Documents</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Done</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--surface-cream); color: var(--ink-muted);"><b>26</b><i>Sep</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Dr. Arun Nair · fever, cough</strong><div class="muted">Prescription e-signed · follow-up set</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Done</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--surface-cream); color: var(--ink-muted);"><b>02</b><i>Oct</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Dr. Sreeja Paul · eye check</strong><div class="muted">Taluk Hospital Adoor · normal</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Done</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--surface-cream); color: var(--ink-muted);"><b>11</b><i>Aug</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">PHC Konni · dengue test</strong><div class="muted">Negative · no follow-up needed</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Done</x-import></div>
+      </div>
+    </div>
+  </section>
+
+  <x-import component-from-global-scope="CareFusion.Modal" open="{{modal}}" title="Appointment booked" on-close="{{close}}" footer="{{footer}}">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 14px; background: var(--tint-sage); color: var(--success); font-weight: 600;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"></path></svg>Your token is held. We'll remind you the day before.</div>
+      <dl class="sum">
+        <dt>Doctor</dt><dd>{{sel.doc}}</dd>
+        <dt>Where</dt><dd>{{sel.place}}</dd>
+        <dt>When</dt><dd>{{sel.when}}</dd>
+        <dt>Token</dt><dd>{{sel.token}}</dd>
+        <dt>Fee</dt><dd>{{sel.fee}}</dd>
+      </dl>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 14px; background: var(--tint-blue);">
+        <strong style="color: var(--ink); font-size: 14px;">Sent to {{sel.doc}}'s queue at {{bookedAt}}</strong>
+        <span style="font-size: 13px;">The doctor app now shows your booking. Your reminder is in Dates.</span>
+        <span style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px;"><a href="Doctor.dc.html">Doctor sees it in their queue →</a><a href="CitizenDates.dc.html">Open in Dates →</a></span>
+      </div>
+      <p class="muted" style="margin: 0;">Booking reference {{bookRef}}</p>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1680}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { f: 'All', r: 0, d: 1, s: 4, modal: false, booked: [], bookedAt: '', ref: 'DEMO-APT-58213' }; }
+  renderVals() {
+    var h = React.createElement;
+    var R = [
+      ['Dr. Arun Nair', 'General medicine', 'Demo General Hospital', 'Government', 'teal', 'Next: Tue 10:30', 'മലയാളം · English', '1.2 km', 'Free OP'],
+      ['Dr. Lakshmi Varma', 'Diabetology', 'District Hospital Kozhencherry', 'Government', 'teal', 'Next: Wed 09:00', 'മലയാളം · English', '4.8 km', 'Free OP'],
+      ['Dr. Thomas Kurian', 'Cardiology', 'Muthoot Medical Centre (demo)', 'Private', 'gold', 'Next: Today 17:30', 'English · हिन्दी', '6.1 km', '₹500'],
+      ['Dr. Anitha George', 'Family medicine', 'PHC Konni', 'Government', 'teal', 'Walk-in today', 'മലയാളം', '8.4 km', 'Free OP'],
+      ['Dr. Rajesh Menon', 'Endocrinology', 'Believers Hospital Tiruvalla (demo)', 'Private', 'gold', 'Next: Thu 11:00', 'English · தமிழ்', '9.7 km', '₹600']
+    ];
+    var F = ['All', 'Government', 'Private', 'Open now', 'Female doctor', 'Telemedicine'];
+    var f = this.state.f;
+    var list = R.map(function (r, i) { return { r: r, i: i }; }).filter(function (x) { return f === 'All' || f === 'Open now' || f === 'Female doctor' || f === 'Telemedicine' || x.r[3] === f; });
+    var D = [['Mon', '20'], ['Tue', '21'], ['Wed', '22'], ['Thu', '23'], ['Fri', '24']];
+    var S = ['09:00', '09:15', '09:30', '09:45', '10:30', '10:45', '11:00', '11:15', '11:30'];
+    var full = { 0: 1, 2: 1, 7: 1 };
+    var sel = R[this.state.r];
+    var st = this.state;
+    var when = D[st.d][0] + ' ' + D[st.d][1] + ' Oct · ' + S[st.s];
+    var up = [{ d: '21', m: 'Oct', title: 'Dr. Arun Nair · follow-up', sub: '10:30 · OP block 2 · token 14', st: 'Confirmed' }].concat(st.booked);
+    return {
+      yes: true, n48: 48, n44: 44, modal: st.modal,
+      count: String(list.length),
+      filters: F.map((l) => ({ label: l, cls: f === l ? 'chip on' : 'chip', pressed: f === l ? 'true' : 'false', pick: () => this.setState({ f: l }) })),
+      results: list.map((x) => ({ doc: x.r[0], spec: x.r[1], place: x.r[2], type: x.r[3], tone: x.r[4], next: x.r[5], lang: x.r[6], km: x.r[7], fee: x.r[8], cls: x.i === st.r ? 'res on' : 'res', pressed: x.i === st.r ? 'true' : 'false', pick: () => this.setState({ r: x.i }) })),
+      days: D.map((d, i) => ({ w: d[0], n: d[1], cls: i === st.d ? 'day on' : 'day', checked: i === st.d ? 'true' : 'false', pick: () => this.setState({ d: i }) })),
+      slots: S.map((t, i) => ({ t: t, dis: full[i] ? 'true' : 'false', cls: full[i] ? 'slot off' : (i === st.s ? 'slot on' : 'slot'), checked: i === st.s ? 'true' : 'false', pick: () => { if (!full[i]) this.setState({ s: i }); } })),
+      reasons: ['Follow-up visit', 'New problem', 'Test results', 'Prescription refill', 'Certificate'],
+      sel: { doc: sel[0], place: sel[2], when: when, token: String(8 + st.s * 2), fee: sel[8], slotLabel: D[st.d][0] + ' ' + S[st.s] },
+      upCount: up.length + ' booked',
+      upcoming: up,
+      bookedAt: st.bookedAt, bookRef: st.ref,
+      book: () => {
+        var ref = 'DEMO-APT-' + (58213 + st.booked.length);
+        var ev = busPush({ type: 'booking', from: 'citizen', to: ['doctor', 'hospitaladmin'], title: 'New booking · Anjali Menon', text: when + ' · ' + sel[0] + ' · token ' + (8 + st.s * 2), href: 'Doctor.dc.html', day: D[st.d][1], ref: ref, doc: sel[0], place: sel[2], time: S[st.s] });
+        this.setState({ modal: true, bookedAt: ev.at, ref: ref, booked: st.booked.concat([{ d: D[st.d][1], m: 'Oct', title: sel[0] + ' · ' + sel[1], sub: S[st.s] + ' · ' + sel[2] + ' · sent to doctor', st: 'Booked' }]) });
+      },
+      toDates: () => { this.setState({ modal: false }); if (this.props.go) this.props.go('dates'); },
+      close: () => this.setState({ modal: false }),
+      footer: h('div', { style: { display: 'flex', gap: 8, justifyContent: 'flex-end' } }, h(CareFusion.Button, { variant: 'secondary', onClick: () => { this.setState({ modal: false }); if (this.props.go) this.props.go('dates'); } }, 'See in Dates'), h(CareFusion.Button, { onClick: () => this.setState({ modal: false }) }, 'Done')),
+      noop: function (e) { if (e && e.preventDefault) e.preventDefault(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

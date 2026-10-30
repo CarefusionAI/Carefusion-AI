@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home vitals — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.muted{color:var(--ink-muted);font-size:13px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--border);background:var(--surface);border-radius:9999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink-body);cursor:pointer;transition:background 200ms ease,border-color 200ms ease}
+.seg button.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.seg button:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.fr{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.ok{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--tint-sage);color:var(--success);font-size:14px;font-weight:600}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-muted)}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.dev{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:var(--surface)}
+.dev-i{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.band{height:10px;border-radius:9999px;background:linear-gradient(90deg,#dfeaf4 0 20%,#dcebe0 20% 60%,#f6e9cf 60% 80%,#f5e1de 80%);position:relative}
+.band b{position:absolute;top:-4px;width:4px;height:18px;border-radius:2px;background:var(--ink-strong)}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.draw{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 1.6s cubic-bezier(0.22,1,0.36,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.in,.draw{animation:none;stroke-dashoffset:0}}
+.ok.warn{background:var(--warning-bg);color:var(--warning)}
+.cf-stat-hint.is-down{color:var(--success)}
+.recent{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.rh{margin:0;font-size:14px;font-weight:600;color:var(--ink)}
+.rr{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:var(--surface);font-size:14px}
+.rr strong{color:var(--ink)}
+.rd{width:8px;height:8px;border-radius:9999px;flex:none;background:var(--success-soft)}.rd.bad{background:var(--warning)}
+.rs{font-size:12px;font-weight:600;padding:2px 8px;border-radius:9999px;background:var(--success-bg);color:var(--success)}.rs.bad{background:var(--warning-bg);color:var(--warning)}
+.num{font-variant-numeric:tabular-nums}.grow{flex:1;min-width:0}
+.lk2{font-size:13px;font-weight:600;color:var(--primary-text);text-decoration:none}.lk2:hover{text-decoration:underline}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <header class="in">
+    <x-import component-from-global-scope="CareFusion.PageHeader" eyebrow="Health" title="Home vitals" subtitle="Readings you take at home. Your doctor sees them only during a session you open."></x-import>
+  </header>
+
+  <section aria-label="Latest readings" class="grid g4 in" style="animation-delay: 60ms;">
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Blood pressure" value="118/76" unit="mmHg" trend="{{t.bp}}" icon="{{ic.heart}}" tone="sage"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Fasting sugar" value="132" unit="mg/dL" trend="{{t.sugar}}" icon="{{ic.drop}}" tone="peach"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Weight" value="64.2" unit="kg" trend="{{t.wt}}" icon="{{ic.scale}}" tone="blue"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="SpO₂ · Temp" value="98%" unit="· 36.8 °C" hint="Normal · today 07:40" icon="{{ic.lung}}"></x-import>
+  </section>
+
+  <section class="grid g2 in" style="animation-delay: 120ms;">
+    <form class="box" onSubmit="{{save}}" aria-label="Add a reading">
+      <div class="bh"><h2 class="bt">Add a reading</h2><span class="muted">Today · {{now}}</span></div>
+      <div class="seg" role="radiogroup" aria-label="Reading type">
+        <sc-for list="{{kinds}}" as="k" hint-placeholder-count="5">
+          <button type="button" role="radio" aria-checked="{{k.checked}}" class="{{k.cls}}" onClick="{{k.pick}}">{{k.label}}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{is.bp}}" hint-placeholder-val="true">
+        <div class="fr">
+          <x-import component-from-global-scope="CareFusion.TextField" label="Systolic" type="number" placeholder="120" helper="mmHg" value="{{sys}}" on-change="{{setSys}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.TextField" label="Diastolic" type="number" placeholder="80" helper="mmHg" value="{{dia}}" on-change="{{setDia}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.TextField" label="Pulse" type="number" placeholder="72" helper="beats / min" optional="{{yes}}"></x-import>
+        </div>
+      </sc-if>
+      <sc-if value="{{is.sugar}}" hint-placeholder-val="false">
+        <div class="fr">
+          <x-import component-from-global-scope="CareFusion.TextField" label="Blood sugar" type="number" placeholder="110" helper="mg/dL" value="{{sug}}" on-change="{{setSug}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Select" label="When" options="{{sugarWhen}}"></x-import>
+        </div>
+      </sc-if>
+      <sc-if value="{{is.weight}}" hint-placeholder-val="false">
+        <div class="fr"><x-import component-from-global-scope="CareFusion.TextField" label="Weight" type="number" placeholder="64.0" helper="kg"></x-import><x-import component-from-global-scope="CareFusion.TextField" label="Waist" type="number" placeholder="82" helper="cm" optional="{{yes}}"></x-import></div>
+      </sc-if>
+      <sc-if value="{{is.spo2}}" hint-placeholder-val="false">
+        <div class="fr"><x-import component-from-global-scope="CareFusion.TextField" label="SpO₂" type="number" placeholder="98" helper="%"></x-import><x-import component-from-global-scope="CareFusion.TextField" label="Pulse" type="number" placeholder="72" helper="beats / min"></x-import></div>
+      </sc-if>
+      <sc-if value="{{is.temp}}" hint-placeholder-val="false">
+        <div class="fr"><x-import component-from-global-scope="CareFusion.TextField" label="Temperature" type="number" placeholder="36.8" helper="°C"></x-import><x-import component-from-global-scope="CareFusion.Select" label="Measured at" options="{{tempWhere}}"></x-import></div>
+      </sc-if>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Note" optional="{{yes}}" placeholder="E.g. felt dizzy after lunch" rows="2"></x-import>
+      <sc-if value="{{saved}}" hint-placeholder-val="false">
+        <div class="{{savedCls}}" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"></path></svg>{{savedText}}</div>
+      </sc-if>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <x-import component-from-global-scope="CareFusion.Button" type="submit">Save reading</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="ghost" type="button" on-click="{{reset}}">Clear</x-import>
+      </div>
+      <div class="recent" aria-label="Your latest readings">
+        <div class="bh"><h3 class="rh">Latest readings</h3><span class="muted">{{shareNote}}</span></div>
+        <sc-for list="{{recent}}" as="r" hint-placeholder-count="4">
+          <div class="rr"><span class="{{r.dot}}" aria-hidden="true"></span><span class="grow"><strong>{{r.val}}</strong> <span class="muted">{{r.type}}</span></span><span class="muted num">{{r.when}}</span><span class="{{r.stCls}}">{{r.st}}</span></div>
+        </sc-for>
+        <a class="lk2" href="Doctor.dc.html">Dr. Arun Nair is alerted when a reading is outside your target →</a>
+      </div>
+    </form>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Blood pressure · 30 days</h2><div class="seg" aria-label="Range"><button type="button" class="on">30 d</button><button type="button">90 d</button><button type="button">1 yr</button></div></div>
+      <svg viewBox="0 0 420 200" role="img" aria-label="Systolic 116 to 128 and diastolic 72 to 82 over 30 days, inside your target range" style="width: 100%; height: auto;">
+        <rect x="30" y="40" width="390" height="70" fill="#dcebe0" opacity=".55" rx="6"></rect>
+        <g stroke="#e4ddd6"><path d="M30 20H420M30 75H420M30 130H420M30 185H420"></path></g>
+        <g fill="#586470" font-size="10" font-family="IBM Plex Sans"><text x="0" y="24">140</text><text x="0" y="79">120</text><text x="0" y="134">100</text><text x="4" y="189">80</text></g>
+        <path class="draw" d="M30 95 C60 80 75 104 100 88 S140 62 170 80 S210 98 240 74 S280 58 310 70 S360 88 390 64 S410 60 420 62" fill="none" stroke="#3a726d" stroke-width="2.5" stroke-linecap="round"></path>
+        <path class="draw" d="M30 168 C60 160 80 176 100 166 S140 150 170 160 S210 172 240 156 S280 148 310 154 S360 164 390 150 S410 148 420 150" fill="none" stroke="#c9a86a" stroke-width="2.5" stroke-linecap="round"></path>
+        <circle cx="420" cy="62" r="4" fill="#3a726d"></circle><circle cx="420" cy="150" r="4" fill="#c9a86a"></circle>
+        <g fill="#586470" font-size="10" font-family="IBM Plex Sans"><text x="30" y="200">18 Sep</text><text x="200" y="200">2 Oct</text><text x="388" y="200">Today</text></g>
+      </svg>
+      <div class="lg"><span><i style="background: #3a726d;"></i>Systolic</span><span><i style="background: #c9a86a;"></i>Diastolic</span><span><i style="background: #dcebe0;"></i>Target set by Dr. Arun Nair</span></div>
+      <x-import component-from-global-scope="CareFusion.AIInsight" module="Trend summary" status="verified" title="Steady and inside your target" confidence="{{conf}}">
+        <p style="margin: 0; font-size: 14px; line-height: 21px;">26 of 28 readings were in range. Two higher readings followed missed evening doses. This is guidance, not a diagnosis.</p>
+      </x-import>
+      <div style="margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong); font-variant-numeric: tabular-nums;">121/78</strong><span class="muted" style="font-size: 12px;">30-day average</span></div><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong); font-variant-numeric: tabular-nums;">134/86</strong><span class="muted" style="font-size: 12px;">Highest · 9 Oct</span></div><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong); font-variant-numeric: tabular-nums;">26 of 28</strong><span class="muted" style="font-size: 12px;">Readings in range</span></div></div>
+    </div>
+  </section>
+
+  <section class="grid g3 in" style="animation-delay: 180ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Fasting sugar · 8 weeks</h2><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Above target</x-import></div>
+      <svg viewBox="0 0 300 120" role="img" aria-label="Weekly fasting sugar falling from 148 to 132" style="width: 100%; height: auto;">
+        <path d="M0 40H300" stroke="#e7c58e" stroke-dasharray="4 4"></path>
+        <g fill="#86bdb8"><rect x="8" y="22" width="24" height="98" rx="6"></rect><rect x="45" y="28" width="24" height="92" rx="6"></rect><rect x="82" y="30" width="24" height="90" rx="6"></rect><rect x="119" y="36" width="24" height="84" rx="6"></rect><rect x="156" y="34" width="24" height="86" rx="6"></rect><rect x="193" y="40" width="24" height="80" rx="6"></rect><rect x="230" y="44" width="24" height="76" rx="6"></rect></g>
+        <rect x="267" y="46" width="24" height="74" rx="6" fill="#3a726d"></rect>
+      </svg>
+      <p class="muted" style="margin: 0;">148 → 132 mg/dL · target under 130 · dashed line</p>
+      <div style="margin-top: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;"><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong);">6.9%</strong><span class="muted" style="font-size: 12px;">HbA1c · 12 Sep</span></div><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong);">30 Oct</strong><span class="muted" style="font-size: 12px;">Next HbA1c test</span></div></div>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Weight & BMI</h2><span class="muted">Height 158 cm</span></div>
+      <div style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 32px; font-weight: 600; color: var(--ink-strong);">25.7</span><span class="muted">BMI · was 26.4 in July</span></div>
+      <div class="band" aria-hidden="true"><b style="left: 61%;"></b></div>
+      <div class="lg" style="justify-content: space-between;"><span>Under</span><span>Healthy</span><span>Over</span><span>High</span></div>
+      <p class="muted" style="margin: 0;">−1.8 kg in 12 weeks · steady pace</p>
+      <svg viewBox="0 0 300 70" role="img" aria-label="Weight falling from 66.0 to 64.2 kg over 12 weeks" style="width: 100%; height: auto; margin-top: auto;"><path d="M0 14 L27 18 L54 16 L82 24 L109 28 L136 26 L164 34 L191 38 L218 42 L245 44 L273 50 L300 54" fill="none" stroke="#3a726d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M0 14 L27 18 L54 16 L82 24 L109 28 L136 26 L164 34 L191 38 L218 42 L245 44 L273 50 L300 54 V70 H0Z" fill="#86bdb8" opacity=".18"></path><circle cx="300" cy="54" r="4" fill="#3a726d"></circle></svg>
+      <div class="lg" style="justify-content: space-between;"><span>66.0 kg · July</span><span>Goal 62 kg</span><span>64.2 kg · today</span></div>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Devices</h2><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Coming soon</x-import></div>
+      <div class="dev"><span class="dev-i" style="background: var(--tint-teal); color: var(--primary-text);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="3"></rect><path d="M9 12h6"></path></svg></span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Bluetooth BP monitor</strong><div class="muted">Last synced — · pair from phone app</div></div></div>
+      <div class="dev"><span class="dev-i" style="background: var(--tint-peach); color: var(--peach-text);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"></path></svg></span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Glucometer</strong><div class="muted">Type readings in for now</div></div></div>
+      <div class="dev"><span class="dev-i" style="background: var(--tint-blue); color: var(--info);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="3"></rect><path d="M11 17h2"></path></svg></span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Phone health apps</strong><div class="muted">Steps and sleep · read-only</div></div></div>
+    </div>
+  </section>
+
+  <section class="box in" style="animation-delay: 240ms;">
+    <div class="bh"><h2 class="bt">All readings</h2><span class="muted">Out-of-range rows are highlighted</span></div>
+    <x-import component-from-global-scope="CareFusion.Table" caption="Home vitals readings" columns="{{cols}}" rows="{{rows}}" is-row-highlighted="{{flag}}" density="compact" striped="{{yes}}"></x-import>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1980}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var CF_FROM = { citizen: 'Citizen', doctor: 'Doctor', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacist', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District', state: 'State', zonal: 'Zonal', central: 'Central' };
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { kind: 'bp', saved: false, sys: '', dia: '', sug: '', added: [], sent: false }; }
+  renderVals() {
+    var h = React.createElement;
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var K = [['bp', 'Blood pressure'], ['sugar', 'Sugar'], ['weight', 'Weight'], ['spo2', 'SpO₂'], ['temp', 'Temperature']];
+    var kind = this.state.kind;
+    var is = {}; K.forEach(function (k) { is[k[0]] = kind === k[0]; });
+    var R = [
+      ['17 Oct 07:40', 'Blood pressure', '118/76 mmHg', 'Pulse 72', 'In range', 0],
+      ['17 Oct 07:35', 'Fasting sugar', '132 mg/dL', 'Before breakfast', 'Above target', 1],
+      ['16 Oct 21:10', 'Blood pressure', '134/86 mmHg', 'Missed evening dose', 'High', 1],
+      ['16 Oct 07:42', 'Blood pressure', '121/78 mmHg', '—', 'In range', 0],
+      ['15 Oct 07:30', 'Weight', '64.2 kg', '—', 'Steady', 0],
+      ['14 Oct 18:00', 'Temperature', '36.8 °C', 'Oral', 'Normal', 0],
+      ['14 Oct 07:38', 'SpO₂', '98%', 'Pulse 70', 'Normal', 0]
+    ];
+    var st = this.state;
+    R = st.added.concat(R);
+    return {
+      yes: true, conf: 0.86, saved: st.saved, is: is,
+      sys: st.sys, dia: st.dia, sug: st.sug,
+      setSys: (e) => this.setState({ sys: e.target.value, saved: false }), setDia: (e) => this.setState({ dia: e.target.value, saved: false }), setSug: (e) => this.setState({ sug: e.target.value, saved: false }),
+      savedCls: st.sent ? 'ok warn' : 'ok',
+      savedText: st.sent ? 'Saved · outside your target, so Dr. Arun Nair was notified' : 'Saved to your record · added to the chart',
+      shareNote: 'Doctors see these only in a session',
+      recent: R.slice(0, 4).map(function (r) { return { val: r[2], type: r[1], when: r[0], st: r[4], dot: r[5] ? 'rd bad' : 'rd', stCls: r[5] ? 'rs bad' : 'rs' }; }),
+      now: '15:52',
+      kinds: K.map((k) => ({ label: k[1], cls: kind === k[0] ? 'on' : '', checked: kind === k[0] ? 'true' : 'false', pick: () => this.setState({ kind: k[0], saved: false }) })),
+      sugarWhen: ['Fasting', 'Before a meal', '2 h after a meal', 'Random'],
+      tempWhere: ['Oral', 'Ear', 'Forehead', 'Armpit'],
+      t: { bp: { direction: 'down', text: '4 points lower than last month' }, sugar: { direction: 'down', text: '16 lower than 8 weeks ago' }, wt: { direction: 'down', text: '1.8 kg in 12 weeks' } },
+      ic: { heart: ic('M3 12h4l3-7l4 14l3-7h4'), drop: ic('M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z'), scale: ic('M5 4h14l-2 16H7zM9 9a3 3 0 0 1 6 0'), lung: ic('M12 4v8M8 8c-3 2-4 6-4 10h6V10M16 8c3 2 4 6 4 10h-6V10') },
+      cols: [{ key: 'when', header: 'When', mono: true }, { key: 'type', header: 'Type' }, { key: 'val', header: 'Reading' }, { key: 'note', header: 'Note' }, { key: 'st', header: 'Status', render: function (r) { return h(CareFusion.Badge, { tone: r.bad ? 'warning' : 'success' }, r.st); } }],
+      rows: R.map(function (r) { return { when: r[0], type: r[1], val: r[2], note: r[3], st: r[4], bad: !!r[5] }; }),
+      flag: function (r) { return r.bad; },
+      save: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        var k = this.state.kind, row = null, bad = false;
+        var sy = parseFloat(this.state.sys), di = parseFloat(this.state.dia), sg = parseFloat(this.state.sug);
+        if (k === 'bp' && sy && di) { bad = sy >= 140 || di >= 90 || sy < 90; row = ['Today ' + '15:52', 'Blood pressure', sy + '/' + di + ' mmHg', '—', bad ? 'High' : 'In range', bad ? 1 : 0]; }
+        else if (k === 'sugar' && sg) { bad = sg >= 180 || sg < 70; row = ['Today 15:52', 'Blood sugar', sg + ' mg/dL', '—', bad ? (sg < 70 ? 'Low' : 'High') : 'In range', bad ? 1 : 0]; }
+        if (bad && row) busPush({ type: 'vitals', from: 'citizen', to: ['doctor'], title: 'Home reading outside target · Anjali Menon', text: row[1] + ' ' + row[2] + ' · self-reported', href: 'CitizenVitals.dc.html' });
+        this.setState({ saved: true, sent: bad, added: row ? [row].concat(this.state.added) : this.state.added, sys: '', dia: '', sug: '' });
+      },
+      reset: () => this.setState({ saved: false, sys: '', dia: '', sug: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reviews — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.eyb{margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--accent-text)}
+.ttl{margin:0;font-family:var(--font-serif);font-size:34px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.grid{display:grid;gap:20px}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.muted{color:var(--ink-muted);font-size:13px}
+.lay{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:20px}
+.score{display:flex;gap:20px;align-items:center}
+.big{font-family:var(--font-serif);font-size:56px;line-height:1;font-weight:600;color:var(--ink-strong)}
+.stars{display:inline-flex;gap:2px;color:#c9a86a;font-size:16px;letter-spacing:1px}
+.stars .off{color:#e4ddd6}
+.dist{display:flex;flex-direction:column;gap:8px;flex:1}
+.drow{display:grid;grid-template-columns:44px 1fr 40px;gap:10px;align-items:center;font-size:13px}
+.dbar{height:10px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.dbar span{display:block;height:100%;border-radius:9999px;background:var(--primary-soft);transform-origin:left;animation:grow 900ms cubic-bezier(0.22,1,0.36,1) both}
+.w5{width:64%}.w4{width:22%}.w3{width:8%}.w2{width:4%}.w1{width:2%}
+@keyframes grow{from{transform:scaleX(0)}}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--border);background:var(--surface-raised);border-radius:9999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;min-height:36px}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.chip:focus-visible,.st:focus-visible,.lk:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.rv{display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-radius:18px;background:var(--surface-raised);border:1px solid var(--border);animation:fin 500ms ease both}
+.rv-h{display:flex;gap:12px;align-items:center}
+.rv p{margin:0;font-size:14px;line-height:22px}
+.rv-f{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.helpful{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:6px 10px;font:inherit;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer}
+.helpful.on{background:var(--tint-teal);border-color:transparent;color:var(--primary-text)}
+.reply{padding:10px 12px;border-radius:12px;background:var(--tint-blue);font-size:13px}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}}
+.picker{display:flex;gap:6px}
+.st{width:44px;height:44px;border-radius:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform 160ms cubic-bezier(0.34,1.56,0.64,1),background-color 160ms ease}
+.st:hover{transform:scale(1.15)}
+.st svg{fill:#e4ddd6;transition:fill 160ms ease}
+.st.on{background:#f6e9cf;border-color:#e7c58e}
+.st.on svg{fill:#c9a86a}
+.ok{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--success-bg);color:var(--success);font-weight:600;font-size:14px;animation:fin 400ms ease both}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.place{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.place:last-child{border-bottom:0}
+.pi{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:var(--tint-teal);color:var(--primary-text);font-weight:700;font-size:13px}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media (max-width: 1000px){.lay,.top{grid-template-columns:1fr}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (prefers-reduced-motion: reduce){.in,.rv,.ok,.dbar span{animation:none}.st{transition:none}.st:hover{transform:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div><p class="eyb">Your voice</p><h1 class="ttl">Reviews</h1><p style="margin: 4px 0 0;">Read what other patients say about hospitals and doctors — and share your own visit.</p></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Only verified visits can review</x-import>
+      <x-import component-from-global-scope="CareFusion.Badge" tone="outline">{{mineCount}} written by you</x-import>
+    </div>
+  </header>
+
+  <section class="top in" style="animation-delay: 60ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Demo General Hospital</h2><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Government</x-import></div>
+      <div class="score">
+        <div><div class="big">{{avg}}</div><div class="stars" aria-label="{{avgAria}}"><span>★★★★</span><span class="off">★</span></div><div class="muted">{{total}} reviews</div></div>
+        <div class="dist" role="img" aria-label="Rating distribution: 64% five stars, 22% four, 8% three, 4% two, 2% one">
+          <div class="drow"><span>5 ★</span><span class="dbar"><span class="w5"></span></span><span class="muted">64%</span></div>
+          <div class="drow"><span>4 ★</span><span class="dbar"><span class="w4"></span></span><span class="muted">22%</span></div>
+          <div class="drow"><span>3 ★</span><span class="dbar"><span class="w3"></span></span><span class="muted">8%</span></div>
+          <div class="drow"><span>2 ★</span><span class="dbar"><span class="w2"></span></span><span class="muted">4%</span></div>
+          <div class="drow"><span>1 ★</span><span class="dbar"><span class="w1"></span></span><span class="muted">2%</span></div>
+        </div>
+      </div>
+      <div style="margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;"><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong);">212</strong><span class="muted" style="font-size: 12px;">Verified reviews</span></div><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong);">86%</strong><span class="muted" style="font-size: 12px;">Get a hospital reply</span></div><div style="padding: 10px 12px; border-radius: 14px; background: var(--surface);"><strong style="display: block; font-size: 18px; color: var(--ink-strong);">1.6 days</strong><span class="muted" style="font-size: 12px;">Average reply time</span></div></div>
+      <p class="muted" style="margin: 0; font-size: 13px;">Only people with a completed visit can post — every review here is linked to a real appointment.</p>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">What people mention</h2><span class="muted">Last 90 days</span></div>
+      <div class="drow" style="grid-template-columns: 1fr 90px 40px;"><span>Doctors explain clearly</span><span class="dbar"><span style="width: 88%;"></span></span><span class="muted">88%</span></div>
+      <div class="drow" style="grid-template-columns: 1fr 90px 40px;"><span>Clean wards</span><span class="dbar"><span style="width: 76%;"></span></span><span class="muted">76%</span></div>
+      <div class="drow" style="grid-template-columns: 1fr 90px 40px;"><span>Pharmacy had stock</span><span class="dbar"><span style="width: 71%;"></span></span><span class="muted">71%</span></div>
+      <div class="drow" style="grid-template-columns: 1fr 90px 40px;"><span>OP waiting time OK</span><span class="dbar"><span style="width: 48%; background: #e7c58e;"></span></span><span class="muted">48%</span></div>
+      <p class="muted" style="margin: 0;">Long OP waits? <button type="button" class="lk" onClick="{{toComplaints}}">File a complaint instead</button></p>
+      <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px; padding-top: 12px; border-top: 1px solid var(--border);"><span class="muted" style="width: 100%; font-size: 12px;">Popular words</span><x-import component-from-global-scope="CareFusion.Badge" tone="success">kind</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="success">explained well</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">clean</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="warning">crowded OP</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">free medicines</x-import></div>
+    </div>
+    <div class="box" style="background: var(--tint-blue); border-color: transparent; box-shadow: none;">
+      <div class="bh"><h2 class="bt">Visits you can review</h2></div>
+      <div class="place"><span class="pi" style="background: var(--surface-raised);">AN</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Dr. Arun Nair</strong><div class="muted">Visit 17 Oct · General medicine</div></div><button type="button" class="lk" onClick="{{pickArun}}">Review</button></div>
+      <div class="place"><span class="pi" style="background: var(--surface-raised);">PH</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Demo Hospital Pharmacy</strong><div class="muted">Collected 12 Oct</div></div><button type="button" class="lk" onClick="{{pickPharm}}">Review</button></div>
+      <div class="place"><span class="pi" style="background: var(--surface-raised);">LB</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Hospital lab · Rahul Varghese</strong><div class="muted">Lipid profile 17 Oct</div></div><button type="button" class="lk" onClick="{{pickLab}}">Review</button></div>
+    </div>
+  </section>
+
+  <section class="box in" aria-label="Filter reviews" style="animation-delay: 120ms;">
+    <div class="filters">
+      <x-import component-from-global-scope="CareFusion.TextField" label="Search hospital or doctor" placeholder="e.g. Kozhencherry, Dr. Varma" value="{{q}}" on-change="{{setQ}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Select" label="Location" options="{{locs}}" value="{{loc}}" on-change="{{setLoc}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Select" label="Department" options="{{depts}}" value="{{dept}}" on-change="{{setDept}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Select" label="Sort by" options="{{sorts}}" value="{{sort}}" on-change="{{setSort}}"></x-import>
+    </div>
+    <div class="chips" role="group" aria-label="Minimum rating">
+      <sc-for list="{{rates}}" as="r" hint-placeholder-count="5"><button type="button" class="{{r.cls}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}">{{r.label}}</button></sc-for>
+    </div>
+  </section>
+
+  <div class="lay in" style="animation-delay: 180ms;">
+    <section aria-label="Reviews" style="display: flex; flex-direction: column; gap: 14px;">
+      <div class="bh"><h2 class="bt">{{shownLabel}}</h2><span class="muted">Names shortened for privacy</span></div>
+      <sc-for list="{{list}}" as="v" hint-placeholder-count="5">
+        <article class="rv">
+          <div class="rv-h">
+            <x-import component-from-global-scope="CareFusion.Avatar" name="{{v.name}}" size="{{n40}}"></x-import>
+            <div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">{{v.name}}</strong><div class="muted">{{v.where}} · {{v.date}}</div></div>
+            <span class="stars" aria-label="{{v.aria}}"><span>{{v.on}}</span><span class="off">{{v.off}}</span></span>
+          </div>
+          <p>{{v.text}}</p>
+          <sc-if value="{{v.reply}}" hint-placeholder-val="{{no}}"><div class="reply"><strong>Reply from {{v.replyBy}}:</strong> {{v.reply}}</div></sc-if>
+          <div class="rv-f">
+            <x-import component-from-global-scope="CareFusion.Badge" tone="{{v.tone}}">{{v.tag}}</x-import>
+            <button type="button" class="{{v.hCls}}" aria-pressed="{{v.hPressed}}" onClick="{{v.help}}">Helpful · {{v.helpN}}</button>
+            <span class="muted" style="margin-left: auto;">{{v.dept}}</span>
+          </div>
+        </article>
+      </sc-for>
+      <sc-if value="{{more}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="md" on-click="{{loadMore}}">Load more reviews</x-import></sc-if>
+      <sc-if value="{{noResults}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.EmptyState" title="No reviews match" description="Try a different location or lower the rating filter."></x-import></sc-if>
+    </section>
+
+    <aside style="display: flex; flex-direction: column; gap: 20px; position: sticky; top: 88px;">
+      <section class="box" aria-labelledby="wr">
+        <div class="bh"><h2 class="bt" id="wr">Write a review</h2><x-import component-from-global-scope="CareFusion.Badge" tone="gold">{{target}}</x-import></div>
+        <form onSubmit="{{submit}}" style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <p class="cf-field-label" style="margin: 0 0 8px;" id="rate-l">Your rating <span class="muted">· {{starText}}</span></p>
+            <div class="picker" role="radiogroup" aria-labelledby="rate-l">
+              <sc-for list="{{picker}}" as="p" hint-placeholder-count="5">
+                <button type="button" role="radio" class="{{p.cls}}" aria-checked="{{p.checked}}" aria-label="{{p.aria}}" onClick="{{p.pick}}"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6l6.1.9l-4.4 4.3l1 6.1L12 17l-5.4 2.9l1-6.1L3.2 9.5l6.1-.9z"></path></svg></button>
+              </sc-for>
+            </div>
+          </div>
+          <x-import component-from-global-scope="CareFusion.Select" label="Department" options="{{deptsW}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Textarea" label="Your experience" placeholder="What went well? What could be better?" value="{{draft}}" on-change="{{setDraft}}" rows="{{n5}}" helper="{{draftHelp}}" required="{{yes}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Checkbox" label="Show my first name only" description="Your ABHA number is never shown" default-checked="{{yes}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Button" type="submit" size="lg" full-width="{{yes}}">Post review</x-import>
+          <div aria-live="polite">
+            <sc-if value="{{posted}}" hint-placeholder-val="{{no}}"><div class="ok"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L19 7"></path></svg>Posted. The hospital admin can reply — you'll get a notification.</div></sc-if>
+          </div>
+        </form>
+      </section>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Fair reviews">Reviews about medical decisions go to the hospital's quality team, not just the public page. Abuse or personal details are removed.</x-import>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1800}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var REVIEWS = [
+  ['Sreelatha K.', 'Demo General Hospital', 'Pathanamthitta', 'General medicine', 5, '12 Oct', 'Dr. Arun Nair explained my sugar report slowly and in Malayalam. The token system meant I waited only 20 minutes.', 'Dr. Meera Krishnan', 'Thank you — we will share this with the OP team.', 18],
+  ['Biju M.', 'Demo General Hospital', 'Pathanamthitta', 'Pharmacy', 4, '10 Oct', 'Medicines were ready when the app said. One brand was out of stock, but they gave an approved substitute.', '', '', 9],
+  ['Fousiya A.', 'District Hospital Kozhencherry', 'Kozhencherry', 'Diabetology', 5, '8 Oct', 'Dr. Lakshmi Varma checked my feet and eyes in one visit. Clean ward, helpful nurses.', '', '', 14],
+  ['Rajan T.', 'Demo General Hospital', 'Pathanamthitta', 'Lab', 3, '6 Oct', 'Results came on the app the same afternoon, but the sample queue was long at 8 am.', 'Lab supervisor', 'We have opened a second collection counter from 7:30.', 6],
+  ['Mini J.', 'PHC Konni', 'Konni', 'Family medicine', 5, '2 Oct', 'Walk-in dengue test with no waiting. The ASHA worker helped my mother register on the app.', '', '', 11],
+  ['Thomas V.', 'Taluk Hospital Adoor', 'Adoor', 'Orthopaedics', 2, '29 Sep', 'Good doctor, but the X-ray machine was down and I had to come back the next day.', 'Hospital admin', 'The machine was repaired on 30 Sep. Sorry for the trouble.', 4],
+  ['Lekha R.', 'Demo General Hospital', 'Pathanamthitta', 'Radiology', 4, '25 Sep', 'Chest X-ray done quickly. The report was easy to read with the AI summary marked clearly as not final.', '', '', 7],
+  ['Ancy P.', 'District Hospital Kozhencherry', 'Kozhencherry', 'Paediatrics', 5, '20 Sep', 'Diya’s vaccine was on time and the nurse explained side effects. Reminder came the day before.', '', '', 12]
+];
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { q: '', loc: 'All locations', dept: 'All departments', sort: 'Most recent', min: 0, shown: 4, rate: 4, draft: '', posted: false, mine: [], helped: {}, target: 'Dr. Arun Nair' }; }
+  renderVals() {
+    var st = this.state;
+    var go = (s) => () => { if (this.props.go) this.props.go(s); };
+    var all = st.mine.concat(REVIEWS);
+    var q = st.q.toLowerCase();
+    var f = all.filter(function (r) {
+      return (!q || (r[1] + ' ' + r[3] + ' ' + r[6]).toLowerCase().indexOf(q) >= 0) &&
+        (st.loc === 'All locations' || r[2] === st.loc) && (st.dept === 'All departments' || r[3] === st.dept) && r[4] >= st.min;
+    });
+    if (st.sort === 'Highest rated') f = f.slice().sort(function (a, b) { return b[4] - a[4]; });
+    if (st.sort === 'Most helpful') f = f.slice().sort(function (a, b) { return b[9] - a[9]; });
+    var vis = f.slice(0, st.shown);
+    var TONES = { 5: 'success', 4: 'teal', 3: 'warning', 2: 'danger', 1: 'danger' };
+    var TAGS = { 5: 'Excellent', 4: 'Good', 3: 'Okay', 2: 'Poor', 1: 'Bad' };
+    var self = this;
+    var pick = function (t) { return function () { self.setState({ target: t, posted: false }); }; };
+    return {
+      yes: true, no: false, n40: 40, n5: 5,
+      mineCount: String(st.mine.length),
+      avg: st.mine.length ? '4.4' : '4.3', avgAria: '4.3 out of 5 stars', total: String(1284 + st.mine.length),
+      toComplaints: go('complaints'),
+      pickArun: pick('Dr. Arun Nair'), pickPharm: pick('Demo Hospital Pharmacy'), pickLab: pick('Hospital lab'),
+      q: st.q, setQ: (e) => this.setState({ q: e && e.target ? e.target.value : String(e || ''), shown: 4 }),
+      locs: ['All locations', 'Pathanamthitta', 'Kozhencherry', 'Konni', 'Adoor'], loc: st.loc, setLoc: (v) => this.setState({ loc: v, shown: 4 }),
+      depts: ['All departments', 'General medicine', 'Diabetology', 'Pharmacy', 'Lab', 'Radiology', 'Family medicine', 'Orthopaedics', 'Paediatrics'], dept: st.dept, setDept: (v) => this.setState({ dept: v, shown: 4 }),
+      sorts: ['Most recent', 'Highest rated', 'Most helpful'], sort: st.sort, setSort: (v) => this.setState({ sort: v }),
+      rates: [[0, 'Any rating'], [5, '5 ★'], [4, '4 ★ & up'], [3, '3 ★ & up'], [2, '2 ★ & up']].map((r) => ({ label: r[1], cls: st.min === r[0] ? 'chip on' : 'chip', pressed: st.min === r[0] ? 'true' : 'false', pick: () => this.setState({ min: r[0], shown: 4 }) })),
+      shownLabel: 'Showing ' + vis.length + ' of ' + f.length + ' reviews',
+      list: vis.map((r, i) => {
+        var key = r[0] + r[5]; var hp = !!st.helped[key];
+        return { name: r[0], where: r[1], date: r[5], text: r[6], dept: r[3], on: '★★★★★'.slice(0, r[4]), off: '★★★★★'.slice(r[4]), aria: r[4] + ' out of 5 stars',
+          reply: r[8], replyBy: r[7], tone: TONES[r[4]], tag: TAGS[r[4]], helpN: String(r[9] + (hp ? 1 : 0)), hCls: hp ? 'helpful on' : 'helpful', hPressed: hp ? 'true' : 'false',
+          help: () => { var m = Object.assign({}, st.helped); m[key] = !hp; this.setState({ helped: m }); } };
+      }),
+      more: st.shown < f.length, noResults: f.length === 0,
+      loadMore: () => this.setState({ shown: st.shown + 3 }),
+      target: st.target,
+      starText: ['', 'Bad', 'Poor', 'Okay', 'Good', 'Excellent'][st.rate],
+      picker: [1, 2, 3, 4, 5].map((n) => ({ cls: n <= st.rate ? 'st on' : 'st', checked: n === st.rate ? 'true' : 'false', aria: n + (n === 1 ? ' star' : ' stars'), pick: () => this.setState({ rate: n }) })),
+      deptsW: ['General medicine', 'Pharmacy', 'Lab', 'Radiology', 'OP registration', 'Ward care'],
+      draft: st.draft, setDraft: (e) => this.setState({ draft: e && e.target ? e.target.value : String(e || '') }),
+      draftHelp: (st.draft || '').length + ' / 600 characters',
+      posted: st.posted,
+      submit: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        var text = st.draft || 'Clear explanation and short wait. The app reminder helped.';
+        var row = ['Anjali M. (you)', st.target === 'Dr. Arun Nair' ? 'Demo General Hospital' : st.target, 'Pathanamthitta', 'General medicine', st.rate, 'Today', text, '', '', 0];
+        busPush({ type: 'review', from: 'citizen', to: ['hospitaladmin', 'doctor'], title: 'New ' + st.rate + '★ review · ' + st.target, text: text.slice(0, 80), href: 'HospitalAdmin.dc.html' });
+        this.setState({ posted: true, draft: '', mine: [row].concat(st.mine), sort: 'Most recent', min: 0 });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account recovery — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text);font-weight:600}a:hover{color:var(--ink-strong)}
+.fade{animation:fade 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.way{display:flex;flex-direction:column;gap:10px;padding:22px;border-radius:20px;border:1px solid var(--border);background:var(--surface-raised)}
+.num{flex:none;width:28px;height:28px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;background:var(--tint-teal);color:var(--primary-text)}
+.row{display:flex;gap:12px;align-items:flex-start}
+@media (prefers-reduced-motion: reduce){.fade{animation:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-pub" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Aadhaar OTP and face check are mock connectors.</x-import>
+  <header style="background: var(--surface-raised); border-bottom: 1px solid var(--border);">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="Main.dc.html" aria-label="CareFusion AI home" style="display: inline-flex;"><img src="assets/logo.svg" alt="CareFusion AI" style="height: 32px; width: auto;"></a>
+      <a href="Login.dc.html" style="font-size: 14px;">← Back to log in</a>
+    </div>
+  </header>
+  <main style="flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 48px 32px 64px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px;">
+    <x-import component-from-global-scope="CareFusion.PageHeader" eyebrow="Account recovery" title="Let's get you back in" subtitle="Choose what happened. Every recovery is recorded in your activity log."></x-import>
+    <x-import component-from-global-scope="CareFusion.Tabs" label="Recovery type" tabs="{{tabs}}" value="{{mode}}" on-change="{{setMode}}"></x-import>
+
+    <sc-if value="{{isPw}}" hint-placeholder-val="{{yes}}">
+      <div class="fade" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; align-items: start;">
+        <section class="way" aria-labelledby="pw-t" style="padding: 32px;">
+          <h2 id="pw-t" style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 600; color: var(--ink-strong);">Reset your password</h2>
+          <x-import component-from-global-scope="CareFusion.Stepper" label="Reset steps" steps="{{pwSteps}}" current="{{pw}}"></x-import>
+          <sc-if value="{{pw0}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.TextField" label="Registered mobile or email" prefix="+91" default-value="98765 43210"></x-import></sc-if>
+          <sc-if value="{{pw1}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.TextField" label="6-digit code" default-value="731 004" helper="Sent to +91 ••••• 43210."></x-import></sc-if>
+          <sc-if value="{{pw2}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.TextField" label="New password" type="password" default-value="backwater-kite-52" helper="At least 12 characters."></x-import></sc-if>
+          <sc-if value="{{pw3}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Alert" tone="success" title="Password changed">You've been signed out on other devices. <a href="Login.dc.html">Log in now</a></x-import></sc-if>
+          <sc-if value="{{pwMore}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Button" size="lg" on-click="{{pwNext}}">{{pwLabel}}</x-import></sc-if>
+        </section>
+        <aside style="display: flex; flex-direction: column; gap: 14px;">
+          <x-import component-from-global-scope="CareFusion.Card" tone="blue" eyebrow="Locked out?" title="After 5 wrong attempts" title-as="h3"><p style="margin: 0; font-size: 14px;">Your account locks for 15 minutes, then unlocks by itself. Staff and admins can also ask their admin to reset it.</p></x-import>
+          <x-import component-from-global-scope="CareFusion.Card" padding="compact" title="Staff and admins" title-as="h3"><p style="margin: 0; font-size: 14px; color: var(--ink-muted);">Resets also need your two-step code. Government admins recover through Jan Parichay.</p></x-import>
+        </aside>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isPhone}}" hint-placeholder-val="{{no}}">
+      <div class="fade" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 20px; align-items: start;">
+        <section class="way" aria-labelledby="ph-a" style="padding: 28px; background: var(--tint-sage); border-color: transparent;">
+          <x-import component-from-global-scope="CareFusion.Badge" tone="success">Fastest</x-import>
+          <h2 id="ph-a" style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 600; color: var(--ink-strong);">Recover online on your new phone</h2>
+          <div class="row"><span class="num">1</span><span>Verify with an <strong>Aadhaar OTP</strong> sent to your Aadhaar-linked number.</span></div>
+          <div class="row"><span class="num">2</span><span>Do a <strong>live face check</strong> on the new phone.</span></div>
+          <div class="row"><span class="num">3</span><span>Your <strong>old phone is logged out</strong> and your rotating key moves to this phone.</span></div>
+          <x-import component-from-global-scope="CareFusion.Button" size="lg" on-click="{{startOnline}}" loading="{{onlineLoading}}">{{onlineLabel}}</x-import>
+          <sc-if value="{{onlineDone}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Alert" tone="success" title="Phone moved">Old device "Redmi 9 (demo)" signed out at 15:41. Your key now lives on this phone.</x-import></sc-if>
+        </section>
+        <section class="way" aria-labelledby="ph-b" style="padding: 28px;">
+          <x-import component-from-global-scope="CareFusion.Badge" tone="peach">In person</x-import>
+          <h2 id="ph-b" style="margin: 0; font-size: 22px; line-height: 30px; font-weight: 600; color: var(--ink-strong);">Get help at a hospital or from an ASHA worker</h2>
+          <p style="margin: 0;">Bring any photo ID. Staff run the same Aadhaar and face checks for you, then move your account to the new phone — or print a health card if you don't have one.</p>
+          <x-import component-from-global-scope="CareFusion.Select" label="Nearest help desk" options="{{desks}}" default-value="Demo General Hospital, Pathanamthitta — Help desk"></x-import>
+          <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Open 08:00–20:00 · No appointment needed</p>
+        </section>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mode: 'pw', pw: 0, online: 'idle' }; }
+  renderVals() {
+    var st = this.state, p = st.pw;
+    return {
+      yes: true, no: false,
+      tabs: [{ id: 'pw', label: 'Forgot password' }, { id: 'phone', label: 'Lost or changed phone' }],
+      mode: st.mode, setMode: (v) => this.setState({ mode: v }),
+      isPw: st.mode === 'pw', isPhone: st.mode === 'phone',
+      pwSteps: ['Find account', 'Code', 'New password'], pw: Math.min(p, 2),
+      pw0: p === 0, pw1: p === 1, pw2: p === 2, pw3: p === 3, pwMore: p < 3,
+      pwLabel: ['Send code', 'Verify code', 'Save password'][p] || '',
+      pwNext: () => this.setState({ pw: p + 1 }),
+      onlineLoading: st.online === 'loading', onlineDone: st.online === 'done',
+      onlineLabel: st.online === 'done' ? 'Done' : 'Start online recovery',
+      startOnline: () => { this.setState({ online: 'loading' }); setTimeout(() => this.setState({ online: 'done' }), 1400); },
+      desks: ['Demo General Hospital, Pathanamthitta — Help desk', 'Demo Taluk Hospital, Adoor — Help desk', 'ASHA worker, Ward 7 Adoor']
+    };
+  }
+}
+</script>
+</body>
+</html>

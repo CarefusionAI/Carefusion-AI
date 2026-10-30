@@ -67,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-10-17 S1: W4 in progress — citizen profile API (view/update, special categories, system folders), document/folder API (CRUD, MinIO upload, pre-signed download, move), citizen home page (Profile + Documents tabs), demo identity resolution, Docker updates (MinIO, multi-stage Dockerfiles). All committed to `w4-citizen-profile` (6e0353c). **Next: push branch, browser test frontend, resolve MinIO image pull, create PR.**
+- 2026-10-30: W5 early — all 42 design screens ported to `apps/web`, migrations 120–129 + design seed + role APIs done on branch `w5-frontend-port` (on top of `w4-citizen-profile`, PR #3). Builds pass; **not yet run end to end in Docker/browser**. **Next: start Docker, seed (`docker compose --profile seed run --rm db-seed`), click through each role from `/demo-signin`, fix bugs, add API tests, open the W5 PR.**

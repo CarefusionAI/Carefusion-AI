@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CareFusion AI — Your health, connected</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.nl{color:var(--ink);text-decoration:none;font-weight:500;font-size:15px;padding:10px 2px;border-bottom:1.5px solid transparent;transition:border-color 180ms ease,color 180ms ease}
+.nl:hover{color:var(--primary-text);border-bottom-color:var(--primary-soft)}
+.float-a{animation:fa 9s ease-in-out infinite}
+.float-b{animation:fb 11s ease-in-out infinite}
+.float-c{animation:fa 13s ease-in-out infinite reverse}
+@keyframes fa{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fb{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(8px) rotate(-1.5deg)}}
+.orb{position:absolute;border-radius:9999px;filter:blur(70px);pointer-events:none}
+.keybar{animation:kb 10s linear infinite;transform-origin:left}
+@keyframes kb{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.rise{animation:rise 700ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.role-link{display:flex;flex-direction:column;gap:6px;padding:22px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);text-decoration:none;color:var(--ink-body);transition:transform 200ms ease,box-shadow 200ms ease,border-color 200ms ease}
+.role-link:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--primary-soft)}
+.role-link:focus-visible{outline:2px solid var(--focus-ring);outline-offset:3px}
+.step-n{flex:none;width:36px;height:36px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){.float-a,.float-b,.float-c,.keybar,.rise{animation:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-pub" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+
+<x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">This alpha uses simulated people, records and AI results. DEMO-0000 IDs are not real Aadhaar or ABHA numbers.</x-import>
+
+<header style="position: sticky; top: 0; z-index: 10; background: rgba(243, 238, 232, 0.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 40px;">
+    <a href="Main.dc.html" aria-label="CareFusion AI home" style="display: inline-flex;"><img src="assets/logo.svg" alt="CareFusion AI" style="height: 34px; width: auto; display: block;"></a>
+    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px 28px; flex: 1 1 auto;">
+      <a class="nl" href="#privacy">Your record, your key</a>
+      <a class="nl" href="#ai">AI that shows its work</a>
+      <a class="nl" href="#roles">For doctors</a>
+      <a class="nl" href="#help">Help</a>
+    </nav>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <a class="cf-btn cf-btn-secondary cf-btn-md" href="Login.dc.html">Log in</a>
+      <a class="cf-btn cf-btn-primary cf-btn-md" href="RegisterCitizen.dc.html">Create account</a>
+    </div>
+  </div>
+</header>
+
+<main style="flex: 1;">
+
+<section aria-labelledby="hero-title" style="position: relative; overflow: hidden;">
+  <span class="orb" aria-hidden="true" style="width: 520px; height: 520px; background: var(--tint-sage); right: 6%; top: -120px;"></span>
+  <span class="orb" aria-hidden="true" style="width: 420px; height: 420px; background: var(--tint-lavender); right: 30%; top: 260px;"></span>
+  <span class="orb" aria-hidden="true" style="width: 360px; height: 360px; background: var(--tint-peach); left: -120px; bottom: -160px;"></span>
+  <div style="position: relative; max-width: 1240px; margin: 0 auto; padding: 96px 32px 120px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 72px; align-items: center;">
+    <div class="rise" style="display: flex; flex-direction: column; gap: 28px; align-items: flex-start;">
+      <span class="cf-badge cf-badge-teal" style="padding: 6px 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3h3a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 19.5v-15A1.5 1.5 0 0 1 10.5 3zM4.5 9h15A1.5 1.5 0 0 1 21 10.5v3a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 13.5v-3A1.5 1.5 0 0 1 4.5 9z"></path></svg>
+        One national health record, with AI that assists — never decides
+      </span>
+      <h1 id="hero-title" style="margin: 0; font-family: var(--font-serif); font-weight: 600; font-size: clamp(48px, 6.4vw, 84px); line-height: 1.0; letter-spacing: -0.02em; color: var(--ink-strong);">Your health,<br><span style="color: var(--primary-text);">connected.</span></h1>
+      <p style="margin: 0; font-size: 19px; line-height: 31px; color: var(--ink-body); max-width: 520px;">Keep every report, prescription and scan in one place. Share it with a doctor using a key that changes every ten seconds — and end the session whenever you choose.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <a class="cf-btn cf-btn-primary cf-btn-lg" href="RegisterCitizen.dc.html">Create your health account</a>
+        <a class="cf-btn cf-btn-secondary cf-btn-lg" href="Login.dc.html">Log in</a>
+      </div>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px 24px; color: var(--ink-muted); font-size: 14px;">
+        <li style="display: flex; gap: 8px; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Free for every citizen</li>
+        <li style="display: flex; gap: 8px; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Every access logged</li>
+        <li style="display: flex; gap: 8px; align-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Works with a basic phone too</li>
+      </ul>
+    </div>
+
+    <div role="img" aria-label="Preview: a rotating session key, an AI guidance card, home vitals and an appointment" style="position: relative; min-height: 520px;">
+      <div class="float-a" style="position: absolute; left: 4%; top: 0; width: 62%; padding: 26px; border-radius: 24px; background: var(--primary); color: var(--on-primary); box-shadow: 0 30px 60px rgba(58, 114, 109, 0.28);">
+        <p style="margin: 0 0 6px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; opacity: .9;">Share with doctor</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+          <div>
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 30px; line-height: 38px; letter-spacing: .12em; font-weight: 500;">482 913</p>
+            <p style="margin: 6px 0 0; font-size: 13px;">New key in 10 s · opens 30 min</p>
+          </div>
+          <svg width="84" height="84" viewBox="0 0 21 21" aria-hidden="true" style="background: #faf5ef; border-radius: 12px; padding: 7px; flex: none;"><g fill="#3f5263"><path d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"></path></g><g fill="#faf5ef"><path d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"></path></g><g fill="#3f5263"><path d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM9 1h2v2H9zM8 4h3v2H8zM12 8h2v3h-2zM9 9h2v2H9zM15 9h3v2h-3zM8 13h2v3H8zM11 15h3v2h-3zM16 14h2v4h-2zM19 19h2v2h-2zM12 18h2v3h-2zM1 9h3v2H1z"></path></g></svg>
+        </div>
+        <div style="margin-top: 16px; height: 4px; border-radius: 9999px; background: rgba(250, 245, 239, .25); overflow: hidden;"><div class="keybar" style="height: 100%; background: var(--accent);"></div></div>
+      </div>
+
+      <div class="float-b" style="position: absolute; right: 0; top: 140px; width: 56%; padding: 22px; border-radius: 20px; background: var(--tint-lavender); box-shadow: var(--shadow-lift);">
+        <p style="margin: 0 0 10px; display: inline-flex; gap: 6px; align-items: center; padding: 2px 10px; border-radius: 9999px; background: var(--surface-raised); color: var(--ai); font-size: 12px; font-weight: 600;">AI Health Chat · guidance only</p>
+        <p style="margin: 0 0 6px; font-weight: 600; color: var(--ink-strong);">“I've had a mild fever since my booster.”</p>
+        <p style="margin: 0; font-size: 14px; line-height: 21px;">A low fever for a day or two is common after a vaccine. Rest and drink fluids. If it lasts beyond 48 hours, see a doctor.</p>
+      </div>
+
+      <div class="float-c" style="position: absolute; left: 0; bottom: 30px; width: 44%; padding: 20px; border-radius: 20px; background: var(--tint-sage); box-shadow: var(--shadow-card);">
+        <p style="margin: 0 0 4px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--success);">Home vitals · self-reported</p>
+        <p style="margin: 0; font-size: 30px; line-height: 38px; font-weight: 600; color: var(--ink-strong); font-variant-numeric: tabular-nums;">118<span style="color: var(--ink-muted); font-weight: 500;">/</span>76</p>
+        <svg viewBox="0 0 160 36" width="100%" height="36" aria-hidden="true"><path d="M0 26 C20 20 30 30 50 22 S80 10 100 18 S130 28 160 12" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round"></path></svg>
+      </div>
+
+      <div class="float-a" style="position: absolute; right: 6%; bottom: 0; width: 46%; padding: 20px; border-radius: 20px; background: var(--surface-raised); border: 1px solid var(--border); box-shadow: var(--shadow-lift);">
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <x-import component-from-global-scope="CareFusion.Avatar" name="Dr. Arun Nair" size="{{n40}}"></x-import>
+          <div style="min-width: 0;">
+            <p style="margin: 0; font-weight: 600; color: var(--ink);">Dr. Arun Nair</p>
+            <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">General medicine · Tue 21 Oct, 10:30</p>
+          </div>
+        </div>
+        <div style="margin-top: 12px;"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Confirmed by hospital</x-import></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-label="Platform facts" style="border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface-raised);">
+  <dl style="max-width: 1240px; margin: 0 auto; padding: 36px 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px;">
+    <div><dt style="font-size: 13px; color: var(--ink-muted);">Hospitals connected</dt><dd style="margin: 4px 0 0; font-size: 28px; font-weight: 600; color: var(--ink-strong);">42<span style="font-size: 15px; font-weight: 500; color: var(--ink-muted);"> · demo</span></dd></div>
+    <div><dt style="font-size: 13px; color: var(--ink-muted);">Doctor session length</dt><dd style="margin: 4px 0 0; font-size: 28px; font-weight: 600; color: var(--ink-strong);">30 min<span style="font-size: 15px; font-weight: 500; color: var(--ink-muted);"> · you can end it</span></dd></div>
+    <div><dt style="font-size: 13px; color: var(--ink-muted);">Pilot</dt><dd style="margin: 4px 0 0; font-size: 28px; font-weight: 600; color: var(--ink-strong);">Kerala<span style="font-size: 15px; font-weight: 500; color: var(--ink-muted);"> · Pathanamthitta, Kottayam</span></dd></div>
+    <div><dt style="font-size: 13px; color: var(--ink-muted);">Languages at launch</dt><dd style="margin: 4px 0 0; font-size: 28px; font-weight: 600; color: var(--ink-strong);">English<span style="font-size: 15px; font-weight: 500; color: var(--ink-muted);"> · Malayalam, Hindi next</span></dd></div>
+  </dl>
+</section>
+
+<section id="privacy" aria-labelledby="privacy-title" style="max-width: 1240px; margin: 0 auto; padding: 112px 32px 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 56px; align-items: start;">
+  <div style="position: sticky; top: 120px; display: flex; flex-direction: column; gap: 16px;">
+    <p style="margin: 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--accent-text);">Your record, your key</p>
+    <h2 id="privacy-title" style="margin: 0; font-family: var(--font-serif); font-size: 44px; line-height: 50px; font-weight: 600; color: var(--ink-strong); letter-spacing: -0.01em;">Nobody opens your record without you.</h2>
+    <p style="margin: 0; font-size: 17px; line-height: 28px;">A doctor needs the key on your phone — or your health card and a code sent to your basic phone. Every view is logged, and you see the history.</p>
+  </div>
+  <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px;">
+    <li class="cf-card cf-card-default" style="display: flex; gap: 18px;"><span class="step-n" style="background: var(--tint-teal); color: var(--primary-text);">1</span><div><h3 style="margin: 0 0 4px; font-size: 17px; color: var(--ink);">Show your rotating key</h3><p style="margin: 0;">A QR and a 6-digit number that change every 10 seconds, used once.</p></div></li>
+    <li class="cf-card cf-card-default" style="display: flex; gap: 18px;"><span class="step-n" style="background: var(--tint-blue); color: var(--info);">2</span><div><h3 style="margin: 0 0 4px; font-size: 17px; color: var(--ink);">One doctor, thirty minutes</h3><p style="margin: 0;">They can read and add notes, never edit or delete. You can end the session early.</p></div></li>
+    <li class="cf-card cf-card-default" style="display: flex; gap: 18px;"><span class="step-n" style="background: var(--tint-peach); color: var(--peach-text);">3</span><div><h3 style="margin: 0 0 4px; font-size: 17px; color: var(--ink);">Emergencies need your contact</h3><p style="margin: 0;">If you can't share, your emergency contact approves on their phone. Break-glass access is reviewed twice.</p></div></li>
+    <li class="cf-card cf-card-default" style="display: flex; gap: 18px;"><span class="step-n" style="background: var(--tint-sage); color: var(--success);">4</span><div><h3 style="margin: 0 0 4px; font-size: 17px; color: var(--ink);">See who looked, and when</h3><p style="margin: 0;">Your access history lists every session. The log can't be edited by anyone.</p></div></li>
+  </ol>
+</section>
+
+<section id="ai" aria-labelledby="ai-title" style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 112px;">
+  <div style="border-radius: 28px; background: var(--surface-raised); border: 1px solid var(--border); padding: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 48px; align-items: center;">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <p style="margin: 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--ai);">AI that shows its work</p>
+      <h2 id="ai-title" style="margin: 0; font-family: var(--font-serif); font-size: 40px; line-height: 46px; font-weight: 600; color: var(--ink-strong);">Evidence first. The doctor decides.</h2>
+      <p style="margin: 0; font-size: 17px; line-height: 28px;">Four tools — symptoms, medical images, genomics and vital-sign trends — propose hypotheses. Each is checked against guidelines and research, labelled VERIFIED, SUPPORTED WITH CAUTION or UNCERTAIN, and reviewed by a doctor before you ever see it.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <x-import component-from-global-scope="CareFusion.Badge" tone="ai">Symptom engine</x-import>
+        <x-import component-from-global-scope="CareFusion.Badge" tone="ai">Image analysis</x-import>
+        <x-import component-from-global-scope="CareFusion.Badge" tone="ai">Genomic analysis</x-import>
+        <x-import component-from-global-scope="CareFusion.Badge" tone="ai">Temporal analysis</x-import>
+      </div>
+    </div>
+    <x-import component-from-global-scope="CareFusion.AIInsight" module="Image analysis" status="caution" title="Possible right lower-lobe opacity" confidence="{{conf}}" evidence="{{evidence}}" reviewed="{{yes}}" reviewed-by="Dr. Arun Nair">
+      <p style="margin: 0;">One supporting source. The doctor agreed: “Consistent with examination; chest X-ray repeat in 2 weeks.”</p>
+    </x-import>
+  </div>
+</section>
+
+<section id="roles" aria-labelledby="roles-title" style="background: var(--surface-cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 96px 32px;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 36px;">
+      <div style="max-width: 640px;">
+        <p style="margin: 0 0 8px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--accent-text);">For doctors</p>
+        <h2 id="roles-title" style="margin: 0; font-family: var(--font-serif); font-size: 40px; line-height: 46px; font-weight: 600; color: var(--ink-strong);">Consult with the whole record — and an assistant that cites its sources</h2>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <a class="cf-btn cf-btn-secondary cf-btn-md" href="RegisterDoctor.dc.html">Register as a doctor</a>
+        <a class="cf-btn cf-btn-primary cf-btn-md" href="Login.dc.html">Doctor login</a>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px;">
+      <div class="role-link"><strong style="font-size: 18px; color: var(--ink);">Scan the patient's key</strong><span>Thirty minutes with the full record — history, scans, lab reports — logged and time-limited.</span></div>
+      <div class="role-link"><strong style="font-size: 18px; color: var(--ink);">Four AI tools</strong><span>Symptoms, images, genomics and vital-sign trends, each with evidence and a status you agree or disagree with.</span></div>
+      <div class="role-link"><strong style="font-size: 18px; color: var(--ink);">e-Signed prescriptions</strong><span>Generic names, allergy and interaction warnings, live stock, and a verifiable QR.</span></div>
+      <div class="role-link"><strong style="font-size: 18px; color: var(--ink);">Voice notes</strong><span>Dictate; check the text; save it to the record. Your words, never edited by the AI.</span></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="cta-title" style="max-width: 1240px; margin: 0 auto; padding: 112px 32px;">
+  <div style="position: relative; overflow: hidden; border-radius: 28px; background: var(--primary); color: var(--on-primary); padding: 64px 56px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px;">
+    <svg aria-hidden="true" width="360" height="360" viewBox="0 0 64 64" style="position: absolute; right: -60px; top: -80px; opacity: .16;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+    <div style="position: relative; max-width: 620px;">
+      <h2 id="cta-title" style="margin: 0 0 12px; font-family: var(--font-serif); font-size: 46px; line-height: 52px; font-weight: 600;">Your health, connected.</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 28px;">Register with Aadhaar e-KYC and a quick face check. It takes about five minutes, and your ABHA health ID is linked for you.</p>
+    </div>
+    <a class="cf-btn cf-btn-lg" href="RegisterCitizen.dc.html" style="position: relative; background: #faf5ef; color: var(--primary-text);">Create your health account</a>
+  </div>
+</section>
+
+</main>
+
+<footer id="help" style="background: var(--surface-raised); border-top: 1px solid var(--border);">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px;">
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <img src="assets/logo.svg" alt="CareFusion AI" style="height: 30px; width: auto; align-self: flex-start;">
+      <p style="margin: 0; color: var(--ink-muted); font-size: 14px; line-height: 21px;">A unified medical-affairs platform for citizens and care providers. Alpha demo on synthetic data.</p>
+    </div>
+    <nav aria-label="Sign in" style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;"><strong style="color: var(--ink);">Account</strong><a href="Login.dc.html">Log in</a><a href="Recovery.dc.html">Recover access</a></nav>
+    <nav aria-label="Register" style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;"><strong style="color: var(--ink);">Register</strong><a href="RegisterCitizen.dc.html">Citizen</a><a href="RegisterDoctor.dc.html">Doctor</a></nav>
+    <nav aria-label="Support" style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;"><strong style="color: var(--ink);">Support</strong><a href="Recovery.dc.html">Lost phone or password</a><a href="#help">Privacy notice</a><a href="#help">Accessibility</a></nav>
+  </div>
+  <div style="max-width: 1240px; margin: 0 auto; padding: 16px 32px 32px; color: var(--ink-muted); font-size: 13px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;"><span>© 2026 CareFusion AI · Alpha</span><span>Government integrations shown are mock connectors.</span></div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3580}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      yes: true,
+      n40: 40,
+      conf: 0.67,
+      evidence: ['NIH chest X-ray reference set', 'ICMR guideline: community-acquired pneumonia']
+    };
+  }
+}
+</script>
+</body>
+</html>

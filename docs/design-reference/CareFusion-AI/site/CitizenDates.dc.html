@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dates — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.lk:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.muted{color:var(--ink-muted);font-size:13px}
+.ttl{margin:0;font-family:var(--font-serif);font-size:32px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.eyb{margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--primary-text)}
+.ic{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.k0{transform:scaleX(0.0)}.k1{transform:scaleX(0.1)}.k2{transform:scaleX(0.2)}.k3{transform:scaleX(0.3)}.k4{transform:scaleX(0.4)}.k5{transform:scaleX(0.5)}.k6{transform:scaleX(0.6)}.k7{transform:scaleX(0.7)}.k8{transform:scaleX(0.8)}.k9{transform:scaleX(0.9)}.k10{transform:scaleX(1.0)}
+.is-live{color:var(--success)}
+.lay{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:980px){.lay{grid-template-columns:1fr}}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wd{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted);text-align:center;padding:4px 0}
+.cell{min-height:82px;border-radius:14px;border:1px solid var(--border);background:var(--surface);padding:8px;display:flex;flex-direction:column;gap:4px;font:inherit;text-align:left;color:var(--ink-body);cursor:pointer;transition:background 160ms ease,border-color 160ms ease}
+.cell:hover{background:var(--surface-cream)}
+.cell:focus-visible,.fbtn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.cell.blank{visibility:hidden}
+.cell.past{opacity:.6}
+.cell.today{border-color:var(--primary);background:var(--tint-teal)}
+.cell.today .dnum{background:var(--primary);color:var(--on-primary)}
+.cell.is-sel{box-shadow:0 0 0 3px rgba(58,114,109,.2);border-color:var(--primary)}
+.dnum{align-self:flex-start;min-width:26px;height:26px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:var(--ink-strong)}
+.ev{font-size:11px;line-height:15px;padding:2px 6px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.t-appt{background:var(--tint-blue);color:var(--info)}
+.t-med{background:var(--tint-teal);color:var(--primary-text)}
+.t-test{background:var(--warning-bg);color:var(--warning)}
+.t-give{background:var(--tint-sage);color:var(--success)}
+.t-vac{background:var(--tint-lavender);color:var(--ai)}
+.t-alert{background:var(--danger-bg);color:var(--danger)}
+.lg{display:flex;gap:10px;flex-wrap:wrap}
+.lg span{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:9999px}
+.dt{flex:none;width:52px;text-align:center;padding:6px 0;border-radius:12px;font-weight:600;line-height:1.1}
+.dt b{display:block;font-size:18px}
+.dt i{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.fbtn{border:1px solid var(--border);background:var(--surface-raised);border-radius:10px;width:36px;height:36px;font:inherit;font-size:18px;color:var(--ink);cursor:pointer}
+.ok{padding:12px 14px;border-radius:14px;background:var(--success-bg);color:var(--success);font-weight:600;font-size:14px}
+.ring{animation:ring 2.2s ease-in-out infinite;transform-origin:50% 10%}
+@keyframes ring{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(12deg)}90%{transform:rotate(-10deg)}95%{transform:rotate(6deg)}}
+.msum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.msum div{padding:12px 14px;border-radius:14px;background:var(--surface-cream);display:flex;flex-direction:column;gap:2px}
+.msum b{font-size:22px;line-height:28px;color:var(--ink-strong)}
+.msum span{font-size:12px;color:var(--ink-muted)}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div><p class="eyb">Dates</p><h1 class="ttl">Dates to remember</h1><p style="margin: 4px 0 0;">Appointments, refills, tests and donations — set by your doctors or by you.</p></div>
+    <div class="lg" aria-label="Legend">
+      <span class="t-appt">● Appointment</span><span class="t-med">● Refill</span><span class="t-test">● Test</span><span class="t-give">● Donation</span><span class="t-vac">● Vaccine</span><span class="t-alert">● Alert</span>
+    </div>
+  </header>
+
+  <div class="lay in" style="animation-delay: 60ms;">
+    <section class="box" aria-label="October 2026 calendar">
+      <div class="bh">
+        <div style="display: flex; align-items: center; gap: 10px;"><button type="button" class="fbtn" aria-label="Previous month">‹</button><h2 class="bt" style="font-family: var(--font-serif); font-size: 22px; line-height: 30px;">October 2026</h2><button type="button" class="fbtn" aria-label="Next month">›</button></div>
+        <x-import component-from-global-scope="CareFusion.Tabs" label="Calendar view" variant="pill" tabs="{{views}}" default-value="month"></x-import>
+      </div>
+      <div class="cal">
+        <span class="wd">Mon</span><span class="wd">Tue</span><span class="wd">Wed</span><span class="wd">Thu</span><span class="wd">Fri</span><span class="wd">Sat</span><span class="wd">Sun</span>
+        <sc-for list="{{cells}}" as="c" hint-placeholder-count="35">
+          <button type="button" class="{{c.cls}}" onClick="{{c.pick}}" aria-label="{{c.aria}}" tabindex="{{c.tab}}">
+            <span class="dnum">{{c.n}}</span>
+            <sc-for list="{{c.evs}}" as="e" hint-placeholder-count="1"><span class="{{e.cls}}">{{e.short}}</span></sc-for>
+          </button>
+        </sc-for>
+      </div>
+      <div style="padding: 14px 16px; border-radius: 16px; background: var(--surface-cream); display: flex; gap: 14px; align-items: flex-start;">
+        <span class="dt" style="background: var(--surface-raised); color: var(--ink-strong);"><b>{{selDay}}</b><i>Oct</i></span>
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+          <strong style="color: var(--ink);">{{selTitle}}</strong>
+          <sc-for list="{{selEvs}}" as="e" hint-placeholder-count="1"><div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"><span class="{{e.cls}}">{{e.kind}}</span><span style="font-size: 14px;">{{e.title}}</span><span class="muted">{{e.meta}}</span></div></sc-for>
+          <sc-if value="{{selEmpty}}" hint-placeholder-val="false"><span class="muted">Nothing planned. Add a reminder for this day on the right.</span></sc-if>
+        </div>
+      </div>
+      <div class="msum" aria-label="October at a glance">
+        <div><b>3</b><span>Appointments</span></div>
+        <div><b>2</b><span>Tests</span></div>
+        <div><b>2</b><span>Refills</span></div>
+        <div><b>1</b><span>Vaccine</span></div>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 16px; background: var(--tint-blue);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>
+        <span style="flex: 1; font-size: 14px;"><strong style="color: var(--ink);">Sync with your phone calendar</strong> — dates update when your doctor changes them.</span>
+        <button type="button" class="lk" onClick="{{toCare}}">Set up</button>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <section class="box">
+        <div class="bh"><h2 class="bt">Coming up</h2><button type="button" class="lk" onClick="{{toCare}}">Book appointment</button></div>
+        <sc-if value="{{hasNew}}" hint-placeholder-val="false"><div class="ok" role="status">✓ {{newCount}} new booking from Find care — also sent to the doctor's queue.</div></sc-if>
+        <sc-for list="{{upcoming}}" as="u" hint-placeholder-count="6">
+          <div class="row"><span class="{{u.dtCls}}"><b>{{u.d}}</b><i>{{u.m}}</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{u.title}}</strong><div class="muted">{{u.meta}}</div></div><span class="muted" style="white-space: nowrap;">{{u.when}}</span></div>
+        </sc-for>
+      </section>
+
+      <section class="box" aria-labelledby="addr">
+        <div class="bh"><h2 class="bt" id="addr">Add a reminder</h2><svg class="ring" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg></div>
+        <form onSubmit="{{save}}" style="display: flex; flex-direction: column; gap: 12px;">
+          <x-import component-from-global-scope="CareFusion.TextField" label="What" placeholder="e.g. Take BP reading" required="{{yes}}" value="{{title}}" on-change="{{setTitle}}"></x-import>
+          <div class="grid g2" style="gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <x-import component-from-global-scope="CareFusion.TextField" label="Date" type="date" default-value="2026-10-19"></x-import>
+            <x-import component-from-global-scope="CareFusion.TextField" label="Time" type="time" default-value="08:00"></x-import>
+          </div>
+          <x-import component-from-global-scope="CareFusion.Select" label="Type" options="{{types}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Select" label="Repeat" options="{{repeats}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Checkbox" label="Also remind Ravi Menon" description="Sends him an SMS at the same time"></x-import>
+          <x-import component-from-global-scope="CareFusion.Button" variant="primary" size="md" type="submit">Save reminder</x-import>
+          <sc-if value="{{saved}}" hint-placeholder-val="false"><div class="ok" role="status">✓ Saved “{{savedTitle}}” for Mon 19 Oct, 08:00.</div></sc-if>
+        </form>
+      </section>
+
+      <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Doctor-set dates can't be deleted">You can snooze a refill or test reminder, but only your doctor can change it.</x-import>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1300}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+function myBookings() { return busRead().filter(function (e) { return e.type === 'booking' && e.from === 'citizen' && e.day; }); }
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { sel: 21, title: '', saved: false, savedTitle: '', mine: [], bk: myBookings() }; }
+  componentDidMount() {
+    this.bt = setInterval(() => this.setState({ bk: myBookings() }), 2000);
+    this.onStorage = () => this.setState({ bk: myBookings() });
+    window.addEventListener('storage', this.onStorage);
+  }
+  componentWillUnmount() { clearInterval(this.bt); window.removeEventListener('storage', this.onStorage); }
+  renderVals() {
+    var st = this.state;
+    var K = { appt: 'Appointment', med: 'Refill', test: 'Test', give: 'Donation', vac: 'Vaccine', alert: 'Alert' };
+    var EV = {
+      3: [['test', 'HbA1c', 'HbA1c blood test', 'District PHL · done']],
+      9: [['med', 'Refill', 'Atorvastatin refill', 'Collected']],
+      12: [['alert', 'Heat', 'Heatwave alert', 'Pathanamthitta']],
+      17: [['appt', 'Dr. Nair', 'Visit with Dr. Arun Nair', '14:20 · done'], ['alert', 'Heat', 'Heatwave alert', 'Stay indoors 12–16']],
+      21: [['appt', '10:30 Dr. Nair', 'Follow-up with Dr. Arun Nair', '10:30 · OP block 2, Demo General Hospital']],
+      24: [['med', 'Metformin', 'Metformin refill due', 'Set by Dr. Arun Nair · 30 tablets']],
+      28: [['appt', 'Eye check', 'Diabetic eye screening', '11:00 · Taluk Hospital, Kozhencherry']],
+      29: [['test', 'X-ray', 'Repeat chest X-ray', 'Radiology · any time 9–4']],
+      30: [['test', 'HbA1c', 'HbA1c blood test', 'Fasting · any government lab']],
+      31: [['vac', 'Diya MR', 'Diya: MR booster', 'PHC Kozhencherry · 10:00']]
+    };
+    var extra = [];
+    st.bk.forEach(function (e) { var d = parseInt(e.day, 10); extra.push([d, 'appt', (e.time || '') + ' ' + (e.doc || 'Doctor').replace('Dr. ', 'Dr. ').split(' ').slice(0, 2).join(' '), 'Booked: ' + (e.doc || 'Doctor'), (e.time || '') + ' · ' + (e.place || '') + ' · ' + (e.ref || '')]); });
+    st.mine.forEach(function (m) { extra.push([19, 'alert', m.slice(0, 10), m, '08:00 · your reminder']); });
+    extra.forEach(function (x) { EV[x[0]] = (EV[x[0]] || []).concat([[x[1], x[2], x[3], x[4]]]); });
+    var cells = [];
+    for (var b = 0; b < 3; b++) cells.push({ n: '', cls: 'cell blank', evs: [], aria: 'Empty', tab: '-1', pick: () => {} });
+    for (var d = 1; d <= 31; d++) {
+      var evs = EV[d] || [];
+      var cls = 'cell' + (d < 17 ? ' past' : '') + (d === 17 ? ' today' : '') + (d === st.sel ? ' is-sel' : '');
+      cells.push({ n: String(d), cls: cls, tab: '0',
+        evs: evs.map(e => ({ cls: 'ev t-' + e[0], short: e[1] })),
+        aria: d + ' October' + (d === 17 ? ', today' : '') + (evs.length ? ', ' + evs.map(e => e[2]).join(', ') : ', nothing planned'),
+        pick: ((x) => () => this.setState({ sel: x }))(d) });
+    }
+    cells.push({ n: '', cls: 'cell blank', evs: [], aria: 'Empty', tab: '-1', pick: () => {} });
+    var selEvs = EV[st.sel] || [];
+    var dow = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'][(st.sel - 1) % 7];
+    var DT = { appt: 'var(--tint-blue)', med: 'var(--tint-teal)' };
+    var UP = [
+      ['21', 'Oct', 'appt', 'Follow-up with Dr. Arun Nair', 'OP block 2 · Demo General Hospital', 'in 4 days'],
+      ['24', 'Oct', 'med', 'Metformin refill due', 'Any Jan Aushadhi or hospital pharmacy', 'in 7 days'],
+      ['28', 'Oct', 'appt', 'Diabetic eye screening', 'Taluk Hospital, Kozhencherry', 'in 11 days'],
+      ['30', 'Oct', 'test', 'HbA1c blood test', 'Fasting from 22:00 the night before', 'in 13 days'],
+      ['02', 'Nov', 'give', 'Eligible to donate blood', '3 months since 02 Aug', 'in 16 days'],
+      ['15', 'Nov', 'vac', 'Influenza vaccine', 'Yearly · any PHC', 'in 29 days']
+    ];
+    st.bk.forEach(function (e) { var d = parseInt(e.day, 10); UP.push([e.day, 'Oct', 'appt', 'Booked: ' + (e.doc || 'Doctor'), (e.place || '') + ' · sent to doctor\'s queue', 'in ' + (d - 17) + ' days']); });
+    st.mine.forEach(function (m) { UP.push(['19', 'Oct', 'alert', m, 'Your reminder · 08:00', 'in 2 days']); });
+    UP.sort(function (a, b) { var A = (a[1] === 'Nov' ? 100 : 0) + parseInt(a[0], 10), B = (b[1] === 'Nov' ? 100 : 0) + parseInt(b[0], 10); return A - B; });
+    UP = UP.slice(0, 7);
+    return {
+      yes: true,
+      hasNew: st.bk.length > 0, newCount: String(st.bk.length),
+      toCare: () => { if (this.props.go) this.props.go('care'); },
+      views: [{ id: 'month', label: 'Month' }, { id: 'list', label: 'List' }],
+      cells: cells,
+      selDay: String(st.sel),
+      selTitle: dow + ', ' + st.sel + ' October' + (st.sel === 17 ? ' · today' : ''),
+      selEvs: selEvs.map(e => ({ cls: 'ev t-' + e[0], kind: K[e[0]], title: e[2], meta: e[3] })),
+      selEmpty: !selEvs.length,
+      upcoming: UP.map(u => ({ d: u[0], m: u[1], title: u[3], meta: u[4], when: u[5], dtCls: 'dt t-' + u[2] })),
+      types: ['Personal reminder', 'Medicine', 'Home vitals reading', 'Appointment (outside the app)'],
+      repeats: ['Does not repeat', 'Every day', 'Every week', 'Every month'],
+      title: st.title, setTitle: (e) => this.setState({ title: e && e.target ? e.target.value : e }),
+      saved: st.saved, savedTitle: st.savedTitle || 'Reminder',
+      save: (e) => { if (e && e.preventDefault) e.preventDefault(); var t = st.title || 'Take BP reading'; this.setState({ saved: true, savedTitle: t, title: '', mine: st.mine.concat([t]) }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

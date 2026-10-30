@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Citizen — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.topbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);cursor:pointer}
+.topbtn:hover{border-color:var(--border-strong)}
+.topbtn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:9999px;background:var(--danger)}
+.swap{font-size:13px;font-weight:600;text-decoration:none;padding:8px 12px;border-radius:10px;border:1px dashed var(--border-strong);color:var(--ink)}
+.swap:hover{background:var(--surface-cream)}
+.cnt{position:absolute;top:4px;right:4px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:9999px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center}
+.toast{position:fixed;top:72px;right:24px;z-index:50;width:340px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:tin 420ms cubic-bezier(0.22,1,0.36,1) both}
+.toast b{display:block;color:var(--ink-strong);font-size:14px}.toast p{margin:2px 0 0;font-size:13px;color:var(--ink-muted)}
+.toast-i{flex:none;width:34px;height:34px;border-radius:10px;background:var(--tint-teal);color:var(--primary-text);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--font-mono);text-transform:uppercase}
+.toast-x{margin-left:auto;border:0;background:none;font:inherit;font-size:18px;line-height:1;color:var(--ink-muted);cursor:pointer;padding:2px 4px;border-radius:6px}
+.toast-x:focus-visible{outline:2px solid var(--focus-ring)}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}}
+.logbtn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.logbtn:hover{border-color:var(--border-strong)}.logbtn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){.toast{animation:none}}
+@media (max-width: 900px){.shell-side{position:static;height:auto;width:100%}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Anjali Menon is a simulated citizen. IDs like DEMO-0000-1234 are not real.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Citizen"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div style="position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 40px; background: rgba(243, 238, 232, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Citizen <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button type="button" class="logbtn" onClick="{{toLog}}" aria-label="Activity log — who opened my record"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18z"></path></svg>Activity log</button>
+          <button type="button" class="topbtn" aria-label="{{bellLabel}}" onClick="{{toAlerts}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><sc-if value="{{unread}}" hint-placeholder-val="{{yes}}"><span class="cnt" aria-hidden="true">{{unread}}</span></sc-if></button>
+          <button type="button" class="topbtn" aria-label="Show my key to a doctor" onClick="{{toKey}}" style="width: auto; padding: 0 14px; gap: 8px; background: var(--primary); border-color: var(--primary); color: var(--on-primary); font: inherit; font-weight: 600; font-size: 14px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"></path></svg>Share key</button>
+        </div>
+      </div>
+      <main style="flex: 1;">
+        <sc-if value="{{is.home}}" hint-placeholder-val="{{yes}}"><dc-import name="CitizenHome" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.access}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenAccess" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.profile}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenProfile" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.documents}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenDocuments" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.dates}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenDates" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.vitals}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenVitals" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.ai}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenAIChat" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.messages}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenMessages" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.care}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenCare" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.medicines}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenMedicines" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.blood}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenBlood" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.organ}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenOrgan" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.alerts}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenAlerts" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.reviews}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenReviews" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.complaints}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenComplaints" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+        <sc-if value="{{is.settings}}" hint-placeholder-val="{{no}}"><dc-import name="CitizenSettings" go="{{go}}" hint-size="100%,1000px"></dc-import></sc-if>
+      </main>
+      <div role="status" aria-live="polite">
+        <sc-if value="{{toast}}" hint-placeholder-val="{{no}}">
+          <div class="toast"><span class="toast-i" aria-hidden="true">{{toast.from3}}</span><div style="min-width: 0;"><b>{{toast.title}}</b><p>{{toast.text}}</p><a href="{{toast.href}}" style="font-size: 13px; font-weight: 600;">Open in {{toast.fromName}} app</a></div><button type="button" class="toast-x" aria-label="Dismiss" onClick="{{hideToast}}">×</button></div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var NAMES = { citizen: 'Citizen', doctor: 'Doctor', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacist', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District admin', state: 'State admin', zonal: 'Zonal admin', central: 'Central admin' };
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var b = busFor('citizen');
+    var seen = {}; b.forEach(function (e, i) { if (i >= 3) seen[e.id] = 1; });
+    this.known = {}; b.forEach((e) => { this.known[e.id] = 1; });
+    this.state = { section: 'home', bus: b, seen: seen, toast: null };
+  }
+  componentDidMount() {
+    var tick = () => {
+      var b = busFor('citizen'); var fresh = b.filter((e) => !this.known[e.id]);
+      fresh.forEach((e) => { this.known[e.id] = 1; });
+      if (fresh.length) { this.setState({ bus: b, toast: fresh[0] }); clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 4000); }
+      else if (b.length !== this.state.bus.length) this.setState({ bus: b });
+    };
+    this.bt = setInterval(tick, 2000);
+    this.onStorage = (e) => { if (!e || e.key === CF_BUS) tick(); };
+    window.addEventListener('storage', this.onStorage);
+  }
+  componentWillUnmount() { clearInterval(this.bt); clearTimeout(this.tt); window.removeEventListener('storage', this.onStorage); }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion;
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var seen = this.state.seen;
+    var unread = this.state.bus.filter(function (e) { return !seen[e.id]; }).length;
+    var markRead = () => { var m = Object.assign({}, this.state.seen); this.state.bus.forEach(function (e) { m[e.id] = 1; }); return m; };
+    var t = this.state.toast;
+    var NAV = [
+      { items: [
+        { id: 'home', label: 'Home', icon: ic('M3 11l9-7l9 7M5 10v10h5v-6h4v6h5V10') },
+        { id: 'access', label: 'Share & access', icon: ic('M15 7a4 4 0 1 1-3.9 4.9L4 19v2h3v-2h2v-2h2l1.1-1.1A4 4 0 0 1 15 7zM16 9h.01') },
+        { id: 'documents', label: 'Documents', icon: ic('M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z') },
+        { id: 'dates', label: 'Dates', icon: ic('M4 6h16v14H4zM4 10h16M8 3v4M16 3v4'), badge: 2 }
+      ] },
+      { title: 'Health', items: [
+        { id: 'vitals', label: 'Home vitals', icon: ic('M3 12h4l3-7l4 14l3-7h4') },
+        { id: 'ai', label: 'AI Health Chat', icon: ic('M10.5 3h3a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 19.5v-15A1.5 1.5 0 0 1 10.5 3zM4.5 9h15A1.5 1.5 0 0 1 21 10.5v3a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 13.5v-3A1.5 1.5 0 0 1 4.5 9z') },
+        { id: 'messages', label: 'Messages', icon: ic('M4 5h16v11H9l-5 4z'), badge: 1 },
+        { id: 'care', label: 'Find care', icon: ic('M11 4a7 7 0 1 0 0 14a7 7 0 0 0 0-14zM21 21l-5-5') },
+        { id: 'medicines', label: 'Medicines', icon: ic('M8.5 3.5a5 5 0 0 1 7 7l-5 5a5 5 0 0 1-7-7zM6 11l7 7') }
+      ] },
+      { title: 'Give', items: [
+        { id: 'blood', label: 'Blood donation', icon: ic('M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z') },
+        { id: 'organ', label: 'Organ donation', icon: ic('M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z') }
+      ] },
+      { title: 'Your voice', items: [
+        { id: 'reviews', label: 'Reviews', icon: ic('M12 3l2.7 5.6l6.1.9l-4.4 4.3l1 6.1L12 17l-5.4 2.9l1-6.1L3.2 9.5l6.1-.9z') },
+        { id: 'complaints', label: 'Complaints', icon: ic('M4 4h16v12H8l-4 4zM12 8v3M12 13.5h.01'), badge: 1 }
+      ] },
+      { title: 'Account', items: [
+        { id: 'profile', label: 'Profile', icon: ic('M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6') },
+        { id: 'alerts', label: 'Alerts', icon: ic('M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4'), badge: unread || undefined },
+        { id: 'settings', label: 'Settings', icon: ic('M12 15a3 3 0 1 0 0-6a3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3a1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8a1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z') }
+      ] }
+    ];
+    var labels = {};
+    NAV.forEach(function (g) { g.items.forEach(function (i) { labels[i.id] = i.label; }); });
+    var sec = this.state.section, is = {};
+    Object.keys(labels).forEach(function (k) { is[k] = k === sec; });
+    return {
+      yes: true, no: false,
+      nav: NAV, section: sec, is: is, crumb: labels[sec],
+      go: (id) => this.setState({ section: id }),
+      toAlerts: () => this.setState({ section: 'alerts', seen: markRead() }),
+      toLog: () => this.setState({ section: 'access' }),
+      unread: unread ? String(unread) : '',
+      bellLabel: unread ? 'Notifications, ' + unread + ' unread' : 'Notifications',
+      toast: t ? { title: t.title, text: t.text, href: t.href || 'Citizen.dc.html', from3: (t.from || '').slice(0, 3), fromName: NAMES[t.from] || 'other' } : null,
+      hideToast: () => this.setState({ toast: null }),
+      toKey: () => this.setState({ section: 'access' }),
+      logo: h('a', { href: 'Main.dc.html', 'aria-label': 'CareFusion AI home', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 30 })),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Anjali Menon', size: 38, tone: 'peach' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Anjali Menon'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Citizen · DEMO-0000-1234')),
+        h('a', { href: 'Login.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+}
+</script>
+</body>
+</html>

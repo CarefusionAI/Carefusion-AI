@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pharmacy admin — CareFusion AI Admin Console</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px;background:rgba(243,238,232,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;min-width:42px;padding:0 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);cursor:pointer;font:inherit;font-size:14px;font-weight:600;box-sizing:border-box}
+.topbtn:hover{border-color:var(--border-strong)}
+.topbtn:focus-visible,.lk:focus-visible,.chip:focus-visible,.rowbtn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.dot{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:9999px;background:var(--danger)}
+.pill{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:var(--tint-peach);color:var(--peach-text);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.pg{padding:28px 40px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;max-width:1240px}
+.ph{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.ph h1{margin:0;font-family:var(--font-serif);font-size:30px;line-height:38px;font-weight:600;color:var(--ink-strong)}
+.ph p{margin:4px 0 0}
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))}
+.g21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+@media (max-width:1100px){.g21{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.muted{color:var(--ink-muted);font-size:13px}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.ico{flex:none;width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.t-teal{background:var(--tint-teal);color:var(--primary-text)}.t-blue{background:var(--tint-blue);color:var(--info)}.t-peach{background:var(--tint-peach);color:var(--peach-text)}.t-sage{background:var(--tint-sage);color:var(--success)}.t-warn{background:var(--warning-bg);color:var(--warning)}.t-danger{background:var(--danger-bg);color:var(--danger)}
+.bar{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:9999px;background:var(--primary-soft)}
+.w10{width:10%}.w20{width:20%}.w30{width:30%}.w40{width:40%}.w50{width:50%}.w60{width:60%}.w70{width:70%}.w80{width:80%}.w90{width:90%}.w100{width:100%}
+.bar span.low{background:var(--danger-soft)}.bar span.mid{background:var(--warning-soft)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--border);background:var(--surface-raised);border-radius:9999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.rowbtn{border:1px solid var(--border);background:var(--surface-raised);border-radius:10px;padding:6px 10px;font:inherit;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer}
+.rowbtn:hover{border-color:var(--border-strong)}
+.rowbtn.dng{color:var(--danger)}
+.search{display:flex;align-items:center;gap:8px;padding:0 12px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);min-width:240px}
+.search input{border:0;background:none;font:inherit;font-size:14px;color:var(--ink);outline:none;flex:1;min-width:0}
+.search:focus-within{outline:2px solid var(--focus-ring);outline-offset:2px}
+.spark{width:100%;height:auto}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:22px 24px;background:var(--primary);color:var(--on-primary);display:flex;flex-direction:column;gap:10px;box-shadow:0 22px 44px rgba(58,114,109,.22)}
+.hero h2{margin:0;font-family:var(--font-serif);font-size:22px;font-weight:600}
+.hero .big{font-size:34px;line-height:40px;font-weight:600;font-variant-numeric:tabular-nums}
+.mono{font-family:var(--font-mono);font-size:12.5px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.kv div{padding:10px 12px;border-radius:12px;background:var(--surface)}
+.kv dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.kv dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}
+.in{animation:in 500ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);animation:live 1.8s infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}100%{box-shadow:0 0 0 0 rgba(55,106,79,0)}}
+@media (max-width:900px){.shell-side{position:static;height:auto;width:100%}.top{padding:12px 16px}.pg{padding:20px 16px 40px}}
+@media (prefers-reduced-motion: reduce){.in,.live{animation:none}}
+
+.feed{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:14px;background:var(--surface);text-decoration:none;color:inherit;transition:background-color 180ms ease}
+a.feed:hover{background:var(--surface-cream)}
+a.feed:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.feed .ft{font-size:14px;font-weight:600;color:var(--ink)}
+.feed .fx{font-size:13px;color:var(--ink-muted)}
+.feed.new{background:var(--tint-sage)}
+.from{flex:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:9999px;background:var(--tint-blue);color:var(--info);white-space:nowrap}
+.toast{position:fixed;top:72px;right:24px;z-index:50;display:flex;gap:12px;align-items:flex-start;max-width:360px;padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:toast 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes toast{from{opacity:0;transform:translateX(24px)}}
+.toast .ti{flex:none;width:34px;height:34px;border-radius:10px;background:var(--tint-teal);color:var(--primary-text);display:inline-flex;align-items:center;justify-content:center}
+.toast button{border:0;background:none;color:var(--ink-muted);cursor:pointer;font:inherit;font-size:18px;line-height:1;padding:2px 4px;border-radius:6px}
+.cat{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center}
+.cat .cb{position:relative;height:28px;border-radius:8px;background:var(--surface-cream);overflow:hidden}
+.cat .cb span{display:block;height:100%;border-radius:8px;background:var(--primary-soft)}
+.cat .cb span.c2{background:#d2b277}.cat .cb span.c3{background:#b7a6d4}.cat .cb span.c4{background:#8eb4d6}.cat .cb span.c5{background:#d99a96}.cat .cb span.c6{background:#8ebba5}
+.cat .cl{position:absolute;left:10px;top:0;bottom:0;display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--ink-strong)}
+.callout{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface)}
+.callout b{font-size:20px;color:var(--ink-strong);font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: reduce){.toast{animation:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-adm" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Demo Hospital Pharmacy and licence DEMO-DL-KL-2041 are simulated.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Pharmacy admin"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div class="top">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Demo Hospital Pharmacy <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span class="muted" style="display: inline-flex; align-items: center; gap: 8px;"><span class="live" aria-hidden="true"></span>Stock synced {{syncAgo}}</span>
+          <button type="button" class="topbtn" aria-label="Recalls and expiry, 2 need action" onClick="{{toExpiry}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span class="dot" aria-hidden="true"></span></button>
+          <button type="button" class="topbtn" onClick="{{openInvite}}" style="background: var(--primary); border-color: var(--primary); color: var(--on-primary);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Invite pharmacist</button>
+        </div>
+      </div>
+      <sc-if value="{{toast}}" hint-placeholder-val="{{no}}">
+        <div class="toast" role="status" aria-live="polite"><span class="ti" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"></path></svg></span><div style="flex: 1; min-width: 0;"><div class="muted" style="font-weight: 600;">From {{toast.fromLabel}} · {{toast.at}}</div><strong style="display: block; color: var(--ink); font-size: 14px;">{{toast.title}}</strong><div class="muted">{{toast.text}}</div></div><button type="button" aria-label="Dismiss" onClick="{{closeToast}}">×</button></div>
+      </sc-if>
+      <main style="flex: 1;">
+
+        <!-- OVERVIEW -->
+        <sc-if value="{{is.overview}}" hint-placeholder-val="{{yes}}">
+          <div class="pg">
+            <div class="ph in">
+              <div><p class="muted" style="margin: 0;">Saturday, 17 October 2026 · Pathanamthitta</p><h1>Good afternoon, Suma</h1><p>4 pharmacists on shift, 2 recalls to action and 1 purchase order waiting for your approval.</p></div>
+              <div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Licence valid · 14 Mar 2028</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="outline">DEMO-DL-KL-2041</x-import></div>
+            </div>
+            <div class="grid g4 in">
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Prescriptions filled today" value="186" trend="{{t1}}" icon="{{iRx}}" tone="sage"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Items in stock" value="1,248" unit="SKUs" hint="1,102 published to public finder" icon="{{iBox}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Low stock" value="17" unit="items" trend="{{t2}}" icon="{{iWarn}}" tone="peach"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Expiring in 30 days" value="₹48,620" hint="42 batches · 9 suppliers" icon="{{iCal}}" tone="blue"></x-import>
+            </div>
+            <div class="grid g21 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Dispensing this week</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">e-Signed prescriptions only</x-import></div>
+                <svg class="spark" viewBox="0 0 640 180" role="img" aria-label="Prescriptions filled per day, Sunday 142 rising to Saturday 186">
+                  <path d="M0 30H640M0 80H640M0 130H640" stroke="#e4ddd6"></path>
+                  <g fill="#86bdb8"><rect x="30" y="72" width="54" height="108" rx="10"></rect><rect x="120" y="58" width="54" height="122" rx="10"></rect><rect x="210" y="64" width="54" height="116" rx="10"></rect><rect x="300" y="46" width="54" height="134" rx="10"></rect><rect x="390" y="52" width="54" height="128" rx="10"></rect><rect x="480" y="40" width="54" height="140" rx="10"></rect></g>
+                  <rect x="570" y="30" width="54" height="150" rx="10" fill="#3a726d"></rect>
+                </svg>
+                <div style="display: flex; justify-content: space-between;" class="muted"><span>Sun 142</span><span>Mon 158</span><span>Tue 151</span><span>Wed 170</span><span>Thu 164</span><span>Fri 176</span><span><strong style="color: var(--ink);">Today 186</strong></span></div>
+              </div>
+              <div class="hero">
+                <svg aria-hidden="true" viewBox="0 0 64 64" width="200" height="200" style="position: absolute; right: -50px; bottom: -60px; opacity: .12;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+                <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">Public stock finder</span>
+                <span class="big">88%</span>
+                <span style="font-size: 14px; position: relative;">of your stock is visible to citizens searching nearby. 312 searches found you this week.</span>
+                <div style="position: relative;"><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm" on-click="{{toInventory}}">Manage publishing</x-import></div>
+              </div>
+            </div>
+            <div class="grid g3 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Stock by category</h2><span class="muted">SKUs · value</span></div>
+                <sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+                  <div class="cat"><span style="font-size: 13px; color: var(--ink);">{{c.name}}</span><div class="cb"><span class="{{c.cls}}"></span><span class="cl">{{c.label}}</span></div></div>
+                </sc-for>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Dispenses · 30 days</h2><x-import component-from-global-scope="CareFusion.Badge" tone="success">+18% month on month</x-import></div>
+                <svg class="spark" viewBox="0 0 320 150" role="img" aria-label="Daily dispenses over 30 days, rising from about 130 to 186, peak 191 on 12 October during the dengue spike">
+                  <path d="M0 20H320M0 70H320M0 120H320" stroke="#e4ddd6"></path>
+                  <path d="M0 96H320" stroke="#c9a86a" stroke-dasharray="4 4"></path>
+                  <path d="M0 108 L22 104 L44 110 L66 98 L88 100 L110 92 L132 96 L154 84 L176 88 L198 66 L210 34 L222 54 L244 70 L266 62 L288 52 L310 44 L320 40 V150 H0Z" fill="#86bdb8" opacity=".2"></path>
+                  <path d="M0 108 L22 104 L44 110 L66 98 L88 100 L110 92 L132 96 L154 84 L176 88 L198 66 L210 34 L222 54 L244 70 L266 62 L288 52 L310 44 L320 40" fill="none" stroke="#3a726d" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                  <circle cx="210" cy="34" r="4.5" fill="#c9a86a"></circle><text x="214" y="24" font-size="11" fill="#7e6028" font-family="IBM Plex Sans, sans-serif">Peak 191 · 12 Oct</text>
+                  <circle cx="320" cy="40" r="4.5" fill="#3a726d"></circle><text x="4" y="90" font-size="10" fill="#7e6028" font-family="IBM Plex Sans, sans-serif">avg 158</text>
+                </svg>
+                <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                  <div class="callout"><span class="muted">Today</span><b>{{dispToday}}</b></div>
+                  <div class="callout"><span class="muted">30 days</span><b>4,742</b></div>
+                  <div class="callout"><span class="muted">Avg wait</span><b>6 min</b></div>
+                </div>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Connected apps</h2><x-import component-from-global-scope="CareFusion.Badge" tone="teal" dot="{{yes}}">Live dispensing</x-import></div>
+                <sc-for list="{{feed}}" as="e" hint-placeholder-count="3">
+                  <a class="{{e.cls}}" href="{{e.href}}"><span style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><span class="from">{{e.fromLabel}}</span><span class="muted">{{e.at}}</span></span><span class="ft">{{e.title}}</span><span class="fx">{{e.text}}</span><span class="fx" style="color: var(--success); font-weight: 600;">{{e.effect}}</span></a>
+                </sc-for>
+                <p class="muted" style="margin: 0;">Each dispense from the Pharmacist app lowers stock here automatically.</p>
+              </div>
+            </div>
+            <div class="grid g3 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Needs your action</h2></div>
+                <div>
+                  <div class="row"><span class="ico t-danger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">CDSCO recall · Ranitidine 150 mg</strong><div class="muted">Batch RN-2291 · 64 strips on shelf</div></div><button type="button" class="lk" onClick="{{toExpiry}}">Act</button></div>
+                  <div class="row"><span class="ico t-warn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 3h12v18H6zM9 8h6M9 12h6M9 16h4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">PO-2026-0418 awaiting approval</strong><div class="muted">KMSCL · ₹1,24,300 · 22 lines</div></div><button type="button" class="lk" onClick="{{toOrders}}">Review</button></div>
+                  <div class="row"><span class="ico t-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Invite pending · Anu George</strong><div class="muted">Sent 2 days ago · expires in 5 days</div></div><button type="button" class="lk" onClick="{{toStaff}}">Resend</button></div>
+                  <div class="row"><span class="ico t-peach"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Fire NOC renewal</strong><div class="muted">Due 30 Nov 2026</div></div><button type="button" class="lk" onClick="{{toCompliance}}">Upload</button></div>
+                </div>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Low stock</h2><button type="button" class="lk" onClick="{{toInventory}}">Inventory</button></div>
+                <sc-for list="{{lowStock}}" as="s" hint-placeholder-count="5">
+                  <div style="display: flex; flex-direction: column; gap: 6px;"><div style="display: flex; justify-content: space-between; gap: 8px; font-size: 14px;"><strong style="color: var(--ink);">{{s.name}}</strong><span class="muted">{{s.qty}}</span></div><div class="bar"><span class="{{s.cls}}"></span></div></div>
+                </sc-for>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Pharmacists on shift</h2><button type="button" class="lk" onClick="{{toStaff}}">All staff</button></div>
+                <div>
+                  <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Joseph Mathew" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Joseph Mathew</strong><div class="muted">Counter 1 · 74 fills today</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">On shift</x-import></div>
+                  <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Divya Raj" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Divya Raj</strong><div class="muted">Counter 2 · 61 fills</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">On shift</x-import></div>
+                  <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Shaji Kurian" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Shaji Kurian</strong><div class="muted">Store room · receiving</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="info">Break</x-import></div>
+                  <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Neethu Babu" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Neethu Babu</strong><div class="muted">Night shift from 20:00</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Off</x-import></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- STAFF -->
+        <sc-if value="{{is.staff}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Pharmacists</h1><p>Only registered pharmacists can dispense. Deactivating someone ends their sessions at once.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{openInvite}}">Invite pharmacist</x-import></div>
+            <div class="grid g4 in">
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Active" value="{{activeCount}}" hint="of 6 accounts" icon="{{iUsers}}" tone="sage"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Invites pending" value="1" hint="Anu George" icon="{{iMail}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Two-step enabled" value="100%" hint="Required for all staff" icon="{{iShield}}" tone="blue"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Registration renewals" value="1" hint="Shaji Kurian · Jan 2027" icon="{{iCal}}" tone="peach"></x-import>
+            </div>
+            <div class="box in">
+              <div class="bh"><h2 class="bt">Team</h2><span class="muted">Kerala State Pharmacy Council numbers verified</span></div>
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{staffCols}}" rows="{{staffRows}}" caption="Pharmacy staff" row-key="id"></x-import>
+            </div>
+            <div class="grid g2 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Pending invites</h2></div>
+                <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Anu George" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Anu George</strong><div class="muted">anu.george@demo.example · KSPC DEMO-41982 · sent 15 Oct</div></div><button type="button" class="rowbtn">Resend</button><button type="button" class="rowbtn dng">Revoke</button></div>
+                <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Faisal Rahman" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Faisal Rahman</strong><div class="muted">Accepted 12 Oct · activation complete</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Joined</x-import></div>
+              </div>
+              <div class="box" style="background: var(--tint-blue); border-color: transparent; box-shadow: none;">
+                <div class="bh"><h2 class="bt">What pharmacists can see</h2></div>
+                <p style="margin: 0; font-size: 14px; line-height: 22px;">Only the prescription they are filling: medicine, dose, prescriber and allergies. No history, no documents, no AI chat. Every view is written to the audit log.</p>
+                <div class="chips"><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Prescription</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Allergies</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="outline">History — hidden</x-import></div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- INVENTORY -->
+        <sc-if value="{{is.inventory}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Inventory &amp; public finder</h1><p>Publishing shows citizens that an item is in stock here — never the exact quantity.</p></div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="secondary">Import CSV</x-import><x-import component-from-global-scope="CareFusion.Button" variant="primary">Add item</x-import></div></div>
+            <div class="box in">
+              <div class="bh">
+                <div class="chips" role="group" aria-label="Filter inventory">
+                  <sc-for list="{{invFilters}}" as="f" hint-placeholder-count="4"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+                </div>
+                <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 0 0 0-14zM21 21l-5-5"></path></svg><span class="cf-sr" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">Search medicines</span><input type="search" placeholder="Search medicine or batch" value="{{q}}" onChange="{{onQ}}"></label>
+              </div>
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{invCols}}" rows="{{invRows}}" caption="Inventory" row-key="id" striped="{{yes}}"></x-import>
+              <p class="muted" style="margin: 0;">Showing {{invCount}} of 1,248 items · stock syncs from your billing system every 5 minutes.</p>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ORDERS -->
+        <sc-if value="{{is.orders}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Purchase orders</h1><p>Orders over ₹1,00,000 need your approval before they go to the supplier.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="primary">New order</x-import></div>
+            <div class="grid g4 in">
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Awaiting approval" value="{{poPending}}" icon="{{iDoc}}" tone="peach"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="In transit" value="3" hint="KMSCL, Medisupply, Apex" icon="{{iBox}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="Spend this month" value="₹6.8L" hint="Budget ₹9L" icon="{{iRupee}}" tone="blue"></x-import>
+              <x-import component-from-global-scope="CareFusion.StatCard" label="On-time delivery" value="94%" trend="{{t3}}" icon="{{iTruck}}" tone="sage"></x-import>
+            </div>
+            <div class="box in">
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{poCols}}" rows="{{poRows}}" caption="Purchase orders" row-key="id"></x-import>
+            </div>
+            <div class="box in">
+              <div class="bh"><h2 class="bt">PO-2026-0418 · KMSCL</h2><x-import component-from-global-scope="CareFusion.Badge" tone="{{po418Tone}}">{{po418Label}}</x-import></div>
+              <div class="grid g3">
+                <dl class="kv"><div><dt>Lines</dt><dd>22</dd></div><div><dt>Total</dt><dd>₹1,24,300</dd></div><div><dt>Raised by</dt><dd>Shaji Kurian</dd></div><div><dt>Expected</dt><dd>24 Oct</dd></div></dl>
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px;"><div class="row" style="padding: 6px 0;"><span style="flex: 1;">Metformin 500 mg × 3,000</span><span class="mono">₹18,600</span></div><div class="row" style="padding: 6px 0;"><span style="flex: 1;">Atorvastatin 10 mg × 2,000</span><span class="mono">₹21,400</span></div><div class="row" style="padding: 6px 0;"><span style="flex: 1;">Insulin glargine pen × 120</span><span class="mono">₹48,000</span></div><div class="row" style="padding: 6px 0;"><span style="flex: 1;">+ 19 more lines</span><span class="mono">₹36,300</span></div></div>
+                <div style="display: flex; flex-direction: column; gap: 10px; justify-content: flex-end;">
+                  <x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{approvePO}}">Approve order</x-import>
+                  <x-import component-from-global-scope="CareFusion.Button" variant="ghost" on-click="{{holdPO}}">Send back to Shaji</x-import>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- EXPIRY -->
+        <sc-if value="{{is.expiry}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Expiry &amp; recalls</h1><p>Recalled batches are blocked at the counter automatically. Confirm once they're off the shelf.</p></div></div>
+            <sc-for list="{{recalls}}" as="r" hint-placeholder-count="2">
+              <div class="box in">
+                <div class="bh"><div style="display: flex; gap: 12px; align-items: center;"><span class="{{r.icoCls}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg></span><div><strong style="color: var(--ink);">{{r.title}}</strong><div class="muted">{{r.meta}}</div></div></div><x-import component-from-global-scope="CareFusion.Badge" tone="{{r.tone}}">{{r.status}}</x-import></div>
+                <p style="margin: 0; font-size: 14px;">{{r.body}}</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;"><button type="button" class="rowbtn" onClick="{{r.ack}}">{{r.ackLabel}}</button><button type="button" class="rowbtn">Download notice</button></div>
+              </div>
+            </sc-for>
+            <div class="grid g2 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Expiring soon</h2><x-import component-from-global-scope="CareFusion.Badge" tone="warning">42 batches</x-import></div>
+                <x-import component-from-global-scope="CareFusion.Table" columns="{{expCols}}" rows="{{expRows}}" caption="Expiring batches" density="compact"></x-import>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Expiry by month</h2><span class="muted">Value at cost</span></div>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <div><div style="display: flex; justify-content: space-between; font-size: 14px;"><span>October</span><strong>₹12,480</strong></div><div class="bar"><span class="w30 low"></span></div></div>
+                  <div><div style="display: flex; justify-content: space-between; font-size: 14px;"><span>November</span><strong>₹36,140</strong></div><div class="bar"><span class="w80 mid"></span></div></div>
+                  <div><div style="display: flex; justify-content: space-between; font-size: 14px;"><span>December</span><strong>₹22,900</strong></div><div class="bar"><span class="w50"></span></div></div>
+                  <div><div style="display: flex; justify-content: space-between; font-size: 14px;"><span>January</span><strong>₹9,300</strong></div><div class="bar"><span class="w20"></span></div></div>
+                </div>
+                <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Return to supplier">KMSCL accepts returns up to 60 days before expiry. 11 batches qualify.</x-import>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- COMPLIANCE -->
+        <sc-if value="{{is.compliance}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Licence &amp; compliance</h1><p>Documents verified by the State Drugs Control Department.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="primary">Upload document</x-import></div>
+            <div class="grid g21 in">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Documents</h2></div>
+                <sc-for list="{{docs}}" as="d" hint-placeholder-count="6">
+                  <div class="row"><span class="{{d.icoCls}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{d.name}}</strong><div class="muted">{{d.meta}}</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="{{d.tone}}">{{d.status}}</x-import></div>
+                </sc-for>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 18px;">
+                <div class="hero">
+                  <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">Drug licence</span>
+                  <span class="big mono" style="font-size: 24px;">DEMO-DL-KL-2041</span>
+                  <span style="font-size: 14px;">Forms 20 &amp; 21 · Retail · valid till 14 Mar 2028</span>
+                </div>
+                <div class="box">
+                  <div class="bh"><h2 class="bt">Compliance score</h2><strong style="color: var(--success); font-size: 22px;">96</strong></div>
+                  <div class="bar"><span class="w90"></span></div>
+                  <p class="muted" style="margin: 0;">Last inspection 02 Aug 2026 · no major findings. Next due Feb 2027.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- AUDIT -->
+        <sc-if value="{{is.audit}}" hint-placeholder-val="{{no}}">
+          <div class="pg">
+            <div class="ph in"><div><h1>Audit log</h1><p>Every action by your team. Read-only and kept for 7 years.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="secondary">Export CSV</x-import></div>
+            <div class="box in">
+              <div class="chips" role="group" aria-label="Filter audit log">
+                <sc-for list="{{auditFilters}}" as="f" hint-placeholder-count="4"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+              </div>
+              <x-import component-from-global-scope="CareFusion.Table" columns="{{auditCols}}" rows="{{auditRows}}" caption="Audit log" density="compact" striped="{{yes}}"></x-import>
+            </div>
+          </div>
+        </sc-if>
+
+      </main>
+    </div>
+  </div>
+  <x-import component-from-global-scope="CareFusion.Modal" open="{{invite}}" on-close="{{closeInvite}}" title="Invite a pharmacist" footer="{{inviteFoot}}">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <x-import component-from-global-scope="CareFusion.TextField" label="Full name" required="{{yes}}" placeholder="As on pharmacy council registration"></x-import>
+      <x-import component-from-global-scope="CareFusion.TextField" label="Work email" type="email" required="{{yes}}" placeholder="name@pharmacy.example"></x-import>
+      <x-import component-from-global-scope="CareFusion.TextField" label="Kerala State Pharmacy Council number" required="{{yes}}" helper="We check this against the council register."></x-import>
+      <x-import component-from-global-scope="CareFusion.Select" label="Shift" options="{{shifts}}"></x-import>
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var CF_FROM = { citizen: 'Citizen', doctor: 'Doctor', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacist', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District', state: 'State', zonal: 'Zonal', central: 'Central' };
+var CF_DEC = [['Metformin', 'i1', 60], ['Atorvastatin', 'i2', 30], ['Insulin', 'i3', 2], ['Amlodipine', 'i4', 30], ['Amoxicillin', 'i6', 15], ['Paracetamol', 'i5', 10]];
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { section: 'overview', invite: false, active: { s1: true, s2: true, s3: true, s4: true, s5: true, s6: false }, pub: {}, invF: 'all', q: '', po: 'pending', acks: {}, auditF: 'all', sync: 0, bus: busFor('pharmacyadmin'), toast: null };
+  }
+  componentDidMount() {
+    this.t = setInterval(() => this.setState({ sync: (this.state.sync + 1) % 300 }), 1000);
+    this.seen = {}; this.state.bus.forEach((e) => { this.seen[e.id] = 1; });
+    this.poll = () => { var L = busFor('pharmacyadmin'); var fresh = L.filter((e) => !this.seen[e.id]); L.forEach((e) => { this.seen[e.id] = 1; }); var o = { bus: L }; if (fresh.length) { o.toast = fresh[0]; o.fresh = fresh[0].id; clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 4000); } this.setState(o); };
+    this.bt = setInterval(this.poll, 2000);
+    window.addEventListener('storage', this.poll);
+  }
+  componentWillUnmount() { clearInterval(this.t); clearInterval(this.bt); clearTimeout(this.tt); window.removeEventListener('storage', this.poll); }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion, st = this.state;
+    var set = (o) => this.setState(o);
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var NAV = [
+      { items: [
+        { id: 'overview', label: 'Overview', icon: ic('M3 11l9-7l9 7M5 10v10h5v-6h4v6h5V10') },
+        { id: 'staff', label: 'Pharmacists', icon: ic('M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM2 21c1-4 3.5-6 7-6s6 2 7 6M17 11a3 3 0 1 0 0-6M22 21c-.6-2.6-2-4.3-4-5') }
+      ] },
+      { title: 'Stock', items: [
+        { id: 'inventory', label: 'Inventory & finder', icon: ic('M3 7l9-4l9 4v10l-9 4l-9-4zM3 7l9 4l9-4M12 11v10') },
+        { id: 'orders', label: 'Purchase orders', icon: ic('M6 3h12v18H6zM9 8h6M9 12h6M9 16h4'), badge: st.po === 'pending' ? 1 : undefined },
+        { id: 'expiry', label: 'Expiry & recalls', icon: ic('M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'), badge: 2 }
+      ] },
+      { title: 'Governance', items: [
+        { id: 'compliance', label: 'Licence & compliance', icon: ic('M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6zM9 12l2 2l4-4') },
+        { id: 'audit', label: 'Audit log', icon: ic('M4 5h16M4 10h16M4 15h10M4 20h7') }
+      ] }
+    ];
+    var labels = {}; NAV.forEach(function (g) { g.items.forEach(function (i) { labels[i.id] = i.label; }); });
+    var is = {}; Object.keys(labels).forEach(function (k) { is[k] = k === st.section; });
+    var go = (id) => set({ section: id });
+    var badge = function (tone, text, dot) { return h(C.Badge, { tone: tone, dot: dot }, text); };
+
+    var STAFF = [
+      { id: 's1', name: 'Joseph Mathew', reg: 'KSPC DEMO-30214', role: 'Senior pharmacist', shift: 'Day', last: 'Now', fills: 74 },
+      { id: 's2', name: 'Divya Raj', reg: 'KSPC DEMO-33871', role: 'Pharmacist', shift: 'Day', last: 'Now', fills: 61 },
+      { id: 's3', name: 'Shaji Kurian', reg: 'KSPC DEMO-28140', role: 'Store in-charge', shift: 'Day', last: '12 min ago', fills: 12 },
+      { id: 's4', name: 'Neethu Babu', reg: 'KSPC DEMO-39025', role: 'Pharmacist', shift: 'Night', last: 'Yesterday 07:58', fills: 0 },
+      { id: 's5', name: 'Faisal Rahman', reg: 'KSPC DEMO-40517', role: 'Pharmacist', shift: 'Night', last: '16 Oct', fills: 0 },
+      { id: 's6', name: 'Bindu Varghese', reg: 'KSPC DEMO-21339', role: 'Pharmacist', shift: '—', last: '02 Sep', fills: 0 }
+    ];
+    var activeCount = STAFF.filter((s) => st.active[s.id]).length;
+    var staffCols = [
+      { key: 'name', header: 'Name', render: (r) => h('div', { style: { display: 'flex', gap: 10, alignItems: 'center' } }, h(C.Avatar, { name: r.name, size: 30 }), h('div', null, h('div', { style: { fontWeight: 600, color: 'var(--ink)' } }, r.name), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, r.role))) },
+      { key: 'reg', header: 'Council no.', mono: true },
+      { key: 'shift', header: 'Shift' },
+      { key: 'fills', header: 'Fills today', align: 'right' },
+      { key: 'last', header: 'Last active' },
+      { key: 'status', header: 'Status', render: (r) => st.active[r.id] ? badge('success', 'Active', true) : badge('neutral', 'Deactivated') },
+      { key: 'act', header: 'Actions', render: (r) => h('button', { type: 'button', className: st.active[r.id] ? 'rowbtn dng' : 'rowbtn', 'aria-label': (st.active[r.id] ? 'Deactivate ' : 'Reactivate ') + r.name, onClick: () => { var a = Object.assign({}, st.active); a[r.id] = !a[r.id]; set({ active: a }); } }, st.active[r.id] ? 'Deactivate' : 'Reactivate') }
+    ];
+
+    var INV = [
+      { id: 'i1', name: 'Metformin 500 mg', cat: 'Diabetes', batch: 'MF-24A19', qty: 4200, min: 1500, exp: 'Aug 2027' },
+      { id: 'i2', name: 'Atorvastatin 10 mg', cat: 'Cardiac', batch: 'AT-1182', qty: 380, min: 800, exp: 'May 2027' },
+      { id: 'i3', name: 'Insulin glargine 100 IU/mL', cat: 'Diabetes', batch: 'IG-5530', qty: 46, min: 60, exp: 'Jan 2027' },
+      { id: 'i4', name: 'Amlodipine 5 mg', cat: 'Cardiac', batch: 'AM-7741', qty: 2600, min: 1000, exp: 'Dec 2027' },
+      { id: 'i5', name: 'Paracetamol 650 mg', cat: 'General', batch: 'PC-9910', qty: 12400, min: 4000, exp: 'Mar 2028' },
+      { id: 'i6', name: 'Amoxicillin 500 mg', cat: 'Antibiotic', batch: 'AX-3307', qty: 120, min: 600, exp: 'Nov 2026' },
+      { id: 'i7', name: 'Salbutamol inhaler', cat: 'Respiratory', batch: 'SB-0442', qty: 88, min: 50, exp: 'Jun 2027' },
+      { id: 'i8', name: 'ORS sachet', cat: 'General', batch: 'OR-6620', qty: 1900, min: 1000, exp: 'Feb 2028' },
+      { id: 'i9', name: 'Ranitidine 150 mg', cat: 'Gastro', batch: 'RN-2291', qty: 64, min: 200, exp: 'Recalled' }
+    ];
+    var disp = st.bus.filter((e) => e.type === 'dispensed');
+    var dec = {}; disp.forEach((e) => { CF_DEC.forEach((d) => { if (String(e.text).indexOf(d[0]) >= 0) dec[d[1]] = (dec[d[1]] || 0) + d[2]; }); });
+    INV.forEach((r) => { if (dec[r.id]) r.qty = Math.max(0, r.qty - dec[r.id]); });
+    var invById = {}; INV.forEach((r) => { invById[r.id] = r; });
+    var q = st.q.toLowerCase();
+    var invRowsAll = INV.filter((r) => {
+      var low = r.qty < r.min;
+      if (st.invF === 'low' && !low) return false;
+      if (st.invF === 'hidden' && this.isPub(r)) return false;
+      if (st.invF === 'diabetes' && r.cat !== 'Diabetes') return false;
+      return !q || (r.name + ' ' + r.batch).toLowerCase().indexOf(q) >= 0;
+    });
+    var invCols = [
+      { key: 'name', header: 'Medicine', render: (r) => h('div', null, h('div', { style: { fontWeight: 600, color: 'var(--ink)' } }, r.name), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, r.cat)) },
+      { key: 'batch', header: 'Batch', mono: true },
+      { key: 'qty', header: 'On hand', align: 'right', render: (r) => r.qty.toLocaleString('en-IN') },
+      { key: 'lvl', header: 'Level', render: (r) => r.exp === 'Recalled' ? badge('danger', 'Blocked') : r.qty < r.min ? badge('warning', 'Low') : badge('success', 'OK') },
+      { key: 'exp', header: 'Expiry' },
+      { key: 'pub', header: 'Public finder', render: (r) => r.exp === 'Recalled' ? h('span', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Hidden (recall)') : h(C.Switch, { label: this.isPub(r) ? 'Shown' : 'Hidden', checked: this.isPub(r), onChange: (v) => { var p = Object.assign({}, st.pub); p[r.id] = v; set({ pub: p }); } }) }
+    ];
+    var chipsOf = (list, cur, key) => list.map((f) => ({ label: f[1], cls: cur === f[0] ? 'chip on' : 'chip', pressed: cur === f[0] ? 'true' : 'false', pick: () => { var o = {}; o[key] = f[0]; set(o); } }));
+
+    var poRows = [
+      { id: 'PO-2026-0418', sup: 'KMSCL', lines: 22, amt: '₹1,24,300', by: 'Shaji Kurian', date: '16 Oct', s: st.po },
+      { id: 'PO-2026-0412', sup: 'Medisupply Kochi', lines: 9, amt: '₹38,750', by: 'Joseph Mathew', date: '13 Oct', s: 'transit' },
+      { id: 'PO-2026-0409', sup: 'Apex Pharma Dist.', lines: 14, amt: '₹62,180', by: 'Shaji Kurian', date: '11 Oct', s: 'transit' },
+      { id: 'PO-2026-0401', sup: 'KMSCL', lines: 31, amt: '₹2,08,900', by: 'Suma Thomas', date: '04 Oct', s: 'received' },
+      { id: 'PO-2026-0396', sup: 'Sree Agencies', lines: 6, amt: '₹14,200', by: 'Divya Raj', date: '01 Oct', s: 'received' }
+    ];
+    var poBadge = { pending: ['warning', 'Awaiting approval'], approved: ['success', 'Approved · sent'], held: ['peach', 'Sent back'], transit: ['info', 'In transit'], received: ['neutral', 'Received'] };
+    var poCols = [
+      { key: 'id', header: 'Order', mono: true },
+      { key: 'sup', header: 'Supplier' },
+      { key: 'lines', header: 'Lines', align: 'right' },
+      { key: 'amt', header: 'Amount', align: 'right' },
+      { key: 'by', header: 'Raised by' },
+      { key: 'date', header: 'Date' },
+      { key: 's', header: 'Status', render: (r) => badge(poBadge[r.s][0], poBadge[r.s][1]) }
+    ];
+
+    var REC = [
+      { id: 'r1', title: 'CDSCO recall · Ranitidine 150 mg, batch RN-2291', meta: 'Issued 15 Oct 2026 · Class II · NDMA impurity', body: '64 strips on shelf. The counter blocks this batch. Move stock to quarantine and confirm.', urgent: true },
+      { id: 'r2', title: 'Manufacturer notice · Amoxicillin 500 mg, batch AX-3307', meta: 'Issued 09 Oct 2026 · labelling error on outer carton', body: 'No safety risk. Relabel before dispensing or return to supplier.', urgent: false }
+    ];
+    var recalls = REC.map((r) => { var done = !!st.acks[r.id]; return { title: r.title, meta: r.meta, body: r.body, icoCls: done ? 'ico t-sage' : r.urgent ? 'ico t-danger' : 'ico t-warn', tone: done ? 'success' : r.urgent ? 'danger' : 'warning', status: done ? 'Off shelf · confirmed' : r.urgent ? 'Action needed' : 'Review', ackLabel: done ? 'Undo confirmation' : 'Confirm off shelf', ack: () => { var a = Object.assign({}, st.acks); a[r.id] = !a[r.id]; set({ acks: a }); } }; });
+    var expCols = [{ key: 'n', header: 'Medicine' }, { key: 'b', header: 'Batch', mono: true }, { key: 'q', header: 'Qty', align: 'right' }, { key: 'e', header: 'Expires' }];
+    var expRows = [{ n: 'Amoxicillin 500 mg', b: 'AX-3307', q: 120, e: '30 Nov' }, { n: 'Cetirizine 10 mg', b: 'CT-1203', q: 340, e: '31 Oct' }, { n: 'Vitamin D3 60K', b: 'VD-0721', q: 90, e: '15 Nov' }, { n: 'Diclofenac gel', b: 'DG-5512', q: 44, e: '20 Nov' }, { n: 'Pantoprazole 40 mg', b: 'PP-8834', q: 610, e: '28 Nov' }];
+
+    var docs = [
+      ['Retail drug licence (Form 20 & 21)', 'DEMO-DL-KL-2041 · valid till 14 Mar 2028', 'success', 'Verified', 't-sage'],
+      ['GST registration', '32DEMO1234F1Z5 · verified 02 Jan 2026', 'success', 'Verified', 't-sage'],
+      ['Registered pharmacist certificate', 'Joseph Mathew · KSPC DEMO-30214', 'success', 'Verified', 't-sage'],
+      ['Cold chain log — Q3 2026', 'Uploaded 03 Oct · fridge 2–8 °C', 'info', 'Under review', 't-blue'],
+      ['Fire NOC', 'Expires 30 Nov 2026', 'warning', 'Renew soon', 't-warn'],
+      ['Narcotic drugs register (Schedule X)', 'Monthly return · Oct due 05 Nov', 'neutral', 'Upcoming', 't-peach']
+    ].map((d) => ({ name: d[0], meta: d[1], tone: d[2], status: d[3], icoCls: 'ico ' + d[4] }));
+
+    var AUD = [
+      ['15:42', 'Joseph Mathew', 'Dispensed', 'Rx DEMO-RX-88213 · Metformin 500 mg × 60', 'rx'],
+      ['15:31', 'Suma Thomas', 'Published', 'Atorvastatin 10 mg shown in public finder', 'stock'],
+      ['15:12', 'Divya Raj', 'Blocked', 'Counter blocked batch RN-2291 (recall)', 'rx'],
+      ['14:55', 'Shaji Kurian', 'Received', 'PO-2026-0401 · 31 lines checked in', 'stock'],
+      ['14:20', 'Suma Thomas', 'Invited', 'Anu George · pharmacist', 'staff'],
+      ['13:48', 'Joseph Mathew', 'Dispensed', 'Rx DEMO-RX-88190 · Amlodipine 5 mg × 30', 'rx'],
+      ['11:02', 'System', 'Sign-in', 'Divya Raj · two-step · Counter 2 terminal', 'staff'],
+      ['09:15', 'Suma Thomas', 'Deactivated', 'Bindu Varghese · on long leave', 'staff']
+    ];
+    var auditRows = AUD.filter((a) => st.auditF === 'all' || a[4] === st.auditF).map((a) => ({ t: a[0], who: a[1], what: a[2], detail: a[3] }));
+    var auditCols = [{ key: 't', header: 'Time', mono: true }, { key: 'who', header: 'Who' }, { key: 'what', header: 'Action', render: (r) => badge(r.what === 'Blocked' || r.what === 'Deactivated' ? 'warning' : 'neutral', r.what) }, { key: 'detail', header: 'Detail' }];
+
+    var LOW = [['Insulin glargine', invById.i3.qty, 60], ['Atorvastatin 10 mg', invById.i2.qty, 800], ['Amoxicillin 500 mg', 120, 600], ['Ranitidine 150 mg', 64, 200], ['Salbutamol inhaler', 88, 150]];
+    var lowStock = LOW.map((l) => { var p = Math.max(1, Math.min(10, Math.round(l[1] / l[2] * 10))); return { name: l[0], qty: l[1] + ' left · min ' + l[2], cls: 'w' + (p * 10) + (p <= 3 ? ' low' : p <= 6 ? ' mid' : '') }; });
+
+    var ago = st.sync < 5 ? 'just now' : st.sync < 60 ? st.sync + ' s ago' : Math.floor(st.sync / 60) + ' min ago';
+    return {
+      yes: true, no: false, n32: 32,
+      nav: NAV, section: st.section, is: is, crumb: labels[st.section], go: go, syncAgo: ago,
+      toExpiry: () => go('expiry'), toOrders: () => go('orders'), toStaff: () => go('staff'), toInventory: () => go('inventory'), toCompliance: () => go('compliance'),
+      t1: { direction: 'up', text: '12% vs last Saturday' }, t2: { direction: 'up', text: '4 more than yesterday' }, t3: { direction: 'up', text: '3 pts this quarter' },
+      iRx: ic('M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h4'), iBox: ic('M3 7l9-4l9 4v10l-9 4l-9-4zM3 7l9 4l9-4M12 11v10'), iWarn: ic('M12 9v4M12 17h.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'), iCal: ic('M4 6h16v14H4zM4 10h16M8 3v4M16 3v4'),
+      iUsers: ic('M9 11a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM2 21c1-4 3.5-6 7-6s6 2 7 6'), iMail: ic('M4 6h16v12H4zM4 7l8 6l8-6'), iShield: ic('M12 3l8 3v6c0 5-3.5 8-8 9c-4.5-1-8-4-8-9V6z'), iDoc: ic('M6 3h12v18H6zM9 8h6M9 12h6'), iRupee: ic('M7 4h10M7 9h10M7 4c6 0 6 10 0 10l8 6'), iTruck: ic('M3 6h11v10H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4a2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4a2 2 0 0 0 0 4z'),
+      lowStock: lowStock,
+      toast: st.toast ? Object.assign({}, st.toast, { fromLabel: CF_FROM[st.toast.from] || st.toast.from }) : null, closeToast: () => set({ toast: null }),
+      dispToday: String(186 + disp.length),
+      feed: st.bus.slice(0, 3).map((e) => { var eff = e.type === 'dispensed' ? CF_DEC.filter((d) => String(e.text).indexOf(d[0]) >= 0).map((d) => d[0] + ' −' + d[2]).join(' · ') : ''; return Object.assign({}, e, { fromLabel: CF_FROM[e.from] || e.from, cls: 'feed' + (e.id === st.fresh ? ' new' : ''), effect: eff ? 'Stock updated: ' + eff : '' }); }),
+      cats: [['Diabetes', 312, '₹4.2 L', 10, ''], ['Cardiac', 268, '₹3.6 L', 9, ' c2'], ['General', 241, '₹1.1 L', 8, ' c3'], ['Antibiotic', 186, '₹2.3 L', 6, ' c4'], ['Respiratory', 124, '₹1.8 L', 4, ' c5'], ['Gastro', 117, '₹0.9 L', 4, ' c6']].map((c) => ({ name: c[0], label: c[1] + ' SKUs · ' + c[2], cls: 'w' + (c[3] * 10) + c[4] })),
+      activeCount: String(activeCount), staffCols: staffCols, staffRows: STAFF,
+      invFilters: chipsOf([['all', 'All'], ['low', 'Low stock'], ['hidden', 'Hidden from finder'], ['diabetes', 'Diabetes']], st.invF, 'invF'),
+      q: st.q, onQ: (e) => set({ q: e.target.value }), invCols: invCols, invRows: invRowsAll, invCount: String(invRowsAll.length),
+      poPending: st.po === 'pending' ? '1' : '0', poCols: poCols, poRows: poRows,
+      po418Tone: poBadge[st.po][0], po418Label: poBadge[st.po][1],
+      approvePO: () => set({ po: 'approved' }), holdPO: () => set({ po: 'held' }),
+      recalls: recalls, expCols: expCols, expRows: expRows, docs: docs,
+      auditFilters: chipsOf([['all', 'All'], ['rx', 'Dispensing'], ['stock', 'Stock'], ['staff', 'Staff']], st.auditF, 'auditF'),
+      auditCols: auditCols, auditRows: auditRows,
+      invite: st.invite, openInvite: () => set({ invite: true }), closeInvite: () => set({ invite: false }),
+      shifts: ['Day · 08:00–20:00', 'Night · 20:00–08:00', 'Rotating'],
+      inviteFoot: h('div', { style: { display: 'flex', gap: 10, justifyContent: 'flex-end' } }, h(C.Button, { variant: 'ghost', onClick: () => set({ invite: false }) }, 'Cancel'), h(C.Button, { variant: 'primary', onClick: () => set({ invite: false, section: 'staff' }) }, 'Send invite')),
+      logo: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } }, h('a', { href: 'AdminLogin.dc.html', 'aria-label': 'Admin Console sign-in', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 28 })), h('span', { className: 'pill' }, 'Admin Console')),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Suma Thomas', size: 38, tone: 'peach' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Suma Thomas'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Pharmacy admin · DEMO-DL-KL-2041')),
+        h('a', { href: 'AdminLogin.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+  isPub(r) { var p = this.state.pub[r.id]; return p === undefined ? r.id !== 'i7' && r.id !== 'i6' : p; }
+}
+</script>
+</body>
+</html>

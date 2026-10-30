@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.lk:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.muted{color:var(--ink-muted);font-size:13px}
+.ttl{margin:0;font-family:var(--font-serif);font-size:32px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.eyb{margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--primary-text)}
+.ic{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.k0{transform:scaleX(0.0)}.k1{transform:scaleX(0.1)}.k2{transform:scaleX(0.2)}.k3{transform:scaleX(0.3)}.k4{transform:scaleX(0.4)}.k5{transform:scaleX(0.5)}.k6{transform:scaleX(0.6)}.k7{transform:scaleX(0.7)}.k8{transform:scaleX(0.8)}.k9{transform:scaleX(0.9)}.k10{transform:scaleX(1.0)}
+.is-live{color:var(--success)}
+.idc{position:relative;overflow:hidden;border-radius:28px;padding:28px;background:linear-gradient(135deg,#dfeaf4 0%,#d7e9e6 55%,#f5e1d8 100%);display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;border:1px solid var(--border);box-shadow:var(--shadow-card)}
+@media (max-width:820px){.idc{grid-template-columns:1fr}}
+.ph{width:112px;height:112px;border-radius:28px;background:var(--surface-raised);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:40px;font-weight:600;color:var(--primary-text);box-shadow:var(--shadow-card);position:relative}
+.ph i{position:absolute;right:-6px;bottom:-6px;width:30px;height:30px;border-radius:9999px;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:15px;border:3px solid var(--surface-raised)}
+.ids{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.ids div{padding:10px 12px;border-radius:14px;background:rgba(250,245,239,.7)}
+.ids dt,.kv dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.ids dd,.kv dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong)}
+.mono{font-family:var(--font-mono)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:0}
+.kv div{padding:12px 14px;border-radius:14px;background:var(--surface)}
+.meter{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.meter span{display:block;height:100%;width:92%;background:linear-gradient(90deg,#86bdb8,#3a726d);border-radius:9999px;animation:grow 1.2s cubic-bezier(0.22,1,0.36,1) both}
+@keyframes grow{from{width:0}}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.tl li{display:flex;gap:14px;position:relative;padding-bottom:16px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--border)}
+.tl li:last-child::before{display:none}
+.dot{flex:none;width:24px;height:24px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.dot.ok{background:var(--success-bg);color:var(--success)}
+.dot.now{background:var(--warning-bg);color:var(--warning);box-shadow:0 0 0 4px rgba(231,197,142,.35)}
+.dot.next{background:var(--surface-cream);color:var(--ink-muted)}
+.cont{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--surface)}
+.fam{display:flex;gap:12px;align-items:center;padding:14px;border-radius:16px;border:1px dashed var(--border-strong);background:transparent;font:inherit;color:var(--ink);cursor:pointer;width:100%;text-align:left}
+.fam:hover{background:var(--surface-cream)}
+.fam:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div><p class="eyb">Profile</p><h1 class="ttl">Your health identity</h1><p style="margin: 4px 0 0;">Verified with Aadhaar e-KYC and a live face check on 03 Mar 2025.</p></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <x-import component-from-global-scope="CareFusion.Button" variant="outline" size="md">Download ABHA card</x-import>
+      <x-import component-from-global-scope="CareFusion.Button" variant="primary" size="md" on-click="{{toggleEdit}}">{{editLabel}}</x-import>
+    </div>
+  </header>
+
+  <section class="idc in" aria-label="Identity card" style="animation-delay: 60ms;">
+    <svg aria-hidden="true" viewBox="0 0 64 64" width="260" height="260" style="position: absolute; right: -60px; bottom: -80px; opacity: .1;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#3a726d"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#c9a86a"></rect></svg>
+    <div class="ph" aria-hidden="true">AM<i>✓</i></div>
+    <div style="position: relative; min-width: 0;">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">
+        <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Aadhaar verified</x-import>
+        <x-import component-from-global-scope="CareFusion.Badge" tone="teal">Face check passed</x-import>
+        <x-import component-from-global-scope="CareFusion.Badge" tone="gold">ABHA linked</x-import>
+      </div>
+      <h2 style="margin: 0; font-family: var(--font-serif); font-size: 30px; line-height: 38px; color: var(--ink-strong);">Anjali Menon</h2>
+      <dl class="ids" style="margin-top: 12px;">
+        <div><dt>ABHA number</dt><dd class="mono">DEMO-0000-1234</dd></div>
+        <div><dt>ABHA address</dt><dd>anjali.m@abdm</dd></div>
+        <div><dt>Aadhaar</dt><dd class="mono">XXXX XXXX 4821</dd></div>
+        <div><dt>Born</dt><dd>12 Jun 1988 · 38 y</dd></div>
+        <div><dt>Sex</dt><dd>Female</dd></div>
+        <div><dt>Mobile</dt><dd class="mono">+91 98XXX X4410</dd></div>
+      </dl>
+    </div>
+    <div style="position: relative; display: flex; flex-direction: column; gap: 8px; align-items: center; padding: 14px; border-radius: 20px; background: #faf5ef;">
+      <svg width="96" height="96" viewBox="0 0 21 21" role="img" aria-label="ABHA QR code"><g fill="#3f5263"><path d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"></path></g><g fill="#faf5ef"><path d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"></path></g><g fill="#3f5263"><path d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM9 1h2v2H9zM8 4h1v3H8zM11 5h2v1h-2zM9 9h3v3H9zM14 9h2v1h-2zM17 10h3v2h-3zM1 9h2v2H1zM4 10h3v1H4zM9 14h1v3H9zM11 15h3v1h-3zM15 14h2v2h-2zM18 16h2v4h-2zM12 18h4v2h-4zM9 19h2v2H9z"></path></g></svg>
+      <span class="muted">Scan at any hospital desk</span>
+    </div>
+  </section>
+
+  <section class="grid g2 in" style="animation-delay: 120ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Health profile</h2><span class="muted">92% complete</span></div>
+      <div class="meter" role="progressbar" aria-label="Profile completeness" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+      <sc-if value="{{view}}" hint-placeholder-val="true">
+        <dl class="kv">
+          <div><dt>Blood group</dt><dd>B+ · lab confirmed</dd></div>
+          <div><dt>Height / weight</dt><dd>158 cm · 61 kg</dd></div>
+          <div><dt>Allergies</dt><dd>Penicillin (rash)</dd></div>
+          <div><dt>Conditions</dt><dd>Type 2 diabetes, 2021</dd></div>
+          <div><dt>Long-term medicines</dt><dd>Metformin, Atorvastatin</dd></div>
+          <div><dt>Surgeries</dt><dd>C-section, 2017</dd></div>
+          <div><dt>Smoking / alcohol</dt><dd>Never / never</dd></div>
+          <div><dt>Disability</dt><dd>None declared</dd></div>
+        </dl>
+        <p class="muted" style="margin: 0;">Missing: vaccination history before 2020 — add it from an old card.</p>
+      </sc-if>
+      <sc-if value="{{edit}}" hint-placeholder-val="false">
+        <div class="grid g2" style="gap: 14px;">
+          <x-import component-from-global-scope="CareFusion.Select" label="Blood group" options="{{bloods}}" default-value="B+"></x-import>
+          <x-import component-from-global-scope="CareFusion.TextField" label="Weight (kg)" default-value="61" inputmode="decimal"></x-import>
+          <x-import component-from-global-scope="CareFusion.TextField" label="Allergies" default-value="Penicillin (rash)"></x-import>
+          <x-import component-from-global-scope="CareFusion.TextField" label="Conditions" default-value="Type 2 diabetes, 2021"></x-import>
+        </div>
+        <x-import component-from-global-scope="CareFusion.Textarea" label="Anything a doctor should know" optional="{{yes}}" default-value="Prefer Malayalam for explanations."></x-import>
+        <div style="display: flex; gap: 8px;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="md" on-click="{{toggleEdit}}">Save changes</x-import><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="md" on-click="{{toggleEdit}}">Cancel</x-import></div>
+        <p class="muted" style="margin: 0;">Blood group and conditions you add show as “self-reported” until a doctor confirms them.</p>
+      </sc-if>
+    </div>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Special category status</h2><x-import component-from-global-scope="CareFusion.Badge" tone="warning">In progress</x-import></div>
+      <p style="margin: 0; font-size: 14px; line-height: 22px;">Chronic illness card — <strong>Diabetes care programme</strong>. Gives free monthly medicines and a priority queue at government OPs.</p>
+      <ol class="tl">
+        <li><span class="dot ok">✓</span><div><strong style="color: var(--ink);">Request sent</strong><div class="muted">02 Oct · by Dr. Arun Nair</div></div></li>
+        <li><span class="dot ok">✓</span><div><strong style="color: var(--ink);">Lab proof attached</strong><div class="muted">HbA1c 7.4% · 04 Oct</div></div></li>
+        <li><span class="dot now">•</span><div><strong style="color: var(--ink);">District review</strong><div class="muted">Ajay Kumar, Pathanamthitta · usually 5 working days</div></div></li>
+        <li><span class="dot next">4</span><div><strong style="color: var(--ink);">Card issued</strong><div class="muted">You'll get an alert and an e-card here</div></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="grid g3 in" style="animation-delay: 180ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Emergency contacts</h2><button type="button" class="lk">Add</button></div>
+      <div class="cont"><x-import component-from-global-scope="CareFusion.Avatar" name="Ravi Menon" size="{{n40}}"></x-import><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Ravi Menon</strong><div class="muted">Husband · +91 94XXX X2207</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="gold">First</x-import></div>
+      <div class="cont"><x-import component-from-global-scope="CareFusion.Avatar" name="Sarala Nair" size="{{n40}}"></x-import><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Sarala Nair</strong><div class="muted">Mother · +91 98XXX X9031</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Second</x-import></div>
+      <p class="muted" style="margin: 0;">Called automatically if break-glass access is used.</p>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Family &amp; guardian links</h2><button type="button" class="lk">Manage</button></div>
+      <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Diya Menon" size="{{n36}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Diya Menon, 9</strong><div class="muted">You are guardian · birth certificate verified</div></div><button type="button" class="lk" aria-label="Switch to Diya's profile">Switch</button></div>
+      <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Ravi Menon" size="{{n36}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Ravi Menon</strong><div class="muted">Can show your key for you</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Linked</x-import></div>
+      <button type="button" class="fam"><span class="ic" style="background: var(--tint-teal); color: var(--primary-text); font-size: 20px;" aria-hidden="true">+</span><span><strong>Link a family member</strong><br><span class="muted">Child, parent or someone you care for</span></span></button>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Address &amp; language</h2><button type="button" class="lk">Edit</button></div>
+      <dl class="kv" style="grid-template-columns: 1fr;">
+        <div><dt>Home</dt><dd>Kozhencherry, Pathanamthitta, Kerala 689641</dd></div>
+        <div><dt>Nearest PHC</dt><dd>PHC Kozhencherry · 2.1 km</dd></div>
+        <div><dt>App language</dt><dd>English · Malayalam for AI chat</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="grid g2 in" style="animation-delay: 240ms;">
+    <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Your identity is locked to you">Changing your name, date of birth or Aadhaar link needs a fresh e-KYC. Medical fields can be edited anytime and are labelled as self-reported.</x-import>
+    <x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="Lost your phone?">Use “Recover access” on the login page — an Aadhaar OTP to a new number plus a face check moves your account safely.</x-import>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1560}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { edit: false }; }
+  renderVals() {
+    var e = this.state.edit;
+    return {
+      yes: true, n40: 40, n36: 36,
+      view: !e, edit: e,
+      editLabel: e ? 'Close editor' : 'Edit health profile',
+      toggleEdit: () => this.setState({ edit: !this.state.edit }),
+      bloods: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+    };
+  }
+}
+</script>
+</body>
+</html>

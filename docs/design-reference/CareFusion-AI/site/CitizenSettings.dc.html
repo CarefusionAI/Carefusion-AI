@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Citizen settings — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.wide{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+@media (max-width:900px){.wide{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.h1{margin:0;font-family:var(--font-serif);font-size:32px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.lead{margin:4px 0 0;max-width:680px}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.lk:focus-visible,.chip:focus-visible,.chk:focus-visible,.ibtn:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.grow{flex:1;min-width:0}
+.nm{color:var(--ink);font-weight:600}
+.muted{color:var(--ink-muted);font-size:13px}
+.ic{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.t-teal{background:var(--tint-teal);color:var(--primary-text)}.t-blue{background:var(--tint-blue);color:var(--info)}.t-peach{background:var(--tint-peach);color:var(--peach-text)}.t-sage{background:var(--tint-sage);color:var(--success)}.t-lav{background:var(--tint-lavender);color:var(--ai)}.t-red{background:var(--danger-bg);color:var(--danger)}.t-gold{background:var(--warning-bg);color:var(--warning)}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.kv div{padding:12px 14px;border-radius:14px;background:var(--surface)}
+.kv dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.kv dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong)}
+.chip{border:1px solid var(--border);background:var(--surface-raised);border-radius:9999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;transition:all 180ms ease}
+.chip:hover{border-color:var(--primary-soft)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.chk{flex:none;width:26px;height:26px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--surface-raised);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-primary);font-size:14px;font-weight:700}
+.chk.on{background:var(--primary);border-color:var(--primary)}
+.bar{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:9999px;background:var(--primary-soft)}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);animation:live 1.8s infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}100%{box-shadow:0 0 0 0 rgba(55,106,79,0)}}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+.d1{animation-delay:60ms}.d2{animation-delay:120ms}.d3{animation-delay:180ms}.d4{animation-delay:240ms}.d5{animation-delay:300ms}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.lang{border:1.5px solid var(--border);background:var(--surface-raised);border-radius:16px;padding:14px;font:inherit;text-align:left;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:2px;transition:all 180ms ease}
+.lang:hover{border-color:var(--primary-soft)}
+.lang.on{background:var(--tint-teal);border-color:var(--primary)}
+.lang b{font-size:20px;line-height:28px;color:var(--ink-strong)}
+.lang:focus-visible,.sz:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.szr{display:flex;gap:8px;align-items:flex-end}
+.sz{flex:1;border:1.5px solid var(--border);background:var(--surface-raised);border-radius:14px;padding:10px 0;cursor:pointer;color:var(--ink-strong);font-family:var(--font-serif);font-weight:600}
+.sz.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.szt.s0{font-size:13px}.szt.s1{font-size:16px}.szt.s2{font-size:20px}.szt.s3{font-size:24px}
+.sz:focus-visible,.lang:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.sw-only .cf-switch-text{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.prev{border-radius:14px;background:var(--surface);padding:14px;color:var(--ink)}
+.prev.s0{font-size:14px;line-height:21px}.prev.s1{font-size:16px;line-height:24px}.prev.s2{font-size:19px;line-height:28px}.prev.s3{font-size:22px;line-height:32px}
+.danger{border-color:var(--danger-soft);background:#fcf4f2}
+.sec{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.sec:last-child{border-bottom:0}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+<header class="in" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+  <div>
+    <p class="muted" style="margin: 0 0 4px;">Account · Settings</p>
+    <h1 class="h1">Settings</h1>
+    <p class="lead">Language, reading comfort, security and your data. Changes save on their own.</p>
+  </div>
+  <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">{{savedText}}</x-import>
+</header>
+
+<section class="grid g2 in d1">
+  <div class="box">
+    <div class="bh"><h2 class="bt">Language</h2><span class="muted">App, SMS and AI chat</span></div>
+    <div class="seg" role="radiogroup" aria-label="Language">
+      <sc-for list="{{langs}}" as="l" hint-placeholder-count="3">
+        <button type="button" role="radio" class="{{l.cls}}" aria-checked="{{l.on}}" onClick="{{l.pick}}"><b lang="{{l.code}}">{{l.native}}</b><span class="muted">{{l.en}}</span></button>
+      </sc-for>
+    </div>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Read screens aloud" description="Uses your phone's voice in the language above"></x-import>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Show medical terms in English too" description="e.g. “പ്രമേഹം (Diabetes)” in reports and chat" default-checked="{{yes}}"></x-import>
+    <div style="margin-top: auto; padding: 12px 14px; border-radius: 14px; background: var(--surface); font-size: 13px;"><span class="muted" style="display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; margin-bottom: 4px;">Preview · SMS reminder</span><span lang="ml">നാളെ 10:30-ന് ഡോ. അരുൺ നായരുമായി അപ്പോയിന്റ്മെന്റ്.</span><br>Appointment with Dr. Arun Nair tomorrow at 10:30.</div>
+  </div>
+  <div class="box">
+    <div class="bh"><h2 class="bt">Reading comfort</h2><span class="muted">Text size</span></div>
+    <div class="szr" role="radiogroup" aria-label="Text size">
+      <sc-for list="{{sizes}}" as="z" hint-placeholder-count="4"><button type="button" role="radio" class="{{z.cls}}" aria-checked="{{z.on}}" aria-label="{{z.aria}}" onClick="{{z.pick}}"><span class="{{z.txt}}">A</span></button></sc-for>
+    </div>
+    <div class="{{prevCls}}">Your next appointment is on Tuesday 21 October at 10:30 with Dr. Arun Nair.</div>
+    <x-import component-from-global-scope="CareFusion.Switch" label="High contrast" description="Darker text and stronger borders"></x-import>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Reduce motion" description="Turn off moving animations"></x-import>
+  </div>
+</section>
+
+<section class="grid g2 in d2">
+  <div class="box">
+    <div class="bh"><h2 class="bt">Security</h2><x-import component-from-global-scope="CareFusion.Badge" tone="success">Strong</x-import></div>
+    <div class="sec"><span class="ic t-teal"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"></path></svg></span><div class="grow"><div class="nm">Password</div><div class="muted">Changed 42 days ago</div></div><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm" on-click="{{toggleModal}}">Change</x-import></div>
+    <div class="sec"><span class="ic t-sage"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 3h10v18H7zM11 18h2"></path></svg></span><div class="grow"><div class="nm">Two-step sign-in</div><div class="muted">OTP to +91 9•••• ••871</div></div><x-import component-from-global-scope="CareFusion.Switch" class="sw-only" label="Two-step sign-in" checked="{{twoStep}}" on-change="{{setTwo}}"></x-import></div>
+    <div class="sec"><span class="ic t-blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 3a5 5 0 0 0-5 5v3M17 11V8M5 11h14v10H5zM12 15v2"></path></svg></span><div class="grow"><div class="nm">Face check on new devices</div><div class="muted">Same as your registration check</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="teal">On</x-import></div>
+    <sc-if value="{{noTwo}}" hint-placeholder-val="false"><x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="Two-step sign-in is off">Anyone with your password could open your record. We recommend turning it back on.</x-import></sc-if>
+  </div>
+  <div class="box">
+    <div class="bh"><h2 class="bt">Signed-in devices</h2><button type="button" class="lk" onClick="{{outAll}}">Sign out all others</button></div>
+    <sc-for list="{{devices}}" as="d" hint-placeholder-count="3">
+      <div class="sec"><span class="{{d.ic}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{d.path}}"></path></svg></span><div class="grow"><div class="nm">{{d.name}}</div><div class="muted">{{d.meta}}</div></div>
+        <sc-if value="{{d.current}}" hint-placeholder-val="false"><x-import component-from-global-scope="CareFusion.Badge" tone="success">This device</x-import></sc-if>
+        <sc-if value="{{d.other}}" hint-placeholder-val="true"><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm" on-click="{{d.out}}">Sign out</x-import></sc-if>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section class="grid g3 in d3">
+  <div class="box">
+    <div class="bh"><h2 class="bt">Notifications</h2><button type="button" class="lk" onClick="{{toAlerts}}">All alert settings</button></div>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Appointment reminders" description="1 day and 2 hours before" default-checked="{{yes}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Medicine reminders" description="At each dose time" default-checked="{{yes}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Monthly health summary" description="Email on the 1st"></x-import>
+  </div>
+  <div class="box">
+    <div class="bh"><h2 class="bt">Privacy</h2><button type="button" class="lk" onClick="{{toAccess}}">Sharing rules</button></div>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Emergency card without key" description="Blood group, allergies, contact" default-checked="{{yes}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Use my data for research" description="Anonymised, for Kerala public health studies"></x-import>
+    <x-import component-from-global-scope="CareFusion.Switch" label="Let AI read my documents" description="Only to answer your own questions" default-checked="{{yes}}"></x-import>
+  </div>
+  <div class="box">
+    <div class="bh"><h2 class="bt">Your data</h2></div>
+    <p style="margin: 0; font-size: 14px;">Download everything we hold — records, documents, access log — as a ZIP with a FHIR file and PDFs.</p>
+    <dl class="kv"><div><dt>Documents</dt><dd>24 · 38 MB</dd></div><div><dt>Last export</dt><dd>Never</dd></div></dl>
+    <x-import component-from-global-scope="CareFusion.Button" variant="{{expVar}}" size="sm" on-click="{{doExport}}">{{expLabel}}</x-import>
+  </div>
+</section>
+
+<section class="box danger in d4" aria-label="Danger zone">
+  <div class="bh"><div><h2 class="bt" style="color: var(--danger);">Delete my account</h2><p class="muted" style="margin: 4px 0 0;">Your login and app data are removed after 30 days. Hospital records stay with hospitals as the law requires, and your ABHA number is not deleted.</p></div>
+  <x-import component-from-global-scope="CareFusion.Button" variant="danger" size="md" on-click="{{toggleDel}}">Delete account…</x-import></div>
+</section>
+
+<x-import component-from-global-scope="CareFusion.Modal" open="{{delOpen}}" title="Delete your account?" on-close="{{toggleDel}}">
+  <p style="margin: 0 0 12px;">We'll send an Aadhaar OTP to confirm. You can cancel within 30 days by signing in again.</p>
+  <x-import component-from-global-scope="CareFusion.TextField" label="Type DELETE to confirm"></x-import>
+  <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;"><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="md" on-click="{{toggleDel}}">Keep account</x-import><x-import component-from-global-scope="CareFusion.Button" variant="danger" size="md" on-click="{{toggleDel}}">Send OTP</x-import></div>
+</x-import>
+<x-import component-from-global-scope="CareFusion.Modal" open="{{pwOpen}}" title="Change password" on-close="{{toggleModal}}">
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <x-import component-from-global-scope="CareFusion.TextField" label="Current password" type="password"></x-import>
+    <x-import component-from-global-scope="CareFusion.TextField" label="New password" type="password" helper="12+ characters, not used before"></x-import>
+  </div>
+  <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;"><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="md" on-click="{{toggleModal}}">Cancel</x-import><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="md" on-click="{{toggleModal}}">Save</x-import></div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1480}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { lang: 'en', size: 1, two: true, out: {}, exp: 0, del: false, pw: false }; }
+  renderVals() {
+    var go = (s) => () => { if (this.props.go) this.props.go(s); };
+    var L = [['ml', 'മലയാളം', 'Malayalam'], ['en', 'English', 'English'], ['hi', 'हिन्दी', 'Hindi']];
+    var phone = 'M7 3h10v18H7zM11 18h2', lap = 'M4 5h16v11H4zM2 19h20';
+    var D = [['Pixel 7 · Chrome', 'Pathanamthitta · active now', phone, true], ['Samsung Galaxy A54 · CareFusion app', 'Pathanamthitta · 15 Oct, 21:10', phone, false], ['Windows laptop · Edge', 'Kochi · 2 Oct, 10:44', lap, false]];
+    var out = this.state.out, exp = this.state.exp;
+    var devs = [];
+    D.forEach((d, i) => { if (out[i]) return; devs.push({ name: d[0], meta: d[1], path: d[2], current: d[3], other: !d[3], ic: d[3] ? 'ic t-teal' : 'ic t-blue', out: () => { var n = Object.assign({}, this.state.out); n[i] = true; this.setState({ out: n }); } }); });
+    return {
+      yes: true, savedText: 'All changes saved',
+      langs: L.map((l) => ({ code: l[0], native: l[1], en: l[2], cls: this.state.lang === l[0] ? 'lang on' : 'lang', on: this.state.lang === l[0] ? 'true' : 'false', pick: () => this.setState({ lang: l[0] }) })),
+      sizes: [0, 1, 2, 3].map((s) => ({ cls: this.state.size === s ? 'sz on' : 'sz', on: this.state.size === s ? 'true' : 'false', txt: 'szt s' + s, aria: ['Small', 'Default', 'Large', 'Extra large'][s] + ' text', pick: () => this.setState({ size: s }) })),
+      prevCls: 'prev s' + this.state.size,
+      twoStep: this.state.two, noTwo: !this.state.two, setTwo: (v) => this.setState({ two: v }),
+      devices: devs, outAll: () => this.setState({ out: { 1: true, 2: true } }),
+      expLabel: exp === 0 ? 'Prepare my download' : exp === 1 ? 'Preparing… we\'ll SMS you' : 'Download ZIP (41 MB)', expVar: exp === 2 ? 'primary' : 'secondary',
+      doExport: () => this.setState({ exp: Math.min(2, exp + 1) }),
+      delOpen: this.state.del, toggleDel: () => this.setState({ del: !this.state.del }),
+      pwOpen: this.state.pw, toggleModal: () => this.setState({ pw: !this.state.pw }),
+      toAlerts: go('alerts'), toAccess: go('access')
+    };
+  }
+}
+</script>
+</body>
+</html>

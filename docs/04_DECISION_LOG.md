@@ -727,3 +727,15 @@ Template:
 - Owner: Athun + Claude
 - Next step: Push branch, test frontend in browser, resolve MinIO image pull (needs docker login), create PR.
 - Status: OPEN
+
+### 2026-10-30 — W5 (early): Full front-end port from Claude Design, design seed data, role APIs
+- Done: **All 42 design screens ported** to `apps/web` (React + Tailwind + design tokens): public/auth (14), citizen app (16 pages), doctor (12 sections), nurse, lab, radiology, pharmacist, hospital admin, pharmacy admin, and one shared government console shell used by District, State, Zonal and Central. No placeholder pages are left. Web build passes (`tsc` strict).
+- Done: **Database**: migrations 120–129 (events feed with RLS, outpatient, inpatient, lab/imaging, pharmacy ops, admin/surveillance, donation/organ, access/audit, catalogue/HPR/posting fixes). New `public.schema_migrations` ledger in `run_migrations.sh` (re-runs are no-ops; existing DBs only get new files). Design seed `carefusion-db/seed/design/00–80_*.sql` (deterministic `DEMO-` data, generators beside them). `tests/test_rules.sql` passes 278 tests (46 before).
+- Done: **API**: new NestJS modules for events, citizen app, doctor, staff (nurse/lab/radiology/pharmacist), hospital admin, pharmacy admin, government consoles, plus citizen medicines/blood/organ. Raw SQL via `RequestDbService` (runs as `cf_app` so RLS applies where the connection allows it).
+- Decision: **Live cross-role events** use `engage.event` + polling (3 s), not the prototype's localStorage. Patient-linked events never reach government roles; citizens see only their own.
+- Decision: **Canonical data** where the design contradicted itself: Anjali Menon is 35 (DOB 14/02/1991) and an outpatient; Thomas Kurian (Bed 7) and Thomas Varghese are different people; one order-id scheme `ORD-DEMO-NNNN`; Dr Arun Nair HPR `DEMO-HPR-71-0042`; event type `imaging-order`; real-world org names replaced with fictional ones; no Aadhaar digits anywhere (tokens only); table rows win over headline totals. Full list in `carefusion-db/seed/design/IDS.md`.
+- Decision: **Demo clock**: seed data is dated 17 Oct 2026; set `DEMO_NOW` in `.env` (see `.env.example`) so "today" screens show data.
+- Known gaps: no API for staff/admin password login, password reset, staff activation, HFR/licence verification or file upload (those screens are visual only); block-level admins, front-desk and ASHA accounts have no tables; doctor "one-time key" reuse list is in process memory (needs Valkey); profile-change approval does not yet update the hospital row; no browser check was possible (Chromium libs missing in WSL, Docker Desktop not running at the end of the session).
+- Owner: Athun + Claude
+- Next step: start Docker Desktop, `docker compose up -d`, run `docker compose --profile seed run --rm db-seed`, click through every role from `/demo-signin`, fix what breaks; open PR `w5-frontend-port` after PR #3 (W4) merges.
+- Status: OPEN

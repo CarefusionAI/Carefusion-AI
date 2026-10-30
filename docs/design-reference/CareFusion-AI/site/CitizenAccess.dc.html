@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Share &amp; access — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.lk:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.muted{color:var(--ink-muted);font-size:13px}
+.ttl{margin:0;font-family:var(--font-serif);font-size:32px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.eyb{margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--primary-text)}
+.ic{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.k0{transform:scaleX(0.0)}.k1{transform:scaleX(0.1)}.k2{transform:scaleX(0.2)}.k3{transform:scaleX(0.3)}.k4{transform:scaleX(0.4)}.k5{transform:scaleX(0.5)}.k6{transform:scaleX(0.6)}.k7{transform:scaleX(0.7)}.k8{transform:scaleX(0.8)}.k9{transform:scaleX(0.9)}.k10{transform:scaleX(1.0)}
+.is-live{color:var(--success)}
+.hero{position:relative;overflow:hidden;border-radius:28px;padding:28px;background:var(--primary);color:var(--on-primary);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px;box-shadow:0 22px 44px rgba(58,114,109,.22)}
+.code{font-family:var(--font-mono);font-size:48px;line-height:56px;letter-spacing:.14em;font-weight:500}
+.kb{height:5px;border-radius:9999px;background:rgba(250,245,239,.25);overflow:hidden}
+.kb span{display:block;height:100%;background:#d2b277;transform-origin:left;transition:transform 1s linear}
+.qr{justify-self:center;background:#faf5ef;border-radius:22px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.12);position:relative}
+.scan{position:absolute;left:16px;right:16px;height:2px;background:linear-gradient(90deg,transparent,#5e9e98,transparent);top:16px;animation:scan 2.6s ease-in-out infinite}
+@keyframes scan{50%{top:calc(100% - 18px)}}
+.step{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(250,245,239,.1)}
+.step b{flex:none;width:26px;height:26px;border-radius:9999px;background:#d2b277;color:#2e3f4c;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.ring{width:132px;height:132px;flex:none}
+.ring circle{fill:none;stroke-width:10}
+.ring .bg{stroke:var(--surface-cream)}
+.ring .fg{stroke:var(--primary);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1s linear}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);animation:live 1.8s infinite}
+@keyframes live{70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}}
+.ended{padding:14px;border-radius:14px;background:var(--surface-cream);font-size:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:var(--surface);font-size:12px;font-weight:600;color:var(--ink-strong)}
+.bg-glass{position:relative;overflow:hidden;background:var(--tint-peach);border-color:transparent}
+.flt{display:flex;gap:8px;flex-wrap:wrap}
+.kbtn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:12px;border:1.5px solid rgba(250,245,239,.6);background:transparent;color:#faf5ef;font:600 15px var(--font-sans);cursor:pointer;transition:background-color 180ms ease,transform 180ms ease}
+.kbtn:hover{background:rgba(250,245,239,.14);transform:translateY(-1px)}
+.kbtn-solid{background:#faf5ef;color:var(--primary-text);border-color:#faf5ef}
+.kbtn-solid:hover{background:#fff}
+.kbtn:focus-visible{outline:2px solid #d2b277;outline-offset:2px}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div>
+      <p class="eyb">Share &amp; access</p>
+      <h1 class="ttl">You decide who sees your record</h1>
+      <p style="margin: 4px 0 0;">Show this key to one doctor. It opens a 30-minute session, then closes on its own.</p>
+    </div>
+    <div class="flt">
+      <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">1 live session</x-import>
+      <x-import component-from-global-scope="CareFusion.Badge" tone="outline">14 opens this month</x-import>
+    </div>
+  </header>
+
+  <section class="hero in" aria-label="Your sharing key" style="animation-delay: 60ms;">
+    <svg aria-hidden="true" viewBox="0 0 64 64" width="320" height="320" style="position: absolute; right: -90px; top: -90px; opacity: .08;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+    <div style="display: flex; flex-direction: column; gap: 16px; position: relative;">
+      <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">Your key · changes every 10 seconds</span>
+      <span class="code" aria-live="polite">{{keyCode}}</span>
+      <div class="kb"><span class="{{barCls}}"></span></div>
+      <p style="margin: 0; font-size: 14px;">New key in {{secs}} s · each key works once, only inside a registered hospital.</p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="kbtn kbtn-solid" onClick="{{refresh}}">New key now</button>
+        <button type="button" class="kbtn" onClick="{{refresh}}">Read it aloud</button>
+      </div>
+    </div>
+    <div class="qr" aria-label="QR code for the same key">
+      <span class="scan" aria-hidden="true"></span>
+      <svg width="190" height="190" viewBox="0 0 21 21" role="img" aria-label="QR code"><g fill="#3f5263"><path d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"></path></g><g fill="#faf5ef"><path d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"></path></g><g fill="#3f5263"><path d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2z"></path><path d="{{qr}}"></path></g></svg>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; position: relative;">
+      <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">How sharing works</span>
+      <div class="step"><b>1</b><span>Doctor types or scans your key at the hospital.</span></div>
+      <div class="step"><b>2</b><span>They see only the folders you allow below.</span></div>
+      <div class="step"><b>3</b><span>The session ends after 30 minutes, or when you end it.</span></div>
+      <div class="step"><b>4</b><span>Every open is written to your access history.</span></div>
+    </div>
+  </section>
+
+  <section class="grid g2 in" style="animation-delay: 120ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Active session</h2><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;" class="{{liveCls}}"><span class="live" aria-hidden="true"></span>{{liveText}}</span></div>
+      <sc-if value="{{active}}" hint-placeholder-val="true">
+        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+          <svg class="ring" viewBox="0 0 132 132" role="img" aria-label="{{ringLabel}}"><circle class="bg" cx="66" cy="66" r="56"></circle><circle class="fg" cx="66" cy="66" r="56" stroke-dasharray="351.86" stroke-dashoffset="{{dash}}"></circle><text x="66" y="72" text-anchor="middle" font-size="24" font-weight="600" fill="#3f5263" font-family="IBM Plex Sans">{{clock}}</text></svg>
+          <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 10px; align-items: center;"><x-import component-from-global-scope="CareFusion.Avatar" name="Dr. Arun Nair" size="{{n44}}"></x-import><div><strong style="color: var(--ink);">Dr. Arun Nair</strong><div class="muted">General medicine · HPR verified</div></div></div>
+            <div class="muted">Demo General Hospital, Pathanamthitta · started 14:24</div>
+            <div class="flt"><span class="chip">Lab reports</span><span class="chip">Prescriptions</span><span class="chip">Vitals</span></div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <x-import component-from-global-scope="CareFusion.Button" variant="danger" size="md" on-click="{{endSession}}">End session now</x-import>
+          <x-import component-from-global-scope="CareFusion.Button" variant="outline" size="md" on-click="{{toMessages}}">Message doctor</x-import>
+        </div>
+      </sc-if>
+      <sc-if value="{{ended}}" hint-placeholder-val="false">
+        <div class="ended"><strong style="color: var(--ink);">Session ended by you at {{endedAt}}.</strong> Dr. Arun Nair can no longer open your record — his app was told straight away. It stays in your history below. <a href="Doctor.dc.html">See it in the doctor app →</a></div>
+        <x-import component-from-global-scope="CareFusion.Button" variant="soft" size="md" on-click="{{restart}}">Undo (demo)</x-import>
+      </sc-if>
+      <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <div class="bh"><h3 class="bt" style="font-size: 14px;">Opened in this session</h3><span class="muted">Live</span></div>
+        <div style="display: grid; grid-template-columns: 56px 1fr auto; gap: 6px 12px; font-size: 13px; align-items: center;">
+          <span style="font-family: var(--font-mono); color: var(--ink-muted);">14:25</span><span><strong style="color: var(--ink);">Lipid profile</strong> · Lab reports</span><span class="chip">Viewed</span>
+          <span style="font-family: var(--font-mono); color: var(--ink-muted);">14:27</span><span><strong style="color: var(--ink);">30-day BP readings</strong> · Vitals</span><span class="chip">Viewed</span>
+          <span style="font-family: var(--font-mono); color: var(--ink-muted);">14:31</span><span><strong style="color: var(--ink);">Atorvastatin 10 mg</strong> · Prescriptions</span><span class="chip">Draft</span>
+        </div>
+        <p class="muted" style="margin: 0; font-size: 13px;">Imaging, genomics and mental health notes stay closed unless you switch them on.</p>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">What a doctor can see</h2><span class="muted">{{onCount}} of 7 folders shared</span></div>
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="7">
+        <x-import component-from-global-scope="CareFusion.Switch" label="{{c.label}}" description="{{c.desc}}" checked="{{c.on}}" disabled="{{c.locked}}" on-change="{{c.toggle}}"></x-import>
+      </sc-for>
+    </div>
+  </section>
+
+  <section class="box in" style="animation-delay: 180ms;">
+    <div class="bh">
+      <h2 class="bt">Access history</h2>
+      <x-import component-from-global-scope="CareFusion.Tabs" label="Filter history" variant="pill" tabs="{{histTabs}}" value="{{filter}}" on-change="{{setFilter}}"></x-import>
+    </div>
+    <x-import component-from-global-scope="CareFusion.Table" caption="Who opened your record" columns="{{cols}}" rows="{{rows}}" striped="{{yes}}"></x-import>
+    <div class="bh"><span class="muted">Showing {{rowCount}} entries · kept for 7 years · you can't delete them, nor can anyone else.</span><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm">Download history (PDF)</x-import></div>
+  </section>
+
+  <section class="grid g3 in" style="animation-delay: 240ms;">
+    <div class="box bg-glass">
+      <div class="bh"><h2 class="bt">In an emergency</h2><x-import component-from-global-scope="CareFusion.Badge" tone="danger">Break-glass</x-import></div>
+      <p style="margin: 0; font-size: 14px; line-height: 22px;">If you can't share your key — unconscious, after an accident — an emergency doctor can open your <strong>emergency card</strong> only. They must give a reason, a second doctor confirms, and you get an alert straight away.</p>
+      <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 24px;"><li>Blood group, allergies, conditions, contact</li><li>Ends after 60 minutes</li><li>Reviewed by the district within 24 h</li></ul>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Trusted family</h2><button type="button" class="lk" onClick="{{toProfile}}">Manage</button></div>
+      <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Ravi Menon" size="{{n36}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Ravi Menon · husband</strong><div class="muted">Can show your key for you</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Active</x-import></div>
+      <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Diya Menon" size="{{n36}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Diya Menon · daughter, 9</strong><div class="muted">You are her guardian</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Guardian</x-import></div>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Something looks wrong?</h2></div>
+      <p style="margin: 0; font-size: 14px; line-height: 22px;">If you don't recognise an open in your history, report it. The hospital's admin and the district officer both see your report.</p>
+      <x-import component-from-global-scope="CareFusion.Button" variant="outline" size="md" on-click="{{toComplaints}}">Report an open</x-import>
+      <p class="muted" style="margin: 0;">Last report: none · Grievance helpline 1800-000-0000 (demo)</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":2110}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { t: 10, key: 739204, left: 1122, ended: false, endedAt: '', filter: 'all', bus: busFor('citizen'),
+      on: { lab: true, rx: true, vit: true, img: false, gen: false, mh: false, emg: true } };
+  }
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      var s = { left: Math.max(0, this.state.left - (this.state.ended ? 0 : 1)) };
+      var t = this.state.t - 1;
+      if (t <= 0) { s.t = 10; s.key = 100000 + Math.floor(Math.random() * 900000); } else s.t = t;
+      this.setState(s);
+    }, 1000);
+    this.bt = setInterval(() => this.setState({ bus: busFor('citizen') }), 2000);
+    this.onStorage = () => this.setState({ bus: busFor('citizen') });
+    window.addEventListener('storage', this.onStorage);
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.bt); window.removeEventListener('storage', this.onStorage); }
+  renderVals() {
+    var h = React.createElement;
+    var go = (s) => () => { if (this.props.go) this.props.go(s); };
+    var st = this.state;
+    var seed = st.key, cells = [];
+    for (var i = 0; i < 40; i++) { var v = (seed * (i + 11) * 40503) % 9973; var x = v % 21, y = Math.floor(v / 21) % 21; if (!((x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12))) cells.push('M' + x + ' ' + y + 'h1v1h-1z'); }
+    var CATS = [
+      ['emg', 'Emergency card', 'Always visible in emergencies — can’t be turned off', true],
+      ['lab', 'Lab reports', '18 reports since 2023', false],
+      ['rx', 'Prescriptions & medicines', '9 e-signed prescriptions', false],
+      ['vit', 'Home vitals', 'Blood pressure, sugar, weight', false],
+      ['img', 'Imaging', 'X-ray, ultrasound, CT', false],
+      ['gen', 'Genomic results', 'Hidden unless you turn this on', false],
+      ['mh', 'Mental health notes', 'Extra-private · off by default', false]
+    ];
+    var HIST = [
+      ['17 Oct, 14:24', 'Dr. Arun Nair', 'Doctor', 'Your key', 'Lab, Rx, Vitals', 'live'],
+      ['17 Oct, 11:05', 'Rahul Varghese', 'Lab tech', 'Lab order #DEMO-L-5521', 'Upload only', 'done'],
+      ['15 Oct, 09:40', 'Fathima Beevi', 'Radiology', 'Imaging order #DEMO-R-2210', 'Upload only', 'done'],
+      ['12 Oct, 17:12', 'Joseph Mathew', 'Pharmacist', 'Prescription scan', 'Rx only', 'done'],
+      ['02 Oct, 10:15', 'Dr. Sreeja Paul', 'Doctor', 'Your key', 'Lab, Rx', 'ended'],
+      ['21 Sep, 02:48', 'Dr. Vinod K.', 'Emergency', 'Break-glass · road accident (Ravi)', 'Emergency card', 'review'],
+      ['04 Sep, 12:30', 'Lekha Pillai', 'Nurse', 'Admission mode, Ward 3', 'Vitals', 'done']
+    ];
+    var BG = st.bus.filter(function (e) { return e.type === 'break-glass'; }).map(function (e) { return ['Today, ' + e.at, (e.text || '').split(' · ')[0] || 'Emergency doctor', 'Emergency', 'Break-glass · ' + ((e.text || '').split(' · ').slice(-1)[0] || 'reason given'), 'Emergency card', 'review']; });
+    HIST = HIST.slice(0, 1).concat(BG, HIST.slice(1));
+    var TONE = { live: ['success', 'Live'], done: ['neutral', 'Closed'], ended: ['peach', 'Ended by you'], review: ['warning', 'Reviewed'] };
+    var rows = HIST.filter(r => st.filter === 'all' || (st.filter === 'doc' && (r[2] === 'Doctor' || r[2] === 'Emergency')) || (st.filter === 'staff' && r[2] !== 'Doctor' && r[2] !== 'Emergency'))
+      .map((r, i) => ({ id: i, when: r[0], who: r[1], role: r[2], how: r[3], saw: r[4], st: (st.ended && r[5] === 'live') ? 'ended' : r[5] }));
+    var onCount = CATS.filter(c => st.on[c[0]]).length;
+    var C = CareFusion;
+    return {
+      yes: true, n44: 44, n36: 36,
+      secs: st.t, barCls: 'k' + st.t,
+      keyCode: String(st.key).replace(/(\d{3})(\d{3})/, '$1 $2'),
+      qr: cells.join(''),
+      refresh: () => this.setState({ t: 10, key: 100000 + Math.floor(Math.random() * 900000) }),
+      active: !st.ended, ended: st.ended,
+      liveCls: st.ended ? 'muted' : 'is-live',
+      liveText: st.ended ? 'No live session' : 'Live now',
+      clock: Math.floor(st.left / 60) + ':' + String(st.left % 60).padStart(2, '0'),
+      dash: String(351.86 * (1 - st.left / 1800)),
+      ringLabel: Math.floor(st.left / 60) + ' minutes left of 30',
+      endedAt: st.endedAt,
+      endSession: () => { var ev = busPush({ type: 'session-ended', from: 'citizen', to: ['doctor'], title: 'Session ended by Anjali Menon', text: 'Your access to her record closed · 30-minute key session', href: 'Doctor.dc.html' }); this.setState({ ended: true, endedAt: ev.at, bus: busFor('citizen') }); },
+      toComplaints: go('complaints'),
+      restart: () => this.setState({ ended: false, left: 1122 }),
+      toMessages: go('messages'), toProfile: go('profile'),
+      onCount: onCount,
+      cats: CATS.map(c => ({ label: c[1], desc: c[2], on: !!st.on[c[0]], locked: c[3],
+        toggle: (v) => { var o = Object.assign({}, st.on); o[c[0]] = v; this.setState({ on: o }); } })),
+      histTabs: [{ id: 'all', label: 'All', count: HIST.length }, { id: 'doc', label: 'Doctors' }, { id: 'staff', label: 'Hospital staff' }],
+      filter: st.filter, setFilter: (v) => this.setState({ filter: v }),
+      rowCount: rows.length,
+      cols: [
+        { key: 'when', header: 'When', mono: true, width: '140px' },
+        { key: 'who', header: 'Who', render: r => h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 8 } }, h(C.Avatar, { name: r.who, size: 28 }), h('strong', null, r.who)) },
+        { key: 'role', header: 'Role' },
+        { key: 'how', header: 'How they got in' },
+        { key: 'saw', header: 'What they saw' },
+        { key: 'st', header: 'Status', render: r => h(C.Badge, { tone: TONE[r.st][0], dot: r.st === 'live' }, TONE[r.st][1]) }
+      ],
+      rows: rows
+    };
+  }
+}
+</script>
+</body>
+</html>
