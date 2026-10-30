@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nurse — Staff Portal — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px;background:rgba(243,238,232,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;min-width:42px;padding:0 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);cursor:pointer;font:inherit;font-size:14px;font-weight:600;box-sizing:border-box}
+.topbtn:hover{border-color:var(--border-strong)}
+.topbtn:focus-visible,.lk:focus-visible,.bed:focus-visible,.chk:focus-visible,.pill:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.dotr{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:9999px;background:var(--danger)}
+.pg{padding:28px 40px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px}
+.h1{margin:0;font-family:var(--font-serif);font-size:30px;line-height:38px;font-weight:600;color:var(--ink-strong)}
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))}
+.g21{grid-template-columns:minmax(0,2fr) minmax(280px,1fr)}
+@media (max-width:1100px){.g21{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:12px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.muted{color:var(--ink-muted);font-size:13px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.beds{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.bed{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface);font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;color:var(--ink)}
+.bed b{font-size:13px}.bed span{font-size:11px;color:var(--ink-muted)}
+.bed.is-occ{background:var(--tint-teal);border-color:transparent}
+.bed.is-watch{background:var(--warning-bg);border-color:var(--warning-soft)}
+.bed.is-crit{background:var(--danger-bg);border-color:var(--danger-soft)}
+.bed.is-free{border-style:dashed}
+.med{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.med.done{background:var(--tint-sage)}
+.med.late{background:var(--warning-bg)}
+.chk{flex:none;width:28px;height:28px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--surface-raised);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-primary);font-size:14px;font-weight:700}
+.med.done .chk{background:var(--primary);border-color:var(--primary)}
+.lock{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:16px;background:var(--tint-blue)}
+.timer{font-family:var(--font-mono);font-size:34px;line-height:40px;font-weight:500;color:var(--ink-strong)}
+.tb{height:6px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.tb span{display:block;height:100%;background:var(--primary-soft);transform-origin:left;transition:transform 1s linear}
+.w100{transform:scaleX(1)}.w90{transform:scaleX(.9)}.w80{transform:scaleX(.8)}.w70{transform:scaleX(.7)}.w60{transform:scaleX(.6)}.w50{transform:scaleX(.5)}.w40{transform:scaleX(.4)}.w30{transform:scaleX(.3)}.w20{transform:scaleX(.2)}.w10{transform:scaleX(.1)}.w0{transform:scaleX(0)}
+.note{padding:14px 16px;border-radius:14px;background:var(--surface);border-left:4px solid var(--primary-soft)}
+.note.is-flag{border-left-color:var(--danger-soft)}
+.pill{border:1px solid var(--border);background:var(--surface-raised);border-radius:9999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+.pill.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.vit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);animation:live 1.8s infinite}
+@keyframes live{70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}}
+.in{animation:in 500ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.toast{position:fixed;top:84px;right:28px;z-index:40;display:flex;gap:12px;align-items:flex-start;width:min(380px,calc(100vw - 32px));padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:toastIn 420ms cubic-bezier(0.22,1,0.36,1) both}
+.toast strong{display:block;color:var(--ink);font-size:14px}
+.toast-k{flex:none;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:8px;background:var(--tint-teal);color:var(--primary-text)}
+@keyframes toastIn{from{opacity:0;transform:translateX(24px)}}
+.feed{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.feed:last-child{border-bottom:0}
+.feed-k{flex:none;min-width:64px;text-align:center;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:8px;background:var(--surface-cream);color:var(--ink-muted)}
+.feed-k.is-me{background:var(--tint-sage);color:var(--success)}
+.feed a{font-size:13px;font-weight:600}
+.q{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid transparent}
+.q.is-stat{border-color:var(--danger-soft);background:var(--danger-bg)}
+.q.is-new{animation:slideDown 520ms cubic-bezier(0.22,1,0.36,1) both}
+.q.is-done{opacity:.62}
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}}
+.pri{flex:none;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted);min-width:78px}
+.pri.is-stat{color:var(--danger)}.pri.is-urgent{color:var(--warning)}
+.qa-b{border:1px solid var(--border);background:var(--surface-raised);border-radius:10px;height:34px;padding:0 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.qa-b.ok{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.qa-b:hover{border-color:var(--border-strong)}
+.qa-b:focus-visible,.sugg button:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.wk{display:grid;grid-template-columns:120px minmax(0,1fr) 64px;align-items:center;gap:10px;font-size:13px}
+.wk-t{height:10px;border-radius:9999px;background:repeating-linear-gradient(135deg,var(--surface-cream) 0 6px,#e8dfd5 6px 12px);overflow:hidden}
+.wk-t span{display:block;height:100%;background:var(--primary-soft);transform-origin:left;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)}
+.wk b{font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+.sugg{display:flex;flex-direction:column;gap:6px}
+.sugg button{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer;color:var(--ink)}
+.sugg button:hover{border-color:var(--primary-soft);background:var(--surface-raised)}
+.news{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:9999px;font-family:var(--font-mono);font-size:13px;font-weight:600}.news.lo{background:var(--tint-sage);color:var(--success)}.news.mid{background:var(--warning-bg);color:var(--warning)}.news.hi{background:var(--danger-bg);color:var(--danger)}
+.mono{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+@media (prefers-reduced-motion: reduce){.toast,.q.is-new{animation:none}.wk-t span{transition:none}}
+.wk-t span.w0{transform:scaleX(0)}.wk-t span.w10{transform:scaleX(.1)}.wk-t span.w20{transform:scaleX(.2)}.wk-t span.w30{transform:scaleX(.3)}.wk-t span.w40{transform:scaleX(.4)}.wk-t span.w50{transform:scaleX(.5)}.wk-t span.w60{transform:scaleX(.6)}.wk-t span.w70{transform:scaleX(.7)}.wk-t span.w80{transform:scaleX(.8)}.wk-t span.w90{transform:scaleX(.9)}.wk-t span.w100{transform:scaleX(1)}
+@media (prefers-reduced-motion: reduce){.live,.in{animation:none}.tb span{transition:none}}
+@media (max-width: 900px){.shell-side{position:static;height:auto;width:100%}.beds{grid-template-columns:repeat(3,1fr)}.vit{grid-template-columns:1fr}}
+.kvx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}.kvx div{padding:10px 12px;border-radius:12px;background:var(--surface)}.kvx dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}.kvx dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}.kvx dd.bad{color:var(--danger)}
+.hist{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:14px;overflow:hidden}.hist-r{display:grid;grid-template-columns:70px repeat(5,1fr);gap:8px;padding:9px 14px;font-size:14px;border-bottom:1px solid var(--border)}.hist-r:last-child{border-bottom:0}.hist-h{background:var(--surface-cream);font-size:12px;font-weight:600;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase}.hist b{display:inline-block;min-width:22px;text-align:center;border-radius:6px;padding:0 4px}.hist b.ok{background:var(--success-bg);color:var(--success)}.hist b.mid{background:var(--warning-bg);color:var(--warning)}
+.pend{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:14px;background:var(--surface)}.pend-r{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border)}.pend-r:last-child{border-bottom:0}.pd{width:8px;height:8px;border-radius:9999px;background:var(--primary-soft)}.pd.bad{background:var(--danger)}.tag-bad{font-size:12px;font-weight:600;color:var(--danger)}
+.hand{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-stf" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Staff Portal · Lekha Pillai and all patients shown are simulated.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Nurse"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div class="top">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Ward 3 · Demo General Hospital <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--success); font-weight: 600;"><span class="live" aria-hidden="true"></span>Day shift · 07:00–15:00</span>
+          <button type="button" class="topbtn" aria-label="{{bellAria}}" onClick="{{toAlerts}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span class="dotr" aria-hidden="true"></span></button>
+          <button type="button" class="topbtn" onClick="{{toAdmit}}" style="background: var(--primary); border-color: var(--primary); color: var(--on-primary);">Admission mode</button>
+        </div>
+      </div>
+      <main style="flex: 1;">
+<sc-if value="{{toast.on}}" hint-placeholder-val="{{no}}"><div class="toast" role="status" aria-live="polite"><span class="toast-k">{{toast.from}}</span><div style="flex: 1; min-width: 0;"><strong>{{toast.title}}</strong><div class="muted">{{toast.text}}</div></div><a class="lk" href="{{toast.href}}">Open</a></div></sc-if>
+
+<sc-if value="{{is.home}}" hint-placeholder-val="{{yes}}">
+<div class="pg">
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px;">
+    <div><p class="muted" style="margin: 0 0 4px;">Saturday, 17 October 2026 · 10:42</p><h1 class="h1">Good morning, Lekha</h1><p style="margin: 4px 0 0;">22 of 24 beds occupied · 6 patients assigned to you · 9 tasks before noon.</p></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Badge" tone="teal" dot="{{yes}}">Charge: Sr. Mini Joseph</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Nurse · KL-NC-DEMO-4471</x-import></div>
+  </header>
+  <section class="grid g4 in">
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Ward census" value="22" unit="/ 24 beds" hint="2 discharges planned today" tone="blue" icon="{{iBed}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="My patients" value="6" hint="Beds 3, 4, 7, 8, 11, 12" icon="{{iUser}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Meds due · next hour" value="{{medsLeft}}" unit="doses" hint="1 overdue at Bed 7" tone="peach" icon="{{iPill}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Early-warning" value="2" unit="patients" hint="NEWS ≥ 5 · review now" tone="sage" icon="{{iPulse}}"></x-import>
+  </section>
+  <section class="grid g21 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Ward 3 — bed board</h2><div style="display: flex; gap: 6px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Stable</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Watch</x-import><x-import component-from-global-scope="CareFusion.Badge" tone="danger">Critical</x-import></div></div>
+      <div class="beds">
+        <sc-for list="{{beds}}" as="b" hint-placeholder-count="24">
+          <button type="button" class="{{b.cls}}" aria-label="{{b.aria}}" onClick="{{toAdmit}}"><b>{{b.n}}</b><span>{{b.who}}</span><span>{{b.tag}}</span></button>
+        </sc-for>
+      </div>
+      <p class="muted" style="margin: 0;">Opening a bed starts admission mode — the chart opens for 2 hours and every view is logged.</p>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">My tasks</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">{{tasksLeft}} left</x-import></div>
+      <sc-for list="{{tasks}}" as="t" hint-placeholder-count="6">
+        <div class="{{t.cls}}"><button type="button" class="chk" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}" onClick="{{t.toggle}}">{{t.tick}}</button><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{t.name}}</strong><div class="muted">{{t.sub}}</div></div><span class="muted" style="font-variant-numeric: tabular-nums;">{{t.time}}</span></div>
+      </sc-for>
+    </div>
+  </section>
+  <section class="grid g3 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">New orders</h2><button type="button" class="lk" onClick="{{toOrders}}">All orders · {{qOpen}} open</button></div>
+      <sc-for list="{{qTop}}" as="o" hint-placeholder-count="3">
+        <div class="{{o.cls}}"><span class="{{o.priCls}}"><span aria-hidden="true">{{o.icon}}</span>{{o.pri}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{o.bed}} · {{o.what}}</strong><div class="muted">{{o.by}} · {{o.at}} · {{o.stLabel}}</div></div></div>
+      </sc-for>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Early-warning scores</h2><button type="button" class="lk" onClick="{{toVitals}}">Record vitals</button></div>
+      <div class="row"><span class="timer" style="font-size: 22px; color: var(--danger);">7</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Bed 7 · Thomas Kurian, 68</strong><div class="muted">SpO₂ 91% · RR 24 · Temp 38.6 °C</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="danger">Escalated</x-import></div>
+      <div class="row"><span class="timer" style="font-size: 22px; color: var(--warning);">5</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Bed 12 · Sreedevi Amma, 74</strong><div class="muted">BP 92/58 · HR 108</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Hourly obs</x-import></div>
+      <div class="row"><span class="timer" style="font-size: 22px; color: var(--success);">1</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Bed 3 · Anjali Menon, 34</strong><div class="muted">All within range</div></div></div>
+    </div>
+    <div class="box" style="background: var(--tint-sage); border-color: transparent; box-shadow: none;">
+      <div class="bh"><h2 class="bt">Handover at 15:00</h2><button type="button" class="lk" onClick="{{toHandover}}">Write notes</button></div>
+      <p style="margin: 0; font-size: 14px;">To <strong>Sr. Beena Thomas</strong> (evening shift). 4 of 6 notes drafted.</p>
+      <div class="tb"><span class="w70"></span></div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="med done"><span class="chk" aria-hidden="true">✓</span><span style="flex: 1; font-size: 14px;">Bed 12 · fluids &amp; fall risk</span></div>
+        <div class="med done"><span class="chk" aria-hidden="true">✓</span><span style="flex: 1; font-size: 14px;">Bed 3 · discharge plan</span></div>
+        <div class="med"><span class="chk" aria-hidden="true"></span><span style="flex: 1; font-size: 14px;">Bed 7 · SBAR for escalation</span><x-import component-from-global-scope="CareFusion.Badge" tone="danger">Priority</x-import></div>
+        <div class="med"><span class="chk" aria-hidden="true"></span><span style="flex: 1; font-size: 14px;">Bed 11 · post X-ray status</span></div>
+      </div>
+      <p class="muted" style="margin: 0;">Notes are part of the patient record and visible to the treating doctor.</p>
+    </div>
+  </section>
+  <section class="grid g3 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Connected apps</h2><x-import component-from-global-scope="CareFusion.Badge" tone="teal" dot="{{yes}}">Live</x-import></div>
+      <sc-for list="{{feed}}" as="e" hint-placeholder-count="4">
+        <div class="feed"><span class="{{e.kCls}}">{{e.from}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{e.title}}</strong><div class="muted">{{e.text}}</div><a href="{{e.href}}">{{e.linkLabel}}</a></div><span class="mono">{{e.at}}</span></div>
+      </sc-for>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">My workload · this shift</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">{{wkPct}}% done</x-import></div>
+      <sc-for list="{{workload}}" as="w" hint-placeholder-count="4">
+        <div class="wk"><span>{{w.label}}</span><div class="wk-t" role="img" aria-label="{{w.aria}}"><span class="{{w.cls}}"></span></div><b>{{w.done}} / {{w.total}}</b></div>
+      </sc-for>
+      <p class="muted" style="margin: 0;">Teal = done · striped = still pending. Counts update as you tick items off.</p>
+      <dl class="kvx"><div><dt>Next due</dt><dd>Bed 11 · X-ray prep 11:45</dd></div><div><dt>Overdue</dt><dd class="bad">1 · Bed 7 IV dose</dd></div><div><dt>Handover in</dt><dd>4 h 18 min</dd></div><div><dt>Breaks taken</dt><dd>1 of 2</dd></div></dl>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Patient lookup</h2><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Order-scoped</x-import></div>
+      <x-import component-from-global-scope="CareFusion.TextField" label="Order ID, bed or name" placeholder="e.g. O-7841 or Bed 7" value="{{lookup}}" on-change="{{setLookup}}" helper="Only orders sent to you or patients admitted to Ward 3."></x-import>
+      <div class="sugg" role="listbox" aria-label="Matching orders">
+        <sc-for list="{{sugg}}" as="g" hint-placeholder-count="3">
+          <button type="button" role="option" aria-selected="{{g.sel}}" onClick="{{g.pick}}"><span class="mono">{{g.id}}</span><span style="flex: 1; min-width: 0;"><strong style="font-size: 14px;">{{g.bed}} · {{g.name}}</strong><span class="muted" style="display: block;">{{g.what}}</span></span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{noSugg}}" hint-placeholder-val="{{no}}"><p class="muted" style="margin: 0;">No order matches. You can't search the national record from here.</p></sc-if>
+      <sc-if value="{{picked.on}}" hint-placeholder-val="{{no}}"><div class="note"><strong style="color: var(--ink);">{{picked.label}}</strong><div class="muted">Opens through order {{picked.id}} · logged</div><div style="margin-top: 8px;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{toAdmit}}">Open chart via order</x-import></div></div></sc-if>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.admit}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Admission mode</h1><p style="margin: 4px 0 0;">Nurses can open a patient only when they're admitted to your ward. Access ends on its own.</p></header>
+  <div class="lock in"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><div><strong style="color: var(--ink);">No free browsing.</strong> <span>You can't search the national record. You see admitted patients in Ward 3, orders sent to you, and nothing else. Every chart view is written to the audit log and the patient can see it.</span></div></div>
+  <section class="grid g21 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Open chart · Bed 3</h2><sc-if value="{{admitOpen}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Session open</x-import></sc-if></div>
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <x-import component-from-global-scope="CareFusion.Avatar" name="Anjali Menon" size="{{n52}}" tone="peach"></x-import>
+        <div style="flex: 1;"><strong style="color: var(--ink); font-size: 18px;">Anjali Menon, 34 · F</strong><div class="muted">IP-DEMO-30318 · admitted 15 Oct · Dr. Arun Nair · Type 2 diabetes, LRTI</div></div>
+        <x-import component-from-global-scope="CareFusion.Badge" tone="danger">Penicillin allergy</x-import>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 10px;"><span class="timer" aria-live="off">{{mm}}</span><span class="muted">left of 2:00:00 · ends at shift change</span></div>
+      <div class="tb"><span class="{{admitBar}}"></span></div>
+      <div class="grid g3" style="gap: 10px;">
+        <div class="note"><div class="muted">Blood group</div><strong style="color: var(--ink);">B+</strong></div>
+        <div class="note"><div class="muted">Diet</div><strong style="color: var(--ink);">Diabetic, 1800 kcal</strong></div>
+        <div class="note"><div class="muted">Mobility</div><strong style="color: var(--ink);">Independent</strong></div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{toVitals}}">Record vitals</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm" on-click="{{toMar}}">Give medicines</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="danger" size="sm" on-click="{{closeAdmit}}">Close chart now</x-import>
+      </div>
+    </div>
+    <div class="box">
+      <h2 class="bt">What you can see</h2>
+      <div class="row"><span style="color: var(--success); font-weight: 700;">✓</span><span>Vitals, medication chart, nursing notes</span></div>
+      <div class="row"><span style="color: var(--success); font-weight: 700;">✓</span><span>Orders from the treating doctor</span></div>
+      <div class="row"><span style="color: var(--success); font-weight: 700;">✓</span><span>Allergies, blood group, diet</span></div>
+      <div class="row"><span style="color: var(--danger); font-weight: 700;">✕</span><span>Past records from other hospitals</span></div>
+      <div class="row"><span style="color: var(--danger); font-weight: 700;">✕</span><span>Genomic results, mental-health notes</span></div>
+      <div class="row"><span style="color: var(--danger); font-weight: 700;">✕</span><span>AI Health Chat and imaging analysis</span></div>
+    </div>
+  </section>
+  <div class="box in">
+    <div class="bh"><h2 class="bt">Your access log today</h2><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Visible to each patient</x-import></div>
+    <x-import component-from-global-scope="CareFusion.Table" columns="{{logCols}}" rows="{{logRows}}" density="compact" caption="Chart access log"></x-import>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.vitals}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap;"><div><h1 class="h1">Record vitals</h1><p style="margin: 4px 0 0;">{{vPatient}} · NEWS is worked out as you type</p></div><div style="display: flex; gap: 6px; flex-wrap: wrap;" role="group" aria-label="Patient"><sc-for list="{{vPicks}}" as="vk" hint-placeholder-count="2"><button type="button" class="{{vk.cls}}" aria-pressed="{{vk.pressed}}" onClick="{{vk.pick}}">{{vk.label}}</button></sc-for></div></header>
+  <section class="grid g21 in">
+    <form class="box" onSubmit="{{saveVitals}}" aria-label="Vitals entry">
+      <div class="vit">
+        <x-import component-from-global-scope="CareFusion.TextField" label="Systolic BP (mmHg)" default-value="118" inputmode="numeric"></x-import>
+        <x-import component-from-global-scope="CareFusion.TextField" label="Diastolic BP (mmHg)" default-value="76" inputmode="numeric"></x-import>
+        <x-import component-from-global-scope="CareFusion.TextField" label="Pulse (/min)" value="{{v.hr}}" on-change="{{v.set_hr}}" inputmode="numeric"></x-import>
+        <x-import component-from-global-scope="CareFusion.TextField" label="Resp. rate (/min)" value="{{v.rr}}" on-change="{{v.set_rr}}" inputmode="numeric"></x-import>
+        <x-import component-from-global-scope="CareFusion.TextField" label="SpO₂ (%)" value="{{v.spo2}}" on-change="{{v.set_spo2}}" inputmode="numeric"></x-import>
+        <x-import component-from-global-scope="CareFusion.TextField" label="Temperature (°C)" value="{{v.temp}}" on-change="{{v.set_temp}}" inputmode="decimal"></x-import>
+        <x-import component-from-global-scope="CareFusion.TextField" label="Blood sugar (mg/dL)" default-value="164" helper="Random, pre-lunch" inputmode="numeric"></x-import>
+        <x-import component-from-global-scope="CareFusion.Select" label="Consciousness" options="{{avpu}}"></x-import>
+        <x-import component-from-global-scope="CareFusion.Select" label="Pain score" options="{{pain}}"></x-import>
+      </div>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Observation note" default-value="Comfortable, cough reduced. Tolerating diet."></x-import>
+      <div class="hist" role="table" aria-label="Earlier readings today">
+        <div class="hist-r hist-h" role="row"><span role="columnheader">Time</span><span role="columnheader">BP</span><span role="columnheader">Pulse</span><span role="columnheader">SpO₂</span><span role="columnheader">Temp</span><span role="columnheader">NEWS</span></div>
+        <div class="hist-r" role="row"><span role="cell" class="mono">10:00</span><span role="cell">122/78</span><span role="cell">88</span><span role="cell">95%</span><span role="cell">37.4</span><span role="cell"><b class="ok">2</b></span></div>
+        <div class="hist-r" role="row"><span role="cell" class="mono">06:00</span><span role="cell">126/80</span><span role="cell">92</span><span role="cell">94%</span><span role="cell">37.9</span><span role="cell"><b class="mid">3</b></span></div>
+        <div class="hist-r" role="row"><span role="cell" class="mono">02:00</span><span role="cell">130/82</span><span role="cell">96</span><span role="cell">93%</span><span role="cell">38.2</span><span role="cell"><b class="mid">4</b></span></div>
+        <div class="hist-r" role="row"><span role="cell" class="mono">22:00</span><span role="cell">128/84</span><span role="cell">98</span><span role="cell">93%</span><span role="cell">38.4</span><span role="cell"><b class="mid">4</b></span></div>
+        <div class="hist-r" role="row"><span role="cell" class="mono">18:00</span><span role="cell">124/80</span><span role="cell">90</span><span role="cell">95%</span><span role="cell">37.8</span><span role="cell"><b class="ok">2</b></span></div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="primary" type="submit">Save to chart</x-import>
+        <span class="{{newsCls}}">NEWS {{news}}</span><sc-if value="{{saved}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">{{savedText}}</x-import></sc-if><sc-if value="{{escalated}}" hint-placeholder-val="{{no}}"><a href="Doctor.dc.html" style="font-size: 13px; font-weight: 600;">Escalated to Dr. Arun Nair → open Doctor app</a></sc-if>
+      </div>
+    </form>
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <div class="box">
+        <h2 class="bt">Temperature · 48 h</h2>
+        <svg viewBox="0 0 300 110" role="img" aria-label="Temperature falling from 38.8 to 37.4 degrees over 48 hours" style="width: 100%; height: auto;"><path d="M0 25 H300 M0 60 H300 M0 95 H300" stroke="#e4ddd6"></path><path d="M0 20 L40 30 L80 24 L120 46 L160 52 L200 66 L240 70 L300 78" fill="none" stroke="#9a4a46" stroke-width="2.5" stroke-linecap="round"></path><circle cx="300" cy="78" r="4" fill="#9a4a46"></circle></svg>
+        <div class="muted" style="display: flex; justify-content: space-between;"><span>15 Oct</span><span>38.8 → 37.4 °C</span><span>Now</span></div>
+      </div>
+      <div class="box">
+        <h2 class="bt">Previous sets</h2>
+        <div class="row"><span class="muted" style="width: 46px;">06:10</span><span style="flex: 1; font-size: 14px;">120/78 · 92 · SpO₂ 96 · 37.8</span></div>
+        <div class="row"><span class="muted" style="width: 46px;">02:05</span><span style="flex: 1; font-size: 14px;">124/80 · 96 · SpO₂ 95 · 38.1</span></div>
+        <div class="row"><span class="muted" style="width: 46px;">22:00</span><span style="flex: 1; font-size: 14px;">126/82 · 101 · SpO₂ 94 · 38.4</span></div>
+      </div>
+      <div class="box">
+        <h2 class="bt">What the score means</h2>
+        <div class="row"><span class="news lo">0–2</span><span style="flex: 1; font-size: 14px;">Routine · obs every 4–6 h</span></div>
+        <div class="row"><span class="news mid">3–4</span><span style="flex: 1; font-size: 14px;">Hourly obs · tell charge nurse</span></div>
+        <div class="row"><span class="news hi">5–6</span><span style="flex: 1; font-size: 14px;">Sent to the treating doctor automatically</span></div>
+        <div class="row"><span class="news hi">7+</span><span style="flex: 1; font-size: 14px;">Rapid response team · stay with patient</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.mar}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap;"><div><h1 class="h1">Medication round</h1><p style="margin: 4px 0 0;">10:00 round · scan the patient band and the medicine before ticking.</p></div><x-import component-from-global-scope="CareFusion.Badge" tone="peach">{{medsLeft}} doses still to give</x-import></header>
+  <section class="grid g21 in">
+    <div class="box">
+      <sc-for list="{{mar}}" as="m" hint-placeholder-count="8">
+        <div class="{{m.cls}}"><button type="button" class="chk" aria-pressed="{{m.pressed}}" aria-label="{{m.aria}}" onClick="{{m.toggle}}">{{m.tick}}</button><span class="muted" style="width: 54px;">{{m.bed}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{m.drug}}</strong><div class="muted">{{m.sub}}</div></div><span class="muted" style="font-variant-numeric: tabular-nums;">{{m.time}}</span></div>
+      </sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <x-import component-from-global-scope="CareFusion.Alert" tone="danger" title="Allergy check — Bed 3">Penicillin allergy. Ceftriaxone ordered: cross-reactivity is low; doctor confirmed at 10:31.</x-import>
+      <div class="box"><h2 class="bt">Withheld or refused</h2><div class="row"><span class="muted" style="width: 54px;">Bed 12</span><span style="flex: 1; font-size: 14px;">Amlodipine 5 mg withheld — BP 92/58. Dr. informed.</span></div><div class="row"><span class="muted" style="width: 54px;">Bed 8</span><span style="flex: 1; font-size: 14px;">Patient nil by mouth till 13:00 (endoscopy).</span></div></div>
+      <div class="box"><h2 class="bt">Ward stock</h2><div class="row"><span style="flex: 1; font-size: 14px;">Insulin glargine pens</span><x-import component-from-global-scope="CareFusion.Badge" tone="warning">3 left</x-import></div><div class="row"><span style="flex: 1; font-size: 14px;">Paracetamol IV 1 g</span><x-import component-from-global-scope="CareFusion.Badge" tone="success">22</x-import></div><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm">Request from pharmacy</x-import></div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.handover}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Handover notes</h1><p style="margin: 4px 0 0;">SBAR format · handing over to Sr. Beena Thomas at 15:00</p></header>
+  <section class="grid g2 in">
+    <div class="box">
+      <h2 class="bt">Write for Bed 7 · Thomas Kurian</h2>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Situation" default-value="Febrile, SpO₂ 91% on room air, NEWS 7."></x-import>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Background" default-value="68 M, COPD, admitted 16 Oct with pneumonia."></x-import>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Assessment" default-value="Worsening since 08:00. On 2 L O₂ now, SpO₂ 94%."></x-import>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Recommendation" default-value="Hourly obs. Repeat ABG at 16:00. Dr. Nair to review."></x-import>
+      <x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{saveSbar}}">Save SBAR note</x-import>
+      <div class="pend">
+        <div class="bh"><strong style="color: var(--ink); font-size: 14px;">Still open at handover</strong><span class="muted">5 items</span></div>
+        <div class="pend-r"><span class="pd bad" aria-hidden="true"></span><span style="flex: 1;">Bed 7 · Ceftriaxone 1 g IV (due 10:00)</span><span class="tag-bad">Overdue</span></div>
+        <div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Bed 7 · Repeat ABG at 16:00</span><span class="muted">16:00</span></div>
+        <div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Bed 4 · CBC sample to lab</span><span class="muted">11:30</span></div>
+        <div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Bed 11 · Portable chest X-ray</span><span class="muted">11:45</span></div>
+        <div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Bed 12 · Recheck BP after fluids</span><span class="muted">12:15</span></div>
+      </div>
+      <p class="muted" style="margin: 0;">Sr. Beena Thomas sees these items on her ward board the moment she signs in.</p>
+      <div class="hand">
+        <div style="flex: 1 1 220px; min-width: 0;"><x-import component-from-global-scope="CareFusion.Select" label="Hand over to" options="{{handTo}}"></x-import></div>
+        <x-import component-from-global-scope="CareFusion.Button" variant="secondary" on-click="{{saveSbar}}">Sign handover</x-import>
+      </div>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Today's notes</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">{{noteCount}} notes</x-import></div>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Quick shift note" placeholder="e.g. Bed 11 back from X-ray, comfortable." value="{{draft}}" on-change="{{setDraft}}" rows="{{n3}}" helper="Saved with your name and the time."></x-import>
+      <div><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm" on-click="{{addNote}}" disabled="{{noDraft}}">Add timestamped note</x-import></div>
+      <sc-for list="{{notes}}" as="n" hint-placeholder-count="1"><div class="{{n.cls}}"><strong style="color: var(--ink);">{{n.title}}</strong><p style="margin: 4px 0 0; font-size: 14px;">{{n.body}}</p><div class="muted">{{n.meta}}</div></div></sc-for>
+      <dl class="kvx"><div><dt>Beds occupied</dt><dd>22 of 24</dd></div><div><dt>NEWS 5 or more</dt><dd class="bad">2 · Beds 7, 12</dd></div><div><dt>Doses due next 4 h</dt><dd>9</dd></div><div><dt>Likely discharges</dt><dd class="good">2 · Beds 3, 9</dd></div></dl>
+      <div class="pend">
+        <div class="bh"><strong style="color: var(--ink); font-size: 14px;">Watch list for the evening shift</strong><span class="muted">3 patients</span></div>
+        <div class="pend-r"><span class="pd bad" aria-hidden="true"></span><span style="flex: 1;">Bed 7 · Thomas Kurian — hourly obs, ABG 16:00</span></div>
+        <div class="pend-r"><span class="pd bad" aria-hidden="true"></span><span style="flex: 1;">Bed 12 · Sreedevi Amma — BP after fluids, fall risk</span></div>
+        <div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Bed 11 · Joy V. — X-ray result pending</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.orders}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap;"><div><h1 class="h1">Orders received</h1><p style="margin: 4px 0 0;">Only orders for patients in Ward 3 assigned to you.</p></div>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap;" role="group" aria-label="Filter orders"><sc-for list="{{ofilters}}" as="f" hint-placeholder-count="4"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div></header>
+  <div class="box in">
+    <div class="bh"><h2 class="bt">Incoming queue</h2><span class="muted">STAT first · new orders slide in at the top</span></div>
+    <sc-for list="{{queue}}" as="o" hint-placeholder-count="5">
+      <div class="{{o.cls}}"><span class="{{o.priCls}}"><span aria-hidden="true">{{o.icon}}</span>{{o.pri}}</span><span class="mono" style="width: 60px;">{{o.id}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{o.bed}} · {{o.what}}</strong><div class="muted">{{o.by}} · {{o.at}}</div></div>
+        <sc-if value="{{o.pending}}" hint-placeholder-val="{{yes}}"><div style="display: flex; gap: 6px;"><button type="button" class="qa-b ok" aria-label="{{o.acceptAria}}" onClick="{{o.accept}}">Accept</button><button type="button" class="qa-b" aria-label="{{o.rejectAria}}" onClick="{{o.reject}}">Reject</button></div></sc-if>
+        <sc-if value="{{o.decided}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Badge" tone="{{o.tone}}">{{o.stLabel}}</x-import></sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div class="box in"><div class="bh"><h2 class="bt">All orders today</h2></div><x-import component-from-global-scope="CareFusion.Table" columns="{{oCols}}" rows="{{oRows}}" caption="Orders"></x-import></div>
+  <section class="grid g3 in">
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Open in queue" value="{{qOpen}}" hint="{{qStatHint}}" tone="peach"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Done this shift" value="17" hint="Avg 14 min to start" tone="sage"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Waiting on lab" value="4" hint="Rahul Varghese notified" tone="blue"></x-import>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.alerts}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Alerts</h1><p style="margin: 4px 0 0;">Clinical alerts for your patients and ward notices.</p></header>
+  <section class="grid g2 in">
+    <div class="box">
+      <sc-for list="{{busAlerts}}" as="a" hint-placeholder-count="1"><x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="{{a.title}}">{{a.text}} · {{a.at}}</x-import></sc-for>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="danger" title="Bed 7 · NEWS 7 — escalate">Rapid response team paged 10:28. Dr. Arun Nair acknowledged.</x-import>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="Bed 7 · Overdue dose">Ceftriaxone 1 g IV was due 10:00.</x-import>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Lab result ready · Bed 4">CBC: WBC 13.2 (high). Doctor notified.</x-import>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Ward notice">Fire drill Monday 10:00. Oxygen cylinder check due.</x-import>
+    </div>
+    <div class="box">
+      <h2 class="bt">Alert settings</h2>
+      <x-import component-from-global-scope="CareFusion.Switch" label="Early-warning escalations" description="Always on for assigned patients" default-checked="{{yes}}" disabled="{{yes}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Switch" label="Overdue medicine reminders" default-checked="{{yes}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Switch" label="Lab result ready" default-checked="{{yes}}"></x-import>
+      <x-import component-from-global-scope="CareFusion.Switch" label="Ward notices by SMS"></x-import>
+      <div class="pend">
+        <strong style="color: var(--ink); font-size: 14px;">Escalation chain · Ward 3</strong>
+        <div class="pend-r"><span class="mono">1</span><span style="flex: 1;">Duty doctor · Dr. Arun Nair</span><span class="muted">within 15 min</span></div>
+        <div class="pend-r"><span class="mono">2</span><span style="flex: 1;">Rapid response team</span><span class="muted">NEWS ≥ 7</span></div>
+        <div class="pend-r"><span class="mono">3</span><span style="flex: 1;">Nursing superintendent</span><span class="muted">no answer in 30 min</span></div>
+      </div>
+      <p class="muted" style="margin: 0;">Critical alerts can't be muted. They also reach the doctor's app and the ward board.</p>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var ROLE = 'nurse';
+var APP = { 'Doctor.dc.html': 'Doctor app', 'LabTech.dc.html': 'Lab', 'Pharmacist.dc.html': 'Pharmacy', 'HospitalAdmin.dc.html': 'Hospital admin', 'CitizenAlerts.dc.html': 'Citizen alerts', 'CitizenDocuments.dc.html': 'Citizen documents', 'Nurse.dc.html': 'Nurse', 'Citizen.dc.html': 'Citizen app', 'DistrictAdmin.dc.html': 'District console' };
+var NAMES = { 'Bed 3': 'Anjali Menon', 'Bed 4': 'Abdul Rasheed', 'Bed 7': 'Thomas Kurian', 'Bed 8': 'Mary George', 'Bed 11': 'Gopi M.', 'Bed 12': 'Sreedevi Amma' };
+var VPRE = { b3: { label: 'Bed 3 · Anjali Menon', hr: '88', rr: '18', spo2: '97', temp: '37.4' }, b7: { label: 'Bed 7 · Thomas Kurian', hr: '112', rr: '24', spo2: '91', temp: '38.6' } };
+function newsScore(v) {
+  var hr = +v.hr, rr = +v.rr, sp = +v.spo2, t = +v.temp, n = 0;
+  if (rr) n += rr <= 8 ? 3 : rr <= 11 ? 1 : rr <= 20 ? 0 : rr <= 24 ? 2 : 3;
+  if (sp) n += sp <= 91 ? 3 : sp <= 93 ? 2 : sp <= 95 ? 1 : 0;
+  if (t) n += t <= 35 ? 3 : t <= 36 ? 1 : t <= 38 ? 0 : t <= 39 ? 1 : 2;
+  if (hr) n += hr <= 40 ? 3 : hr <= 50 ? 1 : hr <= 90 ? 0 : hr <= 110 ? 1 : hr <= 130 ? 2 : 3;
+  return n;
+}
+var FROMAPP = { doctor: 'Doctor.dc.html', citizen: 'Citizen.dc.html', nurse: 'Nurse.dc.html', labtech: 'LabTech.dc.html', pharmacist: 'Pharmacist.dc.html', district: 'DistrictAdmin.dc.html', hospitaladmin: 'HospitalAdmin.dc.html' };
+function hhmm() { var d = new Date(); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { section: 'home', left: 6372, admitOpen: true, saved: false, tasks: { 0: true, 1: true }, mar: { 0: true, 1: true, 2: true }, of: 'all',
+      bus: busRead(), toast: null, dec: { 'O-7822': 'accepted', 'O-7819': 'accepted', 'O-7830': 'accepted' }, extra: [], lookup: '', pickedId: null,
+      vp: 'b3', v: Object.assign({}, VPRE.b3), savedAt: '', savedNews: 0, setsSaved: 0, escalated: false, draft: '',
+      notes: [
+        { title: 'Bed 12 · Sreedevi Amma', body: 'Low BP, amlodipine withheld. Fluids 500 mL started 10:15. Fall risk high — bed rails up.', meta: 'Lekha Pillai · 10:20', flag: true },
+        { title: 'Bed 3 · Anjali Menon', body: 'Improving. Sugar 164 pre-lunch. Likely discharge Monday.', meta: 'Lekha Pillai · 09:50' },
+        { title: 'Bed 4 · Abdul Rasheed', body: 'CBC sample pending collection. Wound dressing done, clean.', meta: 'Lekha Pillai · 09:15' },
+        { title: 'Bed 8 · Mary George', body: 'NBM for endoscopy at 13:00. Consent signed.', meta: 'Lekha Pillai · 08:40' }
+      ] };
+    this.seen = {}; var self = this; busFor(ROLE).forEach(function (e) { self.seen[e.id] = 1; });
+  }
+  componentDidMount() {
+    this.timer = setInterval(() => { if (this.state.admitOpen && this.state.left > 0) this.setState({ left: this.state.left - 1 }); }, 1000);
+    this.poll = () => {
+      var all = busRead(), mine = all.filter(function (e) { return e.to.indexOf(ROLE) >= 0; }), fresh = null, self = this;
+      mine.forEach(function (e) { if (!self.seen[e.id]) { self.seen[e.id] = 1; if (!fresh) fresh = e; } });
+      var st = { bus: all };
+      if (fresh) { st.toast = fresh; clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 4000); }
+      this.setState(st);
+    };
+    this.bt = setInterval(this.poll, 2000);
+    window.addEventListener('storage', this.poll);
+    this.arrive = setTimeout(() => this.setState({ extra: [{ id: 'O-7849', bed: 'Bed 12', what: 'Repeat BP in 30 min', pri: 'urgent', by: 'Dr. Sreeja Paul', at: hhmm(), fresh: true }].concat(this.state.extra) }), 7000);
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.bt); clearTimeout(this.tt); clearTimeout(this.arrive); window.removeEventListener('storage', this.poll); }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion, self = this;
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var NAV = [
+      { items: [
+        { id: 'home', label: 'Ward home', icon: ic('M3 11l9-7l9 7M5 10v10h5v-6h4v6h5V10') },
+        { id: 'admit', label: 'Admission mode', icon: ic('M4 10h16v10H4zM8 10V7a4 4 0 0 1 8 0v3') },
+        { id: 'orders', label: 'Orders', icon: ic('M6 3h12v18H6zM9 8h6M9 12h6M9 16h4'), badge: 3 }
+      ] },
+      { title: 'Care', items: [
+        { id: 'vitals', label: 'Vitals', icon: ic('M3 12h4l3-7l4 14l3-7h4') },
+        { id: 'mar', label: 'Medication round', icon: ic('M8.5 3.5a5 5 0 0 1 7 7l-5 5a5 5 0 0 1-7-7zM6 11l7 7') },
+        { id: 'handover', label: 'Handover', icon: ic('M4 5h16v11H9l-5 4z') }
+      ] },
+      { title: 'Shift', items: [
+        { id: 'alerts', label: 'Alerts', icon: ic('M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4'), badge: 4 }
+      ] }
+    ];
+    var labels = {}; NAV.forEach(function (g) { g.items.forEach(function (i) { labels[i.id] = i.label; }); });
+    var sec = this.state.section, is = {}; Object.keys(labels).forEach(function (k) { is[k] = k === sec; });
+    var go = (id) => () => this.setState({ section: id });
+    function toggler(key, i) { return () => { var t = Object.assign({}, self.state[key]); t[i] = !t[i]; var o = {}; o[key] = t; self.setState(o); }; }
+    var BEDS = [['1','Ramesh K.','s'],['2','Lalitha P.','s'],['3','Anjali M.','s','mine'],['4','Abdul R.','w','mine'],['5','Joy V.','s'],['6','','f'],['7','Thomas K.','c','mine'],['8','Mary G.','s','mine'],['9','Saji N.','s'],['10','Usha D.','s'],['11','Gopi M.','w','mine'],['12','Sreedevi A.','w','mine'],['13','Ali H.','s'],['14','Bindu S.','s'],['15','Mohan L.','s'],['16','Rosamma T.','s'],['17','Shibu P.','s'],['18','','f'],['19','Kunjumon','s'],['20','Fousiya','s'],['21','Vinod R.','s'],['22','Ammini','w'],['23','Rajan C.','s'],['24','Sathi K.','s']];
+    var TAG = { s: 'Stable', w: 'Watch', c: 'Critical', f: 'Free' };
+    var TASKS = [['Bed 3 · Morning vitals','Done 06:10','06:00'],['Bed 8 · Endoscopy consent','Signed','08:30'],['Bed 7 · IV Ceftriaxone','STAT · overdue','10:00'],['Bed 4 · Collect CBC, CRP','Lab order','11:30'],['Bed 12 · Fluid balance','Chart hourly','11:00'],['Bed 11 · Prep for X-ray','Portable','11:45']];
+    var tk = this.state.tasks;
+    var MAR = [['Bed 3','Metformin 500 mg','Oral · after breakfast','08:00'],['Bed 4','Pantoprazole 40 mg','Oral · before food','08:00'],['Bed 8','Insulin regular 6 U','SC · hold if NBM','08:00'],['Bed 7','Ceftriaxone 1 g','IV · STAT · due','10:00'],['Bed 3','Ceftriaxone 1 g','IV · over 30 min','10:00'],['Bed 11','Salbutamol nebulisation','Inhaled · 2.5 mg','10:00'],['Bed 12','Amlodipine 5 mg','Oral · withheld?','10:00'],['Bed 4','Paracetamol 650 mg','Oral · if T > 38','PRN']];
+    var mr = this.state.mar;
+    var medsLeft = MAR.filter(function (m, i) { return !mr[i]; }).length;
+    var l = this.state.left, hh = Math.floor(l / 3600), mm = Math.floor((l % 3600) / 60), ss = l % 60;
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    var OF = [['all','All'],['stat','STAT'],['lab','Lab'],['med','Medicine']];
+    var ORD = [['O-7841','Bed 7','Ceftriaxone 1 g IV','stat','Dr. Arun Nair','10:31','Due now'],['O-7838','Bed 4','CBC, CRP','lab','Dr. Arun Nair','09:58','Collect 11:30'],['O-7835','Bed 11','Chest X-ray portable','stat','Dr. Sreeja Paul','09:40','Radiology'],['O-7830','Bed 12','IV NS 500 mL','med','Dr. Sreeja Paul','10:12','Running'],['O-7822','Bed 3','HbA1c, fasting sugar','lab','Dr. Arun Nair','08:15','Sample sent'],['O-7819','Bed 8','Insulin sliding scale','med','Dr. Arun Nair','07:50','Active']];
+    var of = this.state.of;
+    var news = newsScore(this.state.v);
+    var all = this.state.bus;
+    var busAlerts = all.filter(function (e) { return e.to.indexOf(ROLE) >= 0 && e.type === 'alert'; }).slice(0, 2).map(function (e) { return { title: e.title, text: e.text, at: e.at }; });
+    var feed = all.filter(function (e) { return e.to.indexOf(ROLE) >= 0 || e.from === ROLE; }).slice(0, 5).map(function (e) { var lh = (!e.href || e.href === 'Nurse.dc.html') ? (FROMAPP[e.from] || '#') : e.href; return { from: e.from === ROLE ? 'You' : e.from, kCls: 'feed-k' + (e.from === ROLE ? ' is-me' : ''), title: e.title, text: e.text, at: e.at, href: lh, linkLabel: 'Open ' + (APP[lh] || 'app') + ' →' }; });
+    var PRI = { stat: ['STAT', '‼', 0], urgent: ['Urgent', '!', 1], routine: ['Routine', '·', 2] };
+    var dec = this.state.dec, setDec = (id, v) => { var d = Object.assign({}, this.state.dec); d[id] = v; this.setState({ dec: d }); };
+    var busQ = all.filter(function (e) { return e.to.indexOf(ROLE) >= 0 && /order/.test(e.type); }).map(function (e) { return { id: 'B-' + String(e.id).slice(-4), bed: 'Ward 3', what: e.title, pri: 'urgent', by: e.text, at: e.at, fresh: false }; });
+    var baseQ = ORD.map(function (o) { return { id: o[0], bed: o[1], what: o[2], pri: o[3] === 'stat' ? 'stat' : o[3] === 'lab' ? 'urgent' : 'routine', by: o[4], at: o[5] }; });
+    var qAll = this.state.extra.concat(busQ, baseQ).map(function (o) {
+      var st = dec[o.id] || 'pending', p = PRI[o.pri];
+      return { id: o.id, bed: o.bed, what: o.what, by: o.by, at: o.at, pri: p[0], icon: p[1], rank: (st === 'pending' ? 0 : 10) + p[2],
+        priCls: 'pri is-' + o.pri, cls: 'q' + (o.pri === 'stat' && st === 'pending' ? ' is-stat' : '') + (o.fresh ? ' is-new' : '') + (st !== 'pending' ? ' is-done' : ''),
+        pending: st === 'pending', decided: st !== 'pending', tone: st === 'accepted' ? 'success' : 'neutral', stLabel: st === 'pending' ? 'Waiting' : st === 'accepted' ? 'Accepted' : 'Rejected',
+        acceptAria: 'Accept ' + o.id + ', ' + o.what, rejectAria: 'Reject ' + o.id + ', ' + o.what,
+        accept: () => setDec(o.id, 'accepted'), reject: () => setDec(o.id, 'rejected') };
+    }).sort(function (a, b) { return a.rank - b.rank; });
+    var qOpen = qAll.filter(function (o) { return o.pending; }).length, qStat = qAll.filter(function (o) { return o.pending && o.pri === 'STAT'; }).length;
+    var given = MAR.filter(function (m, i) { return mr[i]; }).length, tDone = TASKS.filter(function (t, i) { return tk[i]; }).length;
+    var WKD = [['Vitals sets', 7 + this.state.setsSaved, 10 + this.state.setsSaved], ['Medicines', given, MAR.length], ['Tasks', tDone, TASKS.length], ['Orders actioned', qAll.length - qOpen, qAll.length]];
+    var tot = 0, dn = 0; WKD.forEach(function (w) { tot += w[2]; dn += w[1]; });
+    var wkPct = Math.round(dn / tot * 100);
+    var WK = WKD.map(function (w) { var pct = Math.round(w[1] / w[2] * 10) * 10; return { label: w[0], done: String(w[1]), total: String(w[2]), cls: 'w' + pct, aria: w[0] + ': ' + w[1] + ' done of ' + w[2] + ', ' + (w[2] - w[1]) + ' pending' }; });
+    var lq = this.state.lookup.trim().toLowerCase();
+    var LK = ORD.map(function (o) { return { id: o[0], bed: o[1], name: NAMES[o[1]] || '', what: o[2] }; });
+    var sugg = LK.filter(function (o) { return !lq || (o.id + ' ' + o.bed + ' ' + o.name).toLowerCase().indexOf(lq) >= 0; }).slice(0, 3).map((o) => ({ id: o.id, bed: o.bed, name: o.name, what: o.what, sel: this.state.pickedId === o.id ? 'true' : 'false', pick: () => this.setState({ pickedId: o.id }) }));
+    var pk = LK.filter((o) => o.id === this.state.pickedId)[0];
+    NAV[0].items[2].badge = qOpen || undefined; NAV[2].items[0].badge = 4 + busAlerts.length;
+    var picked = pk ? { on: true, id: pk.id, label: pk.bed + ' · ' + pk.name + ' — ' + pk.what } : { on: false };
+    return {
+      yes: true, no: false, n52: 52, handTo: ['Sr. Beena Thomas · evening shift', 'Sr. Mini Joseph · charge nurse', 'Br. Rejo Mathew · float'],
+      nav: NAV, section: sec, is: is, crumb: labels[sec],
+      go: (id) => this.setState({ section: id }),
+      toAlerts: go('alerts'), toAdmit: go('admit'), toVitals: go('vitals'), toMar: go('mar'), toHandover: go('handover'), toOrders: go('orders'),
+      admitOpen: this.state.admitOpen,
+      closeAdmit: () => this.setState({ admitOpen: false, left: 0 }),
+      mm: hh + ':' + p(mm) + ':' + p(ss),
+      admitBar: 'w' + Math.round(l / 7200 * 10) * 10,
+      saved: this.state.saved,
+      saveVitals: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        var n = newsScore(this.state.v), pre = VPRE[this.state.vp], esc = false;
+        if (n >= 5) { busPush({ type: 'vitals-critical', from: 'nurse', to: ['doctor'], title: 'Early-warning score ' + n + ' · ' + pre.label.split(' · ')[0], text: pre.label.split(' · ')[1] + ' · SpO₂ ' + this.state.v.spo2 + '% · RR ' + this.state.v.rr + ' · escalated by Lekha Pillai', href: 'Doctor.dc.html' }); esc = true; }
+        this.setState({ saved: true, savedAt: hhmm(), savedNews: n, setsSaved: this.state.setsSaved + 1, escalated: esc, bus: busRead() });
+      },
+      v: Object.assign({}, this.state.v, {
+        set_hr: (e) => this.setState({ v: Object.assign({}, this.state.v, { hr: e.target.value }), saved: false }),
+        set_rr: (e) => this.setState({ v: Object.assign({}, this.state.v, { rr: e.target.value }), saved: false }),
+        set_spo2: (e) => this.setState({ v: Object.assign({}, this.state.v, { spo2: e.target.value }), saved: false }),
+        set_temp: (e) => this.setState({ v: Object.assign({}, this.state.v, { temp: e.target.value }), saved: false })
+      }),
+      vPatient: VPRE[this.state.vp].label,
+      vPicks: Object.keys(VPRE).map((k) => ({ label: VPRE[k].label.split(' · ')[0], cls: this.state.vp === k ? 'pill on' : 'pill', pressed: this.state.vp === k ? 'true' : 'false', pick: () => this.setState({ vp: k, v: Object.assign({}, VPRE[k]), saved: false, escalated: false }) })),
+      news: String(news), newsCls: 'news ' + (news >= 5 ? 'hi' : news >= 3 ? 'mid' : 'lo'),
+      savedText: 'Saved ' + this.state.savedAt + ' · NEWS ' + this.state.savedNews,
+      escalated: this.state.escalated,
+      toast: this.state.toast ? { on: true, from: this.state.toast.from, title: this.state.toast.title, text: this.state.toast.text, href: this.state.toast.href || 'Nurse.dc.html' } : { on: false },
+      bellAria: 'Alerts, ' + (4 + busAlerts.length) + ' unread',
+      busAlerts: busAlerts,
+      feed: feed,
+      qTop: qAll.filter(function (o) { return o.pending; }).slice(0, 3),
+      queue: qAll, qOpen: String(qOpen), qStatHint: qStat + ' marked STAT',
+      workload: WK, wkPct: String(wkPct),
+      lookup: this.state.lookup,
+      setLookup: (e) => this.setState({ lookup: e.target.value, pickedId: null }),
+      sugg: sugg, noSugg: !!lq && sugg.length === 0,
+      picked: picked,
+      draft: this.state.draft, noDraft: !this.state.draft.trim(), n3: 3,
+      setDraft: (e) => this.setState({ draft: e.target.value }),
+      addNote: () => { var d = this.state.draft.trim(); if (!d) return; this.setState({ draft: '', notes: [{ title: 'Shift note', body: d, meta: 'Lekha Pillai · ' + hhmm(), fresh: true }].concat(this.state.notes) }); },
+      saveSbar: () => this.setState({ notes: [{ title: 'Bed 7 · Thomas Kurian · SBAR', body: 'Febrile, SpO₂ 91% on room air, NEWS 7. On 2 L O₂ now, SpO₂ 94%. Hourly obs; repeat ABG 16:00.', meta: 'Lekha Pillai · ' + hhmm(), flag: true, fresh: true }].concat(this.state.notes) }),
+      notes: this.state.notes.map(function (n) { return { title: n.title, body: n.body, meta: n.meta, cls: 'note' + (n.flag ? ' is-flag' : '') + (n.fresh ? ' in' : '') }; }),
+      noteCount: String(this.state.notes.length),
+      avpu: ['Alert', 'Responds to voice', 'Responds to pain', 'Unresponsive'],
+      pain: ['0 · none', '1–3 · mild', '4–6 · moderate', '7–10 · severe'],
+      iBed: ic('M3 18V8M3 14h18v4M21 18v-6a3 3 0 0 0-3-3h-7v5'), iUser: ic('M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6'), iPill: ic('M8.5 3.5a5 5 0 0 1 7 7l-5 5a5 5 0 0 1-7-7zM6 11l7 7'), iPulse: ic('M3 12h4l3-7l4 14l3-7h4'),
+      beds: BEDS.map(function (b) { return { n: 'Bed ' + b[0], who: b[1] || 'Ready', tag: TAG[b[2]] + (b[3] ? ' · mine' : ''), cls: 'bed ' + ({ s: 'is-occ', w: 'is-watch', c: 'is-crit', f: 'is-free' })[b[2]], aria: 'Bed ' + b[0] + ', ' + (b[1] || 'free') + ', ' + TAG[b[2]] }; }),
+      tasksLeft: TASKS.filter(function (t, i) { return !tk[i]; }).length,
+      tasks: TASKS.map(function (t, i) { return { name: t[0], sub: t[1], time: t[2], cls: tk[i] ? 'med done' : (i === 2 ? 'med late' : 'med'), tick: tk[i] ? '✓' : '', pressed: tk[i] ? 'true' : 'false', aria: (tk[i] ? 'Mark not done: ' : 'Mark done: ') + t[0], toggle: toggler('tasks', i) }; }),
+      medsLeft: String(medsLeft),
+      mar: MAR.map(function (m, i) { return { bed: m[0], drug: m[1], sub: m[2], time: m[3], cls: mr[i] ? 'med done' : (i === 3 ? 'med late' : 'med'), tick: mr[i] ? '✓' : '', pressed: mr[i] ? 'true' : 'false', aria: (mr[i] ? 'Undo given: ' : 'Mark given: ') + m[1] + ', ' + m[0], toggle: toggler('mar', i) }; }),
+      logCols: [{ key: 't', header: 'Time', mono: true }, { key: 'p', header: 'Patient' }, { key: 'w', header: 'What' }, { key: 'r', header: 'Reason' }],
+      logRows: [{ t: '10:41', p: 'Anjali Menon · Bed 3', w: 'Opened chart', r: 'Admission mode' }, { t: '10:20', p: 'Sreedevi Amma · Bed 12', w: 'Nursing note', r: 'Admission mode' }, { t: '10:02', p: 'Thomas Kurian · Bed 7', w: 'Vitals + escalation', r: 'Order O-7841' }, { t: '09:15', p: 'Abdul Rasheed · Bed 4', w: 'Dressing note', r: 'Admission mode' }],
+      ofilters: OF.map((f) => ({ label: f[1], cls: of === f[0] ? 'pill on' : 'pill', pressed: of === f[0] ? 'true' : 'false', pick: () => this.setState({ of: f[0] }) })),
+      oCols: [{ key: 'id', header: 'Order', mono: true }, { key: 'bed', header: 'Bed' }, { key: 'what', header: 'Order' }, { key: 'by', header: 'Ordered by' }, { key: 'at', header: 'At', mono: true }, { key: 'st', header: 'Status', render: function (r) { return h(C.Badge, { tone: r.k === 'stat' ? 'danger' : r.k === 'lab' ? 'info' : 'teal' }, r.st); } }],
+      oRows: ORD.filter(function (o) { return of === 'all' || o[3] === of; }).map(function (o) { return { id: o[0], bed: o[1], what: o[2], k: o[3], by: o[4], at: o[5], st: o[6] }; }),
+      logo: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } }, h('a', { href: 'StaffLogin.dc.html', 'aria-label': 'Staff Portal home', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 28 })), h(C.Badge, { tone: 'teal' }, 'Staff Portal')),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Lekha Pillai', size: 38, tone: 'sage' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Lekha Pillai'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Staff nurse · Ward 3')),
+        h('a', { href: 'StaffLogin.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+}
+</script>
+</body>
+</html>

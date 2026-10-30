@@ -86,8 +86,8 @@ function HprStep({ form, set, hpr, onVerified }: { form: Form; set: (p: Partial<
       <Notice>Healthcare Professionals Registry check (mock connector, demo only).</Notice>
       <Input
         label="HPR ID"
-        hint="DEMO-HPR-xxxx for the demo"
-        placeholder="DEMO-HPR-0001"
+        hint="DEMO-HPR-71-xxxx for the demo"
+        placeholder="DEMO-HPR-71-0001"
         autoComplete="off"
         value={form.hprId}
         onChange={(e) => { set({ hprId: e.target.value }); if (hpr) onVerified(null) }}

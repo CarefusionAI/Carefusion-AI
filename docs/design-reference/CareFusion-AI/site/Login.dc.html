@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Log in — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text);font-weight:600}a:hover{color:var(--ink-strong)}
+.otp{width:52px;height:60px;border:1px solid var(--border-strong);border-radius:14px;background:var(--surface-raised);text-align:center;font:500 24px var(--font-mono);color:var(--ink-strong)}
+.otp:focus{outline:none;border-color:var(--focus-ring);box-shadow:0 0 0 3px var(--tint-teal)}
+.fade{animation:fade 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.drift{animation:drift 14s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(12px,-14px)}}
+.demo{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1px dashed var(--border-strong);text-decoration:none;color:var(--ink);font-weight:500;font-size:14px;transition:background-color 180ms ease,border-color 180ms ease}
+.demo:hover{background:var(--surface-cream);border-color:var(--primary-text)}
+.who{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px;border-radius:18px;background:var(--surface-cream)}
+.who-o{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;border:0;border-radius:14px;background:transparent;color:var(--ink-muted);font:inherit;text-align:left;cursor:pointer;transition:background-color 220ms ease,box-shadow 220ms ease,color 220ms ease}
+.who-o strong{display:block;font-size:16px;color:inherit}
+.who-d{display:block;font-size:12px;font-weight:400}
+.who-o:hover{color:var(--ink)}
+.who-o.on{background:var(--surface-raised);color:var(--ink-strong);box-shadow:0 1px 2px rgba(83,101,120,.1),0 6px 16px rgba(83,101,120,.1)}
+.who-o:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.who-i{flex:none;width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:var(--surface);color:var(--ink-muted);transition:background-color 220ms ease,color 220ms ease}
+.who-o.on .who-i{background:var(--tint-teal);color:var(--primary-text)}
+.stage{position:relative;flex:1;min-height:300px;display:flex;align-items:center;justify-content:center}
+.mark{position:relative;z-index:2;filter:drop-shadow(0 18px 40px rgba(20,40,40,.28))}
+.cv{animation:cv 1.1s cubic-bezier(0.22,1,0.36,1) both, breatheV 6s ease-in-out 1.2s infinite;transform-box:fill-box;transform-origin:center}
+.ch{animation:ch 1.1s cubic-bezier(0.22,1,0.36,1) 120ms both, breatheH 6s ease-in-out 1.3s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes cv{from{transform:translateY(-60px);opacity:0}}
+@keyframes ch{from{transform:translateX(60px);opacity:0}}
+@keyframes breatheV{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes breatheH{0%,100%{transform:translateX(0)}50%{transform:translateX(2px)}}
+.core{animation:core 900ms ease 900ms both, pulse 3s ease-in-out 2s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes core{from{opacity:0;transform:scale(.3)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.ring{position:absolute;width:180px;height:180px;border-radius:9999px;border:1.5px solid rgba(250,245,239,.35);animation:ripple 6s ease-out infinite}
+.r2{animation-delay:2s}.r3{animation-delay:4s}
+@keyframes ripple{0%{transform:scale(.7);opacity:0}15%{opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.orbit{position:absolute;inset:0}
+.chip{position:absolute;display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-radius:16px;background:rgba(250,245,239,.14);border:1px solid rgba(250,245,239,.28);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);min-width:150px;animation:chipIn 800ms cubic-bezier(0.22,1,0.36,1) both, float 7s ease-in-out infinite}
+.chip-k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;opacity:.9}
+.chip-v{font-family:var(--font-mono);font-size:20px;letter-spacing:.12em;font-weight:500}
+.chip-s{font-size:13px}
+.c1{left:2%;top:6%;animation-delay:1s,1.8s}
+.c2{right:2%;top:14%;animation-delay:1.15s,2.6s}
+.c3{left:6%;bottom:8%;animation-delay:1.3s,3.4s}
+.c4{right:4%;bottom:4%;animation-delay:1.45s,2.2s}
+@keyframes chipIn{from{opacity:0;transform:translateY(16px) scale(.96)}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.bar{display:block;margin-top:6px;height:3px;border-radius:9999px;background:rgba(250,245,239,.25);overflow:hidden}
+.bar-in{display:block;height:100%;background:#d2b277;animation:drain 10s linear infinite;transform-origin:left}
+@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.rise{animation:rise 800ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.word{display:inline-block;color:#d7e9e6}
+.wa{animation:wa 700ms cubic-bezier(0.22,1,0.36,1) both}.wb{animation:wb 700ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes wa{from{opacity:0;transform:translateY(18px);filter:blur(6px)}}
+@keyframes wb{from{opacity:0;transform:translateY(18px);filter:blur(6px)}}
+.ecg-svg{display:block;width:100%;max-width:520px;height:60px;margin-top:22px;opacity:.7}
+.ecg{stroke-dasharray:760;stroke-dashoffset:760;animation:ecg 4s ease-in-out infinite}
+@keyframes ecg{0%{stroke-dashoffset:760}55%{stroke-dashoffset:0}100%{stroke-dashoffset:-760}}
+main .fade > *{animation:fade 600ms cubic-bezier(0.22,1,0.36,1) both}
+main .fade > *:nth-child(2){animation-delay:80ms}main .fade > *:nth-child(3){animation-delay:160ms}main .fade > *:nth-child(4){animation-delay:240ms}main .fade > *:nth-child(5){animation-delay:320ms}
+@media (prefers-reduced-motion: reduce){.fade,.drift,.cv,.ch,.core,.ring,.chip,.bar-in,.rise,.wa,.wb,.ecg,main .fade > *{animation:none}.ecg{stroke-dashoffset:0}.ring{display:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+/*cf-pfx:start*/
+.cf-panel{isolation:isolate}
+.cf-pfx{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;color:var(--primary)}
+.cf-panel-dark .cf-pfx{color:#faf5ef}
+.pfx-mark{position:absolute;right:-60px;top:50%;width:440px;height:440px;margin-top:-220px;opacity:.16;animation:pfxSpin 70s linear infinite}
+.pfx-mark rect{fill:none;stroke:currentColor;stroke-width:1.2;vector-effect:non-scaling-stroke}
+.pfx-orbit{position:absolute;right:20px;top:50%;width:360px;height:360px;margin-top:-180px;border-radius:9999px;border:1.5px dashed currentColor;opacity:.2;animation:pfxSpin 40s linear infinite reverse}
+.pfx-orbit i{position:absolute;width:12px;height:12px;border-radius:9999px;background:currentColor;top:-6px;left:50%;margin-left:-6px;opacity:.9}
+.pfx-orbit i:nth-child(2){top:auto;bottom:-6px;background:#d2b277}
+.pfx-orbit i:nth-child(3){top:50%;left:-6px;margin:-6px 0 0}
+.pfx-ring{position:absolute;right:110px;top:50%;width:180px;height:180px;margin-top:-90px;border-radius:9999px;border:1.5px solid currentColor;opacity:0;animation:pfxRipple 6s ease-out infinite}
+.pfx-ring.r2{animation-delay:2s}.pfx-ring.r3{animation-delay:4s}
+@keyframes pfxRipple{0%{transform:scale(.6);opacity:0}15%{opacity:.3}100%{transform:scale(2.4);opacity:0}}
+@keyframes pfxSpin{to{transform:rotate(360deg)}}
+.pfx-dots{position:absolute;inset:0;background-image:radial-gradient(currentColor 1px,transparent 1.5px);background-size:24px 24px;opacity:.12;-webkit-mask-image:linear-gradient(120deg,transparent 30%,#000 75%);mask-image:linear-gradient(120deg,transparent 30%,#000 75%);animation:pfxPan 30s linear infinite}
+@keyframes pfxPan{to{background-position:240px 120px}}
+@media (prefers-reduced-motion: reduce){.pfx-mark,.pfx-orbit,.pfx-ring,.pfx-dots{animation:none}.pfx-ring{display:none}}
+/*cf-pfx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-pub" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Sign-in forms are visual only in the alpha — use the demo links to enter a role.</x-import>
+
+  <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));">
+
+    <section class="cf-panel cf-panel-dark" aria-label="About CareFusion AI"             style="position: relative; overflow: hidden; background: var(--primary); color: var(--on-primary); padding: 56px clamp(32px, 5vw, 72px); display: flex; flex-direction: column; justify-content: space-between; gap: 40px; min-height: 640px;"><div class="cf-pfx" aria-hidden="true"><span class="pfx-dots"></span><span class="pfx-ring"></span><span class="pfx-ring r2"></span><span class="pfx-ring r3"></span><span class="pfx-orbit"><i></i><i></i><i></i></span><svg class="pfx-mark" viewBox="0 0 64 64"><rect x="21" y="5" width="18" height="50" rx="9"></rect><rect x="9" y="25" width="50" height="18" rx="9"></rect></svg></div>
+      <span class="drift" aria-hidden="true" style="position: absolute; width: 520px; height: 520px; border-radius: 9999px; background: #86bdb8; opacity: .35; filter: blur(90px); right: -180px; top: -160px;"></span>
+      <span class="drift" aria-hidden="true" style="position: absolute; width: 380px; height: 380px; border-radius: 9999px; background: #c9a86a; opacity: .28; filter: blur(90px); left: -120px; bottom: -120px; animation-delay: -6s;"></span>
+      <svg aria-hidden="true" viewBox="0 0 64 64" width="440" height="440" style="position: absolute; right: -90px; bottom: -110px; opacity: .1;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+
+      <a href="Main.dc.html" aria-label="CareFusion AI home" style="position: relative; display: inline-flex; align-items: center; gap: 12px; color: var(--on-primary); text-decoration: none; align-self: flex-start;">
+        <img src="assets/app-icon.svg" alt="" style="width: 44px; height: 44px;">
+        <span style="font-family: var(--font-serif); font-size: 24px; font-weight: 600;">CareFusion AI</span>
+      </a>
+
+      <div class="stage" aria-hidden="true">
+        <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+        <svg class="mark" viewBox="0 0 64 64" width="176" height="176">
+          <rect class="cv" x="21" y="5" width="18" height="50" rx="9" fill="#86bdb8"></rect>
+          <rect class="ch" x="9" y="25" width="50" height="18" rx="9" fill="#d2b277"></rect>
+          <g class="core"><rect x="21" y="25" width="18" height="18" rx="2" fill="#faf5ef" opacity=".22"></rect><circle cx="30" cy="34" r="3.4" fill="#faf5ef"></circle></g>
+        </svg>
+        <div class="orbit">
+          <div class="chip c1"><span class="chip-k">Your key</span><span class="chip-v">{{keyCode}}</span><span class="bar"><span class="bar-in"></span></span></div>
+          <div class="chip c2"><span class="chip-k">Doctor session</span><span class="chip-v">30:00</span><span class="chip-s">you can end it</span></div>
+          <div class="chip c3"><span class="chip-k">AI chat</span><span class="chip-s">guidance only</span></div>
+          <div class="chip c4"><span class="chip-k">Access log</span><span class="chip-s">every view recorded</span></div>
+        </div>
+      </div>
+
+      <div style="position: relative; max-width: 560px;">
+        <h1 class="rise" style="margin: 0 0 14px; font-family: var(--font-serif); font-size: clamp(40px, 4.4vw, 60px); line-height: 1.04; font-weight: 600; letter-spacing: -0.015em;">Your health,<br><span class="{{wordCls}}">{{word}}</span></h1>
+        <p class="rise" style="margin: 0; font-size: 18px; line-height: 29px; opacity: .95; animation-delay: 120ms;">One sign-in for your health record — or, if you're a doctor, for the consultations you give.</p>
+        <svg class="ecg-svg" viewBox="0 0 520 60" aria-hidden="true"><path class="ecg" d="M0 40 H150 L166 40 L178 18 L190 54 L204 6 L220 50 L232 40 H300 L312 30 L324 40 H520" fill="none" stroke="#faf5ef" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+    </section>
+
+    <main style="background: var(--surface-raised); padding: 56px clamp(24px, 5vw, 80px); display: flex; flex-direction: column; justify-content: center;">
+      <div style="width: 100%; max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+
+        <sc-if value="{{onCreds}}" hint-placeholder-val="{{yes}}">
+          <div class="fade" style="display: flex; flex-direction: column; gap: 22px;">
+            <div>
+              <h2 style="margin: 0 0 6px; font-size: 28px; line-height: 36px; font-weight: 600; color: var(--ink-strong);">Log in</h2>
+              <p style="margin: 0; color: var(--ink-muted);">Choose the account you want to open.</p>
+            </div>
+            <div role="radiogroup" aria-label="Account" class="who">
+              <button type="button" role="radio" aria-checked="{{userChecked}}" class="{{userCls}}" onClick="{{pickUser}}">
+                <span class="who-i" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6"></path></svg></span>
+                <span><strong>User</strong><span class="who-d">My health record</span></span>
+              </button>
+              <button type="button" role="radio" aria-checked="{{docChecked}}" class="{{docCls}}" onClick="{{pickDoctor}}">
+                <span class="who-i" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a4 4 0 0 0 8 0V3M10 13v2a5 5 0 0 0 10 0v-2M20 11a2 2 0 1 0 0-.01M6 3h2M12 3h2"></path></svg></span>
+                <span><strong>Doctor</strong><span class="who-d">Consultations</span></span>
+              </button>
+            </div>
+            <form style="display: flex; flex-direction: column; gap: 18px;" onSubmit="{{submit}}">
+              <sc-if value="{{isUser}}" hint-placeholder-val="{{yes}}">
+                <x-import component-from-global-scope="CareFusion.TextField" label="Mobile number or email" prefix="+91" placeholder="98765 43210" autocomplete="username" required="{{yes}}" helper="First time on this device? We'll send a one-time code."></x-import>
+              </sc-if>
+              <sc-if value="{{isDoctor}}" hint-placeholder-val="{{no}}">
+                <x-import component-from-global-scope="CareFusion.TextField" label="Doctor username" placeholder="e.g. dr.arun.nair" autocomplete="username" required="{{yes}}" helper="This opens your doctor account, not your own health record."></x-import>
+              </sc-if>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <x-import component-from-global-scope="CareFusion.TextField" label="Password" type="password" autocomplete="current-password" required="{{yes}}"></x-import>
+                <a href="Recovery.dc.html" style="align-self: flex-end; font-size: 13px;">Forgot password or lost phone?</a>
+              </div>
+              <x-import component-from-global-scope="CareFusion.Button" type="submit" size="lg" full-width="{{yes}}" loading="{{loading}}">{{submitLabel}}</x-import>
+            </form>
+            <sc-if value="{{isUser}}" hint-placeholder-val="{{yes}}">
+              <x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="lg" full-width="{{yes}}" icon="{{faceIcon}}">Use fingerprint or face ID</x-import>
+            </sc-if>
+            <p style="margin: 0; text-align: center; color: var(--ink-muted);">{{newPrompt}} <a href="{{registerHref}}">{{registerLabel}}</a></p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{onCode}}" hint-placeholder-val="{{no}}">
+          <div class="fade" style="display: flex; flex-direction: column; gap: 22px;">
+            <button type="button" onClick="{{back}}" class="cf-btn cf-btn-ghost cf-btn-sm" style="align-self: flex-start; padding-left: 4px;">← Back</button>
+            <div>
+              <h2 style="margin: 0 0 6px; font-size: 28px; line-height: 36px; font-weight: 600; color: var(--ink-strong);">{{codeTitle}}</h2>
+              <p style="margin: 0; color: var(--ink-muted);">{{codeText}}</p>
+            </div>
+            <fieldset style="margin: 0; padding: 0; border: 0;">
+              <legend class="cf-sr">6-digit code</legend>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input class="otp" inputmode="numeric" maxlength="1" aria-label="Digit 1" value="4">
+                <input class="otp" inputmode="numeric" maxlength="1" aria-label="Digit 2" value="8">
+                <input class="otp" inputmode="numeric" maxlength="1" aria-label="Digit 3" value="2">
+                <input class="otp" inputmode="numeric" maxlength="1" aria-label="Digit 4">
+                <input class="otp" inputmode="numeric" maxlength="1" aria-label="Digit 5">
+                <input class="otp" inputmode="numeric" maxlength="1" aria-label="Digit 6">
+              </div>
+            </fieldset>
+            <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Didn't get it? You can resend in 0:24.</p>
+            <a class="cf-btn cf-btn-primary cf-btn-lg cf-btn-full" href="{{homeHref}}">Verify and continue</a>
+          </div>
+        </sc-if>
+
+        <div style="padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px;">
+          <p style="margin: 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--ink-muted);">Demo — skip sign-in</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+            <a class="demo" href="Citizen.dc.html"><span style="font-family: var(--font-mono); font-size: 12px; color: var(--peach-text);">CIT</span>Continue as citizen</a>
+            <a class="demo" href="Doctor.dc.html"><span style="font-family: var(--font-mono); font-size: 12px; color: var(--primary-text);">DOC</span>Continue as doctor</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { role: 'user', step: 'creds', loading: false, w: 0, key: 482913 };
+  }
+  componentDidMount() {
+    this.wt = setInterval(() => this.setState({ w: this.state.w + 1 }), 2800);
+    this.kt = setInterval(() => this.setState({ key: 100000 + Math.floor(Math.random() * 900000) }), 10000);
+  }
+  componentWillUnmount() { clearInterval(this.wt); clearInterval(this.kt); }
+  renderVals() {
+    var h = React.createElement;
+    var user = this.state.role === 'user';
+    return {
+      yes: true, no: false,
+      word: ['connected.', 'protected.', 'understood.', 'in your hands.'][this.state.w % 4],
+      wordCls: 'word ' + (this.state.w % 2 ? 'wb' : 'wa'),
+      keyCode: String(this.state.key).replace(/(\d{3})(\d{3})/, '$1 $2'),
+      userCls: user ? 'who-o on' : 'who-o', docCls: user ? 'who-o' : 'who-o on',
+      userChecked: user ? 'true' : 'false', docChecked: user ? 'false' : 'true',
+      pickUser: () => this.setState({ role: 'user' }), pickDoctor: () => this.setState({ role: 'doctor' }),
+      isUser: user, isDoctor: !user,
+      onCreds: this.state.step === 'creds',
+      onCode: this.state.step === 'code',
+      loading: this.state.loading,
+      submitLabel: this.state.loading ? 'Checking' : 'Log in',
+      newPrompt: user ? 'New to CareFusion AI?' : 'Not registered as a doctor yet?',
+      registerHref: user ? 'RegisterCitizen.dc.html' : 'RegisterDoctor.dc.html',
+      registerLabel: user ? 'Create new user' : 'Register as doctor',
+      codeTitle: user ? 'Enter the code we sent' : 'Two-step verification',
+      codeText: user ? 'A 6-digit code went to +91 ••••• 43210. After this you can switch to fingerprint or face ID.' : 'Enter the 6-digit code from your authenticator app. Doctor accounts always need this step.',
+      homeHref: user ? 'Citizen.dc.html' : 'Doctor.dc.html',
+      faceIcon: h('svg', { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: 'M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 10v1M15 10v1M12 10v4h-1M9.5 16.5c1.5 1 3.5 1 5 0' })),
+      setRole: (id) => this.setState({ role: id }),
+      back: () => this.setState({ step: 'creds', loading: false }),
+      submit: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        this.setState({ loading: true });
+        setTimeout(() => this.setState({ loading: false, step: 'code' }), 900);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

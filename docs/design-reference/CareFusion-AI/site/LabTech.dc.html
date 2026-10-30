@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lab technician — Staff Portal — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px;background:rgba(243,238,232,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;min-width:42px;padding:0 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);cursor:pointer;font:inherit;font-size:14px;font-weight:600;box-sizing:border-box}
+.topbtn:hover{border-color:var(--border-strong)}
+.topbtn:focus-visible,.lk:focus-visible,.bed:focus-visible,.chk:focus-visible,.pill:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.dotr{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:9999px;background:var(--danger)}
+.pg{padding:28px 40px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px}
+.h1{margin:0;font-family:var(--font-serif);font-size:30px;line-height:38px;font-weight:600;color:var(--ink-strong)}
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))}
+.g21{grid-template-columns:minmax(0,2fr) minmax(280px,1fr)}
+@media (max-width:1100px){.g21{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:20px 22px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:12px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.muted{color:var(--ink-muted);font-size:13px}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.beds{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.bed{border:1px solid var(--border);border-radius:14px;padding:10px;background:var(--surface);font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;color:var(--ink)}
+.bed b{font-size:13px}.bed span{font-size:11px;color:var(--ink-muted)}
+.bed.is-occ{background:var(--tint-teal);border-color:transparent}
+.bed.is-watch{background:var(--warning-bg);border-color:var(--warning-soft)}
+.bed.is-crit{background:var(--danger-bg);border-color:var(--danger-soft)}
+.bed.is-free{border-style:dashed}
+.med{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.med.done{background:var(--tint-sage)}
+.med.late{background:var(--warning-bg)}
+.chk{flex:none;width:28px;height:28px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--surface-raised);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-primary);font-size:14px;font-weight:700}
+.med.done .chk{background:var(--primary);border-color:var(--primary)}
+.lock{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:16px;background:var(--tint-blue)}
+.timer{font-family:var(--font-mono);font-size:34px;line-height:40px;font-weight:500;color:var(--ink-strong)}
+.tb{height:6px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.tb span{display:block;height:100%;background:var(--primary-soft);transform-origin:left;transition:transform 1s linear}
+.w100{transform:scaleX(1)}.w90{transform:scaleX(.9)}.w80{transform:scaleX(.8)}.w70{transform:scaleX(.7)}.w60{transform:scaleX(.6)}.w50{transform:scaleX(.5)}.w40{transform:scaleX(.4)}.w30{transform:scaleX(.3)}.w20{transform:scaleX(.2)}.w10{transform:scaleX(.1)}.w0{transform:scaleX(0)}
+.note{padding:14px 16px;border-radius:14px;background:var(--surface);border-left:4px solid var(--primary-soft)}
+.note.is-flag{border-left-color:var(--danger-soft)}
+.pill{border:1px solid var(--border);background:var(--surface-raised);border-radius:9999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+.pill.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.vit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);animation:live 1.8s infinite}
+@keyframes live{70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}0%{box-shadow:0 0 0 0 rgba(55,106,79,.5)}}
+.in{animation:in 500ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+.toast{position:fixed;top:84px;right:28px;z-index:40;display:flex;gap:12px;align-items:flex-start;width:min(380px,calc(100vw - 32px));padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:toastIn 420ms cubic-bezier(0.22,1,0.36,1) both}
+.toast strong{display:block;color:var(--ink);font-size:14px}
+.toast-k{flex:none;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:8px;background:var(--tint-teal);color:var(--primary-text)}
+@keyframes toastIn{from{opacity:0;transform:translateX(24px)}}
+.feed{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.feed:last-child{border-bottom:0}
+.feed-k{flex:none;min-width:64px;text-align:center;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:8px;background:var(--surface-cream);color:var(--ink-muted)}
+.feed-k.is-me{background:var(--tint-sage);color:var(--success)}
+.feed a{font-size:13px;font-weight:600}
+.q{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid transparent}
+.q.is-stat{border-color:var(--danger-soft);background:var(--danger-bg)}
+.q.is-new{animation:slideDown 520ms cubic-bezier(0.22,1,0.36,1) both}
+.q.is-done{opacity:.62}
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}}
+.pri{flex:none;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted);min-width:78px}
+.pri.is-stat{color:var(--danger)}.pri.is-urgent{color:var(--warning)}
+.qa-b{border:1px solid var(--border);background:var(--surface-raised);border-radius:10px;height:34px;padding:0 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.qa-b.ok{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.qa-b:hover{border-color:var(--border-strong)}
+.qa-b:focus-visible,.sugg button:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.wk{display:grid;grid-template-columns:120px minmax(0,1fr) 64px;align-items:center;gap:10px;font-size:13px}
+.wk-t{height:10px;border-radius:9999px;background:repeating-linear-gradient(135deg,var(--surface-cream) 0 6px,#e8dfd5 6px 12px);overflow:hidden}
+.wk-t span{display:block;height:100%;background:var(--primary-soft);transform-origin:left;transition:transform 600ms cubic-bezier(0.22,1,0.36,1)}
+.wk b{font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+.sugg{display:flex;flex-direction:column;gap:6px}
+.sugg button{display:flex;gap:10px;align-items:center;text-align:left;width:100%;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;cursor:pointer;color:var(--ink)}
+.sugg button:hover{border-color:var(--primary-soft);background:var(--surface-raised)}
+.mono{font-family:var(--font-mono);font-size:12px;color:var(--ink-muted)}
+@media (prefers-reduced-motion: reduce){.toast,.q.is-new{animation:none}.wk-t span{transition:none}}
+.wk-t span.w0{transform:scaleX(0)}.wk-t span.w10{transform:scaleX(.1)}.wk-t span.w20{transform:scaleX(.2)}.wk-t span.w30{transform:scaleX(.3)}.wk-t span.w40{transform:scaleX(.4)}.wk-t span.w50{transform:scaleX(.5)}.wk-t span.w60{transform:scaleX(.6)}.wk-t span.w70{transform:scaleX(.7)}.wk-t span.w80{transform:scaleX(.8)}.wk-t span.w90{transform:scaleX(.9)}.wk-t span.w100{transform:scaleX(1)}
+.note{padding:12px 14px;border-radius:14px;background:var(--surface);border-left:4px solid var(--primary-soft)}
+@media (prefers-reduced-motion: reduce){.live,.in{animation:none}.tb span{transition:none}}
+@media (max-width: 900px){.shell-side{position:static;height:auto;width:100%}.beds{grid-template-columns:repeat(3,1fr)}.vit{grid-template-columns:1fr}}
+.scan{position:relative;overflow:hidden;border-radius:14px;background:var(--surface);border:1px solid var(--border);padding:8px 14px}
+.beam{position:absolute;left:8px;right:8px;top:10px;height:2px;background:#9a4a46;box-shadow:0 0 10px rgba(154,74,70,.6);animation:beam 2.2s ease-in-out infinite alternate}
+@keyframes beam{to{top:72px}}
+.res{display:grid;grid-template-columns:130px 96px 80px minmax(100px,1fr) 80px 64px;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.res-n{font-weight:600;color:var(--ink);font-size:14px}
+.res-i{font:inherit;font-family:var(--font-mono);font-size:15px;padding:8px 10px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-raised);color:var(--ink-strong);width:100%;box-sizing:border-box}
+.res-i:focus-visible{outline:2px solid var(--focus-ring);outline-offset:1px}
+.rng{position:relative;height:8px;border-radius:9999px;background:var(--danger-bg)}
+.rng-ok{position:absolute;left:25%;right:25%;top:0;bottom:0;background:var(--success-soft);border-radius:9999px}
+.rng-m{position:absolute;top:-4px;width:4px;height:16px;border-radius:2px;background:var(--ink-strong);transform:translateX(-50%)}
+.rng-m.p0{left:0%}.rng-m.p10{left:10%}.rng-m.p20{left:20%}.rng-m.p30{left:30%}.rng-m.p40{left:40%}.rng-m.p50{left:50%}.rng-m.p60{left:60%}.rng-m.p70{left:70%}.rng-m.p80{left:80%}.rng-m.p90{left:90%}.rng-m.p100{left:100%}
+.flag{font-size:12px;font-weight:600;color:var(--success)}.flag.is-bad{color:var(--danger)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;padding:32px;border:2px dashed var(--border-strong);border-radius:18px;background:var(--surface);font:inherit;color:var(--ink);cursor:pointer}
+.drop.is-on{background:var(--tint-sage);border-color:var(--success-soft)}
+.drop:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.qa-i{flex:none;width:40px;height:40px;border-radius:12px;background:var(--tint-peach);color:var(--peach-text);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+@media (prefers-reduced-motion: reduce){.beam{animation:none}}
+@media (max-width:1100px){.res{grid-template-columns:1fr 1fr 1fr}}
+.kvx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}.kvx div{padding:10px 12px;border-radius:12px;background:var(--surface)}.kvx dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}.kvx dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}.kvx dd.bad{color:var(--danger)}.kvx dd.good{color:var(--success)}
+.pend{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:14px;background:var(--surface)}.pend-r{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border)}.pend-r:last-child{border-bottom:0}.pd{width:8px;height:8px;border-radius:9999px;background:var(--primary-soft);flex:none}.pd.bad{background:var(--danger)}.pd.ok{background:var(--success)}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-stf" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Staff Portal · Rahul Varghese, orders and results shown are simulated.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Lab"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div class="top">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Central Lab · Demo General Hospital <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--success); font-weight: 600;"><span class="live" aria-hidden="true"></span>Analyser online · Sysmex XN-DEMO</span>
+          <button type="button" class="topbtn" onClick="{{toCollect}}" style="background: var(--primary); border-color: var(--primary); color: var(--on-primary);">Scan sample</button>
+        </div>
+      </div>
+      <main style="flex: 1;">
+<sc-if value="{{toast.on}}" hint-placeholder-val="{{no}}"><div class="toast" role="status" aria-live="polite"><span class="toast-k">{{toast.from}}</span><div style="flex: 1; min-width: 0;"><strong>{{toast.title}}</strong><div class="muted">{{toast.text}}</div></div><a class="lk" href="{{toast.href}}">Open</a></div></sc-if>
+
+<sc-if value="{{is.home}}" hint-placeholder-val="{{yes}}">
+<div class="pg">
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px;">
+    <div><p class="muted" style="margin: 0 0 4px;">Saturday, 17 October 2026 · 10:42</p><h1 class="h1">Worklist</h1><p style="margin: 4px 0 0;">Orders sent to the Central Lab. You can open a patient only through one of these orders.</p></div>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap;" role="group" aria-label="Filter by status"><sc-for list="{{filters}}" as="f" hint-placeholder-count="5"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for></div>
+  </header>
+  <section class="grid g4 in">
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Open orders" value="38" hint="9 STAT · 29 routine" tone="blue" icon="{{iFlask}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Awaiting sample" value="12" hint="Oldest 54 min" tone="peach" icon="{{iTube}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Ready to verify" value="7" hint="Needs your sign-off" icon="{{iCheck}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="STAT turnaround" value="42" unit="min" trend="{{tatTrend}}" tone="sage" icon="{{iClock}}"></x-import>
+  </section>
+  <div class="box in">
+    <div class="bh"><h2 class="bt">Incoming orders</h2><span class="muted">{{qOpen}} waiting for you · STAT first · new orders slide in</span></div>
+    <sc-for list="{{queue}}" as="o" hint-placeholder-count="4">
+      <div class="{{o.cls}}"><span class="{{o.priCls}}"><span aria-hidden="true">{{o.icon}}</span>{{o.pri}}</span><span class="mono" style="width: 72px;">{{o.id}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{o.pt}} · {{o.tests}}</strong><div class="muted">{{o.from}} · {{o.by}}</div></div>
+        <sc-if value="{{o.pending}}" hint-placeholder-val="{{yes}}"><div style="display: flex; gap: 6px;"><button type="button" class="qa-b ok" aria-label="{{o.acceptAria}}" onClick="{{o.accept}}">Accept</button><button type="button" class="qa-b" aria-label="{{o.rejectAria}}" onClick="{{o.reject}}">Reject</button></div></sc-if>
+        <sc-if value="{{o.decided}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Badge" tone="{{o.tone}}">{{o.stLabel}}</x-import></sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div class="box in"><div class="bh"><h2 class="bt">Worklist</h2><span class="muted">Every order in the Central Lab today</span></div><x-import component-from-global-scope="CareFusion.Table" columns="{{wCols}}" rows="{{wRows}}" caption="Lab worklist" is-row-highlighted="{{isStat}}"></x-import></div>
+  <section class="grid g3 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Connected apps</h2><x-import component-from-global-scope="CareFusion.Badge" tone="teal" dot="{{yes}}">Live</x-import></div>
+      <sc-for list="{{feed}}" as="e" hint-placeholder-count="4">
+        <div class="feed"><span class="{{e.kCls}}">{{e.from}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{e.title}}</strong><div class="muted">{{e.text}}</div><a href="{{e.href}}">{{e.linkLabel}}</a></div><span class="mono">{{e.at}}</span></div>
+      </sc-for>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Workload · this shift</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">{{wkPct}}% done</x-import></div>
+      <sc-for list="{{workload}}" as="w" hint-placeholder-count="4">
+        <div class="wk"><span>{{w.label}}</span><div class="wk-t" role="img" aria-label="{{w.aria}}"><span class="{{w.cls}}"></span></div><b>{{w.done}} / {{w.total}}</b></div>
+      </sc-for>
+      <p class="muted" style="margin: 0;">Teal = done · striped = pending · 2 samples rejected (haemolysis).</p>
+      <dl class="kvx"><div><dt>Median turnaround</dt><dd class="good">42 min</dd></div><div><dt>STAT waiting</dt><dd class="bad">1 · Bed 7 ABG</dd></div><div><dt>Analysers up</dt><dd>4 of 4</dd></div><div><dt>Next QC run</dt><dd>14:00</dd></div></dl>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Find an order</h2><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Order-scoped</x-import></div>
+      <x-import component-from-global-scope="CareFusion.TextField" label="Order ID or patient on an order" placeholder="e.g. LO-55120 or Anjali" value="{{lookup}}" on-change="{{setLookup}}" helper="Searches only orders sent to the Central Lab."></x-import>
+      <div class="sugg" role="listbox" aria-label="Matching orders">
+        <sc-for list="{{sugg}}" as="g" hint-placeholder-count="3">
+          <button type="button" role="option" aria-selected="{{g.sel}}" onClick="{{g.pick}}"><span class="mono">{{g.id}}</span><span style="flex: 1; min-width: 0;"><strong style="font-size: 14px;">{{g.pt}}</strong><span class="muted" style="display: block;">{{g.tests}} · {{g.st}}</span></span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{noSugg}}" hint-placeholder-val="{{no}}"><p class="muted" style="margin: 0;">No order matches. Patients without a lab order can't be looked up.</p></sc-if>
+      <sc-if value="{{picked.on}}" hint-placeholder-val="{{no}}"><div class="note"><strong style="color: var(--ink);">{{picked.label}}</strong><div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{toResults}}">Enter results</x-import><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm" on-click="{{toUpload}}">Upload report</x-import></div></div></sc-if>
+    </div>
+  </section>
+  <section class="grid g2 in">
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+    <div class="lock"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><div><strong style="color: var(--ink);">Order-scoped access.</strong> <span>No patient search. Each order shows name, age, sex and the tests asked for — nothing else from the record.</span></div></div>
+    <div class="box"><h2 class="bt">Critical values to call</h2><div class="row"><x-import component-from-global-scope="CareFusion.Badge" tone="danger">K⁺ 6.4</x-import><span style="flex: 1; font-size: 14px;">Ward 5 · Bed 2 · call Dr. Sreeja Paul</span><button type="button" class="lk" onClick="{{toResults}}">Log call</button></div><div class="row"><x-import component-from-global-scope="CareFusion.Badge" tone="danger">Glu 42</x-import><span style="flex: 1; font-size: 14px;">OP-219 · called Dr. Arun Nair 09:48</span><x-import component-from-global-scope="CareFusion.Badge" tone="success">Read back ✓</x-import></div><div class="row"><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Hb 6.9</x-import><span style="flex: 1; font-size: 14px;">Ward 2 · Bed 9 · transfusion team told</span><x-import component-from-global-scope="CareFusion.Badge" tone="success">Read back ✓</x-import></div></div>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Shift handover</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">To Anoop K. · 14:00</x-import></div>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Handover note" placeholder="e.g. Cobas c311 needs calibration before 15:00." value="{{draft}}" on-change="{{setDraft}}" rows="{{n2}}"></x-import>
+      <div><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm" on-click="{{addNote}}" disabled="{{noDraft}}">Add timestamped note</x-import></div>
+      <sc-for list="{{notes}}" as="n" hint-placeholder-count="2"><div class="{{n.cls}}"><p style="margin: 0; font-size: 14px;">{{n.body}}</p><div class="muted">{{n.meta}}</div></div></sc-for>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.collect}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Sample collection</h1><p style="margin: 4px 0 0;">Scan the order barcode, check the patient band, then label the tubes.</p></header>
+  <section class="grid g21 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Order LO-55120 · Abdul Rasheed, 52 M</h2><x-import component-from-global-scope="CareFusion.Badge" tone="info">Ward 3 · Bed 4</x-import></div>
+      <div class="scan" aria-label="Barcode scanner preview" role="img">
+        <svg viewBox="0 0 260 70" width="100%" height="70" aria-hidden="true"><g fill="#3f5263"><rect x="10" y="6" width="3" height="58"></rect><rect x="16" y="6" width="1.5" height="58"></rect><rect x="21" y="6" width="4" height="58"></rect><rect x="29" y="6" width="2" height="58"></rect><rect x="34" y="6" width="1.5" height="58"></rect><rect x="40" y="6" width="5" height="58"></rect><rect x="49" y="6" width="2" height="58"></rect><rect x="54" y="6" width="3" height="58"></rect><rect x="61" y="6" width="1.5" height="58"></rect><rect x="66" y="6" width="4" height="58"></rect><rect x="74" y="6" width="2" height="58"></rect><rect x="80" y="6" width="3" height="58"></rect><rect x="87" y="6" width="1.5" height="58"></rect><rect x="92" y="6" width="5" height="58"></rect><rect x="101" y="6" width="2" height="58"></rect><rect x="107" y="6" width="3" height="58"></rect><rect x="114" y="6" width="1.5" height="58"></rect><rect x="119" y="6" width="4" height="58"></rect><rect x="127" y="6" width="2" height="58"></rect><rect x="133" y="6" width="5" height="58"></rect><rect x="142" y="6" width="1.5" height="58"></rect><rect x="147" y="6" width="3" height="58"></rect><rect x="154" y="6" width="2" height="58"></rect><rect x="160" y="6" width="4" height="58"></rect><rect x="168" y="6" width="1.5" height="58"></rect><rect x="173" y="6" width="3" height="58"></rect><rect x="180" y="6" width="5" height="58"></rect><rect x="189" y="6" width="2" height="58"></rect><rect x="195" y="6" width="1.5" height="58"></rect><rect x="200" y="6" width="4" height="58"></rect><rect x="208" y="6" width="3" height="58"></rect><rect x="215" y="6" width="2" height="58"></rect><rect x="221" y="6" width="5" height="58"></rect><rect x="230" y="6" width="1.5" height="58"></rect><rect x="235" y="6" width="3" height="58"></rect><rect x="242" y="6" width="2" height="58"></rect><rect x="247" y="6" width="3" height="58"></rect></g></svg>
+        <span class="beam" aria-hidden="true"></span>
+      </div>
+      <p style="margin: 0; font-family: var(--font-mono); text-align: center; letter-spacing: .1em;">LO-55120-0417</p>
+      <div class="grid g3" style="gap: 10px;">
+        <sc-for list="{{tubes}}" as="t" hint-placeholder-count="3">
+          <div class="{{t.cls}}"><button type="button" class="chk" aria-pressed="{{t.pressed}}" aria-label="{{t.aria}}" onClick="{{t.toggle}}">{{t.tick}}</button><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">{{t.name}}</strong><div class="muted">{{t.sub}}</div></div></div>
+        </sc-for>
+      </div>
+      <dl class="kvx"><div><dt>Fasting</dt><dd class="good">10 h · confirmed</dd></div><div><dt>Labels printed</dt><dd>10:41 · 3 tubes</dd></div><div><dt>Collector</dt><dd>Rahul Varghese</dd></div><div><dt>Send by</dt><dd>11:30 · tube 2</dd></div></dl>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" on-click="{{toResults}}">Mark collected · 10:44</x-import><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm">Print labels</x-import><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm">Reject sample…</x-import></div>
+    </div>
+    <div class="box">
+      <h2 class="bt">Checks before collection</h2>
+      <div class="row"><span style="color: var(--success); font-weight: 700;">✓</span><span style="font-size: 14px;">Name and band ID match order</span></div>
+      <div class="row"><span style="color: var(--success); font-weight: 700;">✓</span><span style="font-size: 14px;">Fasting status: not required</span></div>
+      <div class="row"><span style="color: var(--warning); font-weight: 700;">!</span><span style="font-size: 14px;">On antibiotics since 16 Oct — note on culture</span></div>
+      <div class="row"><span style="color: var(--success); font-weight: 700;">✓</span><span style="font-size: 14px;">Consent recorded by Lekha Pillai</span></div>
+      <h2 class="bt" style="margin-top: 8px;">Queue</h2>
+      <div class="row"><span class="muted" style="width: 60px;">Bed 11</span><span style="flex: 1; font-size: 14px;">ABG · STAT</span><x-import component-from-global-scope="CareFusion.Badge" tone="danger">54 min</x-import></div>
+      <div class="row"><span class="muted" style="width: 60px;">OP-218</span><span style="flex: 1; font-size: 14px;">Lipid profile</span><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">12 min</x-import></div>
+      <div class="row"><span class="muted" style="width: 60px;">OP-221</span><span style="flex: 1; font-size: 14px;">HbA1c</span><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">6 min</x-import></div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.results}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap;"><div><h1 class="h1">Result entry</h1><p style="margin: 4px 0 0;">LO-55120 · CBC + CRP · Abdul Rasheed, 52 M · Dr. Arun Nair</p></div><x-import component-from-global-scope="CareFusion.Badge" tone="ai">Analyser values pre-filled</x-import></header>
+  <section class="grid g21 in">
+    <form class="box" onSubmit="{{release}}" aria-label="Enter results">
+      <sc-for list="{{params}}" as="p" hint-placeholder-count="7">
+        <div class="res">
+          <label class="res-n" for="{{p.id}}">{{p.name}}</label>
+          <input class="res-i" id="{{p.id}}" value="{{p.val}}" onChange="{{p.set}}" inputmode="decimal" aria-describedby="{{p.rid}}">
+          <span class="muted">{{p.unit}}</span>
+          <span class="rng" aria-hidden="true"><span class="rng-ok"></span><span class="{{p.mark}}"></span></span>
+          <span class="muted" id="{{p.rid}}">{{p.ref}}</span>
+          <span class="{{p.flagCls}}">{{p.flag}}</span>
+        </div>
+      </sc-for>
+      <x-import component-from-global-scope="CareFusion.Textarea" label="Technician comment" default-value="Sample slightly haemolysed; platelet count confirmed on smear."></x-import>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="primary" type="submit">Verify and release</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="secondary">Save draft</x-import>
+        <sc-if value="{{released}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">{{releasedText}}</x-import><a href="Doctor.dc.html" style="font-size: 13px; font-weight: 600;">Doctor app →</a><a href="CitizenDocuments.dc.html" style="font-size: 13px; font-weight: 600;">Patient documents →</a></sc-if>
+      </div>
+    </form>
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="{{abnTitle}}">Flags go to the ordering doctor. Values outside the critical limit require a phone call.</x-import>
+      <div class="box"><h2 class="bt">Delta check</h2><div class="row"><span style="flex: 1; font-size: 14px;">WBC</span><span class="muted">9.8 → 13.2 (12 Oct)</span></div><div class="row"><span style="flex: 1; font-size: 14px;">CRP</span><span class="muted">18 → 46 (12 Oct)</span></div><p class="muted" style="margin: 0;">Previous values come from this order's history only.</p></div>
+      <div class="box"><h2 class="bt">Critical value call log</h2><div class="row"><span class="muted" style="width: 44px;">10:12</span><span style="flex: 1; font-size: 14px;">K⁺ 6.4 → Dr. Sreeja Paul, read back ✓</span></div><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm">Log a call</x-import></div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.upload}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Upload a report</h1><p style="margin: 4px 0 0;">Reports attach to an order. There's no way to add a file to a patient directly.</p></header>
+  <section class="grid g21 in">
+    <div class="box">
+      <x-import component-from-global-scope="CareFusion.Select" label="Order" options="{{orderOpts}}" value="{{upOrder}}" on-change="{{setUpOrder}}" helper="Only orders assigned to the Central Lab"></x-import>
+      <button type="button" class="{{dropCls}}" onClick="{{pickFile}}" aria-label="Choose a PDF report to upload">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg>
+        <strong>{{dropTitle}}</strong><span class="muted">{{dropSub}}</span>
+      </button>
+      <div class="grid g2" style="gap: 12px;"><x-import component-from-global-scope="CareFusion.Select" label="Report type" options="{{rtypes}}"></x-import><x-import component-from-global-scope="CareFusion.TextField" label="Reported by" default-value="Rahul Varghese, DMLT"></x-import></div>
+      <x-import component-from-global-scope="CareFusion.Switch" label="Pathologist signed" description="Dr. Deepa Mohan · e-sign attached" default-checked="{{yes}}"></x-import>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{attach}}" disabled="{{noFile}}">Attach to order and notify</x-import><sc-if value="{{attached}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">{{attachedText}}</x-import></sc-if></div>
+      <dl class="kvx"><div><dt>Patient ID match</dt><dd class="good">Name · age · order ✓</dd></div><div><dt>Units check</dt><dd class="good">All in SI / conventional</dd></div><div><dt>Critical values</dt><dd class="bad">K⁺ 6.1 · called 10:12</dd></div><div><dt>Released to</dt><dd>Dr. Arun Nair · patient</dd></div></dl>
+    </div>
+    <div class="box">
+      <h2 class="bt">Recently uploaded</h2>
+      <sc-for list="{{uploads}}" as="u" hint-placeholder-count="1"><div class="row in"><span class="qa-i">PDF</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{u.title}}</strong><div class="muted">{{u.meta}} · <a href="CitizenDocuments.dc.html">patient docs →</a></div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Sent</x-import></div></sc-for>
+      <div class="row"><span class="qa-i">PDF</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Lipid profile · Anjali Menon</strong><div class="muted">LO-55098 · 09:12 · 184 KB</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Delivered</x-import></div>
+      <div class="row"><span class="qa-i">PDF</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Urine culture · Mary George</strong><div class="muted">LO-55071 · 08:40 · 96 KB</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Delivered</x-import></div>
+      <div class="row"><span class="qa-i">PDF</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Thyroid panel · OP-207</strong><div class="muted">LO-55044 · yesterday</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Awaiting e-sign</x-import></div>
+      <div class="row"><span class="qa-i">PDF</span><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Blood culture · Thomas Kurian</strong><div class="muted">LO-55030 · yesterday · 128 KB</div></div><span class="muted">Preliminary</span></div>
+      <div class="pend"><div class="pend-r"><span class="pd ok" aria-hidden="true"></span><span style="flex: 1;">Patients see released reports in their Lab folder</span></div><div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Ordering doctor gets a review task automatically</span></div><div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Reports are kept 7 years and can't be deleted</span></div></div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.qc}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Quality control</h1><p style="margin: 4px 0 0;">Daily controls must pass before patient results can be released.</p></header>
+  <section class="grid g21 in">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Levey–Jennings · Glucose control L2</h2><x-import component-from-global-scope="CareFusion.Badge" tone="success">In control</x-import></div>
+      <svg viewBox="0 0 400 160" role="img" aria-label="Glucose control values over 20 runs, all within two standard deviations" style="width: 100%; height: auto;">
+        <rect x="0" y="40" width="400" height="80" fill="#dcebe0" opacity=".6"></rect>
+        <path d="M0 20 H400M0 140 H400" stroke="#d99a96" stroke-dasharray="4 4"></path><path d="M0 80 H400" stroke="#857c74"></path>
+        <path d="M10 78 L30 70 L50 88 L70 84 L90 66 L110 74 L130 92 L150 80 L170 72 L190 96 L210 82 L230 60 L250 76 L270 86 L290 70 L310 78 L330 98 L350 84 L370 72 L390 80" fill="none" stroke="#3a726d" stroke-width="2"></path>
+        <g fill="#3a726d"><circle cx="230" cy="60" r="3.5"></circle><circle cx="330" cy="98" r="3.5"></circle><circle cx="390" cy="80" r="4"></circle></g>
+        <text x="4" y="16" font-size="10" fill="#586470">+3 SD</text><text x="4" y="154" font-size="10" fill="#586470">−3 SD</text>
+      </svg>
+      <x-import component-from-global-scope="CareFusion.Table" columns="{{qcCols}}" rows="{{qcRows}}" density="compact" caption="QC runs today"></x-import>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 18px;">
+      <x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="Potassium L1 — 1₂s warning">Repeat control before releasing electrolytes. Westgard rule triggered 07:55.</x-import>
+      <div class="box"><h2 class="bt">Instruments</h2><div class="row"><span style="flex: 1; font-size: 14px;">Sysmex XN · haematology</span><x-import component-from-global-scope="CareFusion.Badge" tone="success">OK</x-import></div><div class="row"><span style="flex: 1; font-size: 14px;">Cobas c311 · chemistry</span><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Calibrate</x-import></div><div class="row"><span style="flex: 1; font-size: 14px;">ABG analyser</span><x-import component-from-global-scope="CareFusion.Badge" tone="success">OK</x-import></div></div>
+      <div class="box"><h2 class="bt">Reagent lots</h2><div class="row"><span style="flex: 1; font-size: 14px;">HbA1c · lot 24K18</span><span class="muted">exp 30 Nov</span></div><div class="row"><span style="flex: 1; font-size: 14px;">CRP · lot 31C02</span><span class="muted">exp 12 Jan</span></div></div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<sc-if value="{{is.stats}}" hint-placeholder-val="{{no}}">
+<div class="pg">
+  <header><h1 class="h1">Turnaround</h1><p style="margin: 4px 0 0;">Order to release, last 7 days. Target: STAT under 60 min, routine under 4 h.</p></header>
+  <section class="grid g4 in">
+    <x-import component-from-global-scope="CareFusion.StatCard" label="STAT median" value="42" unit="min" hint="Target 60" tone="sage"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Routine median" value="2.6" unit="h" hint="Target 4" tone="blue"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Within target" value="94" unit="%" hint="Up from 89%"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Rejected samples" value="1.8" unit="%" hint="Mostly haemolysis" tone="peach"></x-import>
+  </section>
+  <section class="grid g2 in">
+    <div class="box">
+      <h2 class="bt">STAT minutes by day</h2>
+      <svg viewBox="0 0 320 150" role="img" aria-label="STAT turnaround by day: 51, 48, 44, 46, 40, 39, 42 minutes" style="width: 100%; height: auto;">
+        <path d="M0 30 H320" stroke="#d99a96" stroke-dasharray="4 4"></path><text x="268" y="24" font-size="10" fill="#9a4a46">60 min</text>
+        <g fill="#86bdb8"><rect x="10" y="48" width="30" height="102" rx="6"></rect><rect x="55" y="54" width="30" height="96" rx="6"></rect><rect x="100" y="62" width="30" height="88" rx="6"></rect><rect x="145" y="58" width="30" height="92" rx="6"></rect><rect x="190" y="70" width="30" height="80" rx="6"></rect><rect x="235" y="72" width="30" height="78" rx="6"></rect></g><rect x="280" y="66" width="30" height="84" rx="6" fill="#3a726d"></rect>
+      </svg>
+      <div class="muted" style="display: flex; justify-content: space-between;"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Today</span></div>
+    </div>
+    <div class="box">
+      <h2 class="bt">Slowest tests this week</h2>
+      <x-import component-from-global-scope="CareFusion.Table" columns="{{slowCols}}" rows="{{slowRows}}" density="compact" caption="Slowest tests"></x-import>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var ROLE = 'labtech';
+var APP = { 'Doctor.dc.html': 'Doctor app', 'LabTech.dc.html': 'Lab', 'Pharmacist.dc.html': 'Pharmacy', 'HospitalAdmin.dc.html': 'Hospital admin', 'CitizenAlerts.dc.html': 'Citizen alerts', 'CitizenDocuments.dc.html': 'Citizen documents', 'Nurse.dc.html': 'Nurse', 'Citizen.dc.html': 'Citizen app', 'DistrictAdmin.dc.html': 'District console' };
+var FROMAPP = { doctor: 'Doctor.dc.html', citizen: 'Citizen.dc.html', nurse: 'Nurse.dc.html', labtech: 'LabTech.dc.html', pharmacist: 'Pharmacist.dc.html', district: 'DistrictAdmin.dc.html', hospitaladmin: 'HospitalAdmin.dc.html' };
+function hhmm() { var d = new Date(); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { section: 'home', f: 'all', tubes: { 0: true }, vals: ['13.2', '11.8', '4.1', '36.2', '148', '46', '82'], released: false, file: false,
+      bus: busRead(), toast: null, dec: {}, extra: [], lookup: '', pickedId: null, draft: '', relAt: '', upOrder: 'LO-55109 · Anjali Menon · HbA1c, FBS', attached: '', uploads: [],
+      notes: [{ body: 'Cobas c311 flagged calibration at 08:10 — rerun K⁺ L1 before releasing electrolytes.', meta: 'Rahul Varghese · 09:05' }, { body: 'Blood culture LO-55071 incubating, read at 18:00.', meta: 'Rahul Varghese · 08:30' }] };
+    this.seen = {}; var self = this; busFor(ROLE).forEach(function (e) { self.seen[e.id] = 1; });
+  }
+  componentDidMount() {
+    this.poll = () => {
+      var all = busRead(), fresh = null, self = this;
+      all.filter(function (e) { return e.to.indexOf(ROLE) >= 0; }).forEach(function (e) { if (!self.seen[e.id]) { self.seen[e.id] = 1; if (!fresh) fresh = e; } });
+      var st = { bus: all };
+      if (fresh) { st.toast = fresh; clearTimeout(this.tt); this.tt = setTimeout(() => this.setState({ toast: null }), 4000); }
+      this.setState(st);
+    };
+    this.bt = setInterval(this.poll, 2000);
+    window.addEventListener('storage', this.poll);
+    this.arrive = setTimeout(() => this.setState({ extra: [{ id: 'LO-55140', pt: 'Gopi M., 61 M', tests: 'Blood glucose (random)', from: 'Ward 3 · Bed 11', by: 'Dr. Sreeja Paul', pri: 'urgent', fresh: true }].concat(this.state.extra) }), 7000);
+  }
+  componentWillUnmount() { clearInterval(this.bt); clearTimeout(this.tt); clearTimeout(this.arrive); window.removeEventListener('storage', this.poll); }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion, self = this;
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var NAV = [
+      { items: [
+        { id: 'home', label: 'Worklist', icon: ic('M6 3h12v18H6zM9 8h6M9 12h6M9 16h4'), badge: 9 },
+        { id: 'collect', label: 'Sample collection', icon: ic('M9 3h6M10 3v13a2 2 0 0 0 4 0V3M10 10h4') },
+        { id: 'results', label: 'Result entry', icon: ic('M4 4h16v16H4zM8 9h8M8 13h5M8 17h3') },
+        { id: 'upload', label: 'Upload report', icon: ic('M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3') }
+      ] },
+      { title: 'Quality', items: [
+        { id: 'qc', label: 'QC log', icon: ic('M4 19h16M6 15l4-4l3 3l5-6') },
+        { id: 'stats', label: 'Turnaround', icon: ic('M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18zM12 7v5l3 2') }
+      ] }
+    ];
+    var labels = {}; NAV.forEach(function (g) { g.items.forEach(function (i) { labels[i.id] = i.label; }); });
+    var sec = this.state.section, is = {}; Object.keys(labels).forEach(function (k) { is[k] = k === sec; });
+    var go = (id) => () => this.setState({ section: id });
+    var FL = [['all', 'All'], ['stat', 'STAT'], ['wait', 'Awaiting sample'], ['run', 'Running'], ['verify', 'To verify']];
+    var W = [
+      ['LO-55131', 'Thomas Kurian, 68 M', 'ABG', 'Ward 3 · Bed 11', 'stat', 'wait', 'Awaiting sample', '54 min'],
+      ['LO-55120', 'Abdul Rasheed, 52 M', 'CBC, CRP', 'Ward 3 · Bed 4', 'stat', 'verify', 'To verify', '38 min'],
+      ['LO-55118', 'Sreedevi Amma, 74 F', 'Electrolytes', 'Ward 3 · Bed 12', 'stat', 'run', 'Running', '22 min'],
+      ['LO-55109', 'Anjali Menon, 34 F', 'HbA1c, FBS', 'Ward 3 · Bed 3', 'routine', 'run', 'Running', '1 h 10'],
+      ['LO-55102', 'OP-218 · Joseph P., 45 M', 'Lipid profile', 'OP', 'routine', 'wait', 'Awaiting sample', '12 min'],
+      ['LO-55097', 'Mary George, 59 F', 'LFT', 'Ward 3 · Bed 8', 'routine', 'verify', 'To verify', '1 h 42'],
+      ['LO-55090', 'OP-207 · Nisha R., 29 F', 'TSH, T4', 'OP', 'routine', 'verify', 'To verify', '2 h 05']
+    ];
+    var f = this.state.f;
+    var TUBES = [['EDTA · lavender', 'CBC · 3 mL'], ['Plain · red', 'CRP · 4 mL'], ['Blood culture', 'Aerobic bottle']];
+    var tb = this.state.tubes;
+    var P = [['WBC', '×10³/µL', 4, 11, '4.0–11.0'], ['Haemoglobin', 'g/dL', 12, 16, '12–16'], ['RBC', '×10⁶/µL', 4.2, 5.4, '4.2–5.4'], ['Haematocrit', '%', 36, 46, '36–46'], ['Platelets', '×10³/µL', 150, 410, '150–410'], ['CRP', 'mg/L', 0, 10, '< 10'], ['Neutrophils', '%', 40, 75, '40–75']];
+    var all = this.state.bus, dec = this.state.dec;
+    var setDec = (id, v) => { var d = Object.assign({}, this.state.dec); d[id] = v; this.setState({ dec: d }); };
+    var feed = all.filter(function (e) { return e.to.indexOf(ROLE) >= 0 || e.from === ROLE; }).slice(0, 5).map(function (e) { var lh = (!e.href || e.href === 'LabTech.dc.html') ? (FROMAPP[e.from] || '#') : e.href; return { from: e.from === ROLE ? 'You' : e.from, kCls: 'feed-k' + (e.from === ROLE ? ' is-me' : ''), title: e.title, text: e.text, at: e.at, href: lh, linkLabel: 'Open ' + (APP[lh] || 'app') + ' →' }; });
+    var PRI = { stat: ['STAT', '‼', 0], urgent: ['Urgent', '!', 1], routine: ['Routine', '·', 2] };
+    var busQ = all.filter(function (e) { return e.to.indexOf(ROLE) >= 0 && /order/.test(e.type); }).map(function (e) { var hs = 0; String(e.id).split('').forEach(function (c) { hs += c.charCodeAt(0); }); return { id: 'LO-' + (55132 + hs % 7), pt: e.text.split(' · ')[0], tests: e.title.replace(/^Lab order · /, ''), from: 'Doctor app', by: e.text.split(' · ').slice(-1)[0] + ' · ' + e.at, pri: /stat/i.test(e.text) ? 'stat' : 'routine', fresh: false }; });
+    var baseQ = W.map(function (w) { return { id: w[0], pt: w[1], tests: w[2], from: w[3], by: w[6] + ' · waiting ' + w[7], pri: w[4], k: w[5] }; });
+    var queue = this.state.extra.concat(busQ, baseQ).map(function (o) {
+      var st = dec[o.id] || (o.k && o.k !== 'wait' ? 'skip' : 'pending'), p = PRI[o.pri];
+      return { id: o.id, pt: o.pt, tests: o.tests, from: o.from, by: o.by, pri: p[0], icon: p[1], rank: (st === 'pending' ? 0 : st === 'done' ? 20 : 10) + p[2],
+        priCls: 'pri is-' + o.pri, cls: 'q' + (o.pri === 'stat' && st === 'pending' ? ' is-stat' : '') + (o.fresh ? ' is-new' : '') + (st !== 'pending' ? ' is-done' : ''),
+        pending: st === 'pending', decided: st !== 'pending', tone: st === 'done' ? 'success' : st === 'accepted' ? 'info' : 'neutral', stLabel: st === 'skip' ? 'skip' : st === 'done' ? 'Released' : st === 'accepted' ? 'Accepted · collect sample' : 'Rejected · sent back',
+        acceptAria: 'Accept ' + o.id + ', ' + o.tests, rejectAria: 'Reject ' + o.id + ', ' + o.tests,
+        accept: () => setDec(o.id, 'accepted'), reject: () => setDec(o.id, 'rejected') };
+    }).filter(function (o, i, arr) { return o.stLabel !== 'skip'; }).sort(function (a, b) { return a.rank - b.rank; });
+    var qOpen = queue.filter(function (o) { return o.pending; }).length;
+    var rel = Object.keys(dec).filter(function (k) { return dec[k] === 'done'; }).length;
+    var tubesDone = Object.keys(this.state.tubes).filter((k) => this.state.tubes[k]).length;
+    var WKD = [['Samples collected', 18 + tubesDone, 24], ['Results released', 64 + rel, 72], ['Queue actioned', queue.length - qOpen, queue.length], ['QC runs passed', 3, 4]];
+    var tot = 0, dn = 0; WKD.forEach(function (w) { tot += w[2]; dn += w[1]; });
+    var lq = this.state.lookup.trim().toLowerCase();
+    var sugg = W.filter(function (w) { return !lq || (w[0] + ' ' + w[1]).toLowerCase().indexOf(lq) >= 0; }).slice(0, 3).map((w) => ({ id: w[0], pt: w[1], tests: w[2], st: dec[w[0]] === 'done' ? 'Released' : w[6], sel: this.state.pickedId === w[0] ? 'true' : 'false', pick: () => this.setState({ pickedId: w[0] }) }));
+    var pk = W.filter((w) => w[0] === this.state.pickedId)[0];
+    var pushResult = (oid, pt, tests, extraText) => {
+      busPush({ type: 'lab-result', from: 'labtech', to: ['doctor', 'citizen'], title: 'Result ready · ' + tests, text: pt.split(',')[0] + ' · ' + oid + ' · ' + extraText + ' · uploaded by Rahul Varghese', href: 'CitizenDocuments.dc.html' });
+      var d = Object.assign({}, this.state.dec); d[oid] = 'done'; return d;
+    };
+    NAV[0].items[0].badge = qOpen || undefined;
+    var vals = this.state.vals, abn = 0;
+    var params = P.map(function (p, i) {
+      var v = parseFloat(vals[i]), lo = p[2], hi = p[3], flag = '', pos = 50;
+      if (!isNaN(v)) { if (v > hi) { flag = 'High'; abn++; } else if (v < lo) { flag = 'Low'; abn++; } var span = hi - lo; pos = Math.max(0, Math.min(100, ((v - lo) / span) * 50 + 25)); }
+      return { id: 'r' + i, rid: 'rr' + i, name: p[0], unit: p[1], ref: p[4], val: vals[i], flag: flag || 'Normal', flagCls: flag ? 'flag is-bad' : 'flag', mark: 'rng-m p' + Math.round(pos / 10) * 10,
+        set: function (e) { var nv = self.state.vals.slice(); nv[i] = e.target.value; self.setState({ vals: nv }); } };
+    });
+    return {
+      yes: true, no: false,
+      nav: NAV, section: sec, is: is, crumb: labels[sec],
+      go: (id) => this.setState({ section: id }),
+      toCollect: go('collect'), toResults: go('results'),
+      filters: FL.map((x) => ({ label: x[1], cls: f === x[0] ? 'pill on' : 'pill', pressed: f === x[0] ? 'true' : 'false', pick: () => this.setState({ f: x[0] }) })),
+      tatTrend: { direction: 'up', text: '6 min faster than last week' },
+      iFlask: ic('M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3'), iTube: ic('M9 3h6M10 3v13a2 2 0 0 0 4 0V3'), iCheck: ic('M5 12l5 5l9-10'), iClock: ic('M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18zM12 7v5l3 2'),
+      isStat: function (r) { return r.pri === 'stat'; },
+      wCols: [{ key: 'id', header: 'Order', mono: true }, { key: 'pt', header: 'Patient' }, { key: 'tests', header: 'Tests' }, { key: 'from', header: 'From' }, { key: 'pri', header: 'Priority', render: function (r) { return h(C.Badge, { tone: r.pri === 'stat' ? 'danger' : 'neutral' }, r.pri === 'stat' ? 'STAT' : 'Routine'); } }, { key: 'st', header: 'Status', render: function (r) { return h(C.Badge, { tone: r.k === 'done' ? 'success' : r.k === 'verify' ? 'ai' : r.k === 'run' ? 'info' : 'warning' }, r.st); } }, { key: 'age', header: 'Waiting', align: 'right' }],
+      wRows: W.filter(function (w) { return f === 'all' || (f === 'stat' ? w[4] === 'stat' : w[5] === f); }).map(function (w) { var done = dec[w[0]] === 'done'; return { id: w[0], pt: w[1], tests: w[2], from: w[3], pri: w[4], k: done ? 'done' : w[5], st: done ? 'Released' : w[6], age: w[7] }; }),
+      tubes: TUBES.map(function (t, i) { return { name: t[0], sub: t[1], cls: tb[i] ? 'med done' : 'med', tick: tb[i] ? '✓' : '', pressed: tb[i] ? 'true' : 'false', aria: (tb[i] ? 'Undo collected: ' : 'Mark collected: ') + t[0], toggle: function () { var n = Object.assign({}, self.state.tubes); n[i] = !n[i]; self.setState({ tubes: n }); } }; }),
+      params: params,
+      abnTitle: abn + ' value' + (abn === 1 ? '' : 's') + ' outside range',
+      released: this.state.released,
+      release: (e) => { if (e && e.preventDefault) e.preventDefault(); var d = pushResult('LO-55120', 'Abdul Rasheed, 52 M', 'CBC, CRP', abn + ' flagged'); this.setState({ released: true, relAt: hhmm(), dec: d, bus: busRead() }); },
+      releasedText: 'Released ' + this.state.relAt + ' · doctor and patient notified',
+      upOrder: this.state.upOrder, setUpOrder: (v) => this.setState({ upOrder: v, attached: '' }),
+      noFile: !this.state.file,
+      attach: () => { var parts = this.state.upOrder.split(' · '); var d = pushResult(parts[0], parts[1], parts[2], 'PDF report'); this.setState({ dec: d, attached: parts[0], bus: busRead(), file: false, uploads: [{ title: parts[2] + ' · ' + parts[1], meta: parts[0] + ' · ' + hhmm() + ' · 212 KB' }].concat(this.state.uploads) }); },
+      attached: !!this.state.attached, attachedText: 'Attached to ' + this.state.attached + ' · order closed',
+      uploads: this.state.uploads,
+      toast: this.state.toast ? { on: true, from: this.state.toast.from, title: this.state.toast.title, text: this.state.toast.text, href: this.state.toast.href || 'LabTech.dc.html' } : { on: false },
+      queue: queue, qOpen: String(qOpen), feed: feed,
+      workload: WKD.map(function (w) { var pct = Math.round(w[1] / w[2] * 10) * 10; return { label: w[0], done: String(w[1]), total: String(w[2]), cls: 'w' + pct, aria: w[0] + ': ' + w[1] + ' done of ' + w[2] + ', ' + (w[2] - w[1]) + ' pending' }; }),
+      wkPct: String(Math.round(dn / tot * 100)),
+      lookup: this.state.lookup, setLookup: (e) => this.setState({ lookup: e.target.value, pickedId: null }),
+      sugg: sugg, noSugg: !!lq && sugg.length === 0,
+      picked: pk ? { on: true, label: pk[0] + ' · ' + pk[1] + ' · ' + pk[2] } : { on: false },
+      toUpload: go('upload'),
+      draft: this.state.draft, noDraft: !this.state.draft.trim(), n2: 2,
+      setDraft: (e) => this.setState({ draft: e.target.value }),
+      addNote: () => { var t = this.state.draft.trim(); if (!t) return; this.setState({ draft: '', notes: [{ body: t, meta: 'Rahul Varghese · ' + hhmm(), fresh: true }].concat(this.state.notes) }); },
+      notes: this.state.notes.map(function (n) { return { body: n.body, meta: n.meta, cls: 'note' + (n.fresh ? ' in' : '') }; }),
+      orderOpts: ['LO-55120 · Abdul Rasheed · CBC, CRP', 'LO-55109 · Anjali Menon · HbA1c, FBS', 'LO-55097 · Mary George · LFT'],
+      rtypes: ['Final report', 'Interim report', 'Addendum'],
+      dropCls: this.state.file ? 'drop is-on' : 'drop',
+      dropTitle: this.state.file ? 'cbc_LO-55120.pdf · 212 KB' : 'Drop a PDF or click to choose',
+      dropSub: this.state.file ? 'Ready to attach · checked for patient ID match' : 'PDF up to 10 MB · scanned reports are OCR-checked',
+      pickFile: () => this.setState({ file: !this.state.file }),
+      qcCols: [{ key: 't', header: 'Time', mono: true }, { key: 'a', header: 'Analyte' }, { key: 'l', header: 'Level' }, { key: 'v', header: 'Value', align: 'right' }, { key: 's', header: 'Result', render: function (r) { return h(C.Badge, { tone: r.ok ? 'success' : 'warning' }, r.s); } }],
+      qcRows: [{ t: '07:40', a: 'Glucose', l: 'L2', v: '248 mg/dL', s: 'Pass', ok: true }, { t: '07:42', a: 'Haemoglobin', l: 'L1', v: '8.1 g/dL', s: 'Pass', ok: true }, { t: '07:55', a: 'Potassium', l: 'L1', v: '3.38 mmol/L', s: '1₂s warn', ok: false }, { t: '08:20', a: 'Potassium', l: 'L1', v: '3.51 mmol/L', s: 'Pass', ok: true }],
+      slowCols: [{ key: 't', header: 'Test' }, { key: 'm', header: 'Median', align: 'right' }, { key: 'c', header: 'Cause' }],
+      slowRows: [{ t: 'Blood culture', m: '48 h', c: 'Incubation' }, { t: 'HbA1c', m: '5.2 h', c: 'Batched twice daily' }, { t: 'LFT', m: '3.8 h', c: 'Analyser calibration' }, { t: 'ABG', m: '28 min', c: 'Sample transport' }],
+      logo: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } }, h('a', { href: 'StaffLogin.dc.html', 'aria-label': 'Staff Portal home', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 28 })), h(C.Badge, { tone: 'teal' }, 'Staff Portal')),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Rahul Varghese', size: 38, tone: 'blue' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Rahul Varghese'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Lab technician · Central Lab')),
+        h('a', { href: 'StaffLogin.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+}
+</script>
+</body>
+</html>

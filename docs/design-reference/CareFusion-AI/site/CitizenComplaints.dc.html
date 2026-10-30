@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Complaints — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.eyb{margin:0 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--accent-text)}
+.ttl{margin:0;font-family:var(--font-serif);font-size:34px;line-height:40px;font-weight:600;color:var(--ink-strong)}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.muted{color:var(--ink-muted);font-size:13px}
+.lay{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.drop{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:14px;border:1.5px dashed var(--border-strong);background:var(--surface);cursor:pointer;font:inherit;text-align:left;color:var(--ink);width:100%;box-sizing:border-box}
+.drop:hover{background:var(--surface-cream)}
+.drop:focus-visible,.cm:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.file{display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--tint-blue);font-size:13px}
+.trk{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:8px 0 4px}
+.trk-line{position:absolute;left:16.6%;right:16.6%;top:17px;height:4px;border-radius:9999px;background:var(--surface-cream);overflow:hidden}
+.trk-fill{display:block;height:100%;background:var(--primary);transform-origin:left;transition:transform 900ms cubic-bezier(0.22,1,0.36,1)}
+.p0{transform:scaleX(0)}.p1{transform:scaleX(.5)}.p2{transform:scaleX(1)}
+.tk{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.tk-d{width:38px;height:38px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;background:var(--surface-raised);border:2px solid var(--border);font-weight:700;color:var(--ink-muted);transition:background-color 400ms ease,border-color 400ms ease}
+.tk.on .tk-d{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.tk.now .tk-d{background:#f6e9cf;border-color:#e7c58e;color:#7e5820;box-shadow:0 0 0 6px rgba(231,197,142,.25)}
+.tk b{font-size:14px;color:var(--ink)}.tk span{font-size:12px;color:var(--ink-muted)}
+.cm{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;border:1px solid var(--border);background:var(--surface-raised);font:inherit;text-align:left;color:inherit;cursor:pointer;width:100%;transition:border-color 180ms ease,box-shadow 180ms ease}
+.cm:hover{border-color:var(--primary-soft)}
+.cm.on{border-color:var(--primary);box-shadow:0 0 0 3px rgba(134,189,184,.25)}
+.cm-i{flex:none;width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:600}
+.tl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.tl li{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:start;font-size:14px}
+.tl .d{width:10px;height:10px;margin-top:5px;border-radius:9999px;background:var(--primary-soft)}
+.success{display:flex;gap:14px;align-items:center;padding:16px;border-radius:16px;background:var(--success-bg);color:var(--success)}
+.tick{flex:none;width:44px;height:44px;border-radius:9999px;background:var(--success);display:inline-flex;align-items:center;justify-content:center;animation:pop 500ms cubic-bezier(0.34,1.56,0.64,1) both}
+.tick path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw 500ms ease 200ms forwards}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media (max-width: 1000px){.lay{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){.in,.tick,.tick path{animation:none}.tick path{stroke-dashoffset:0}.trk-fill,.tk-d{transition:none}}
+.esc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.esc-h{grid-column:1/-1;margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.esc-r{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:18px;color:var(--ink-body)}
+.esc-r strong{color:var(--ink)}
+.esc-n{flex:none;width:24px;height:24px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:var(--tint-teal);color:var(--primary-text);font-weight:600;font-size:12px}
+@media (max-width:700px){.esc{grid-template-columns:1fr}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <header class="in" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px;">
+    <div><p class="eyb">Your voice</p><h1 class="ttl">Complaints</h1><p style="margin: 4px 0 0;">Tell us what went wrong. The hospital admin answers within 7 days; the district health office sees every complaint.</p></div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <x-import component-from-global-scope="CareFusion.Badge" tone="warning" dot="{{yes}}">{{openCount}} open</x-import>
+      <x-import component-from-global-scope="CareFusion.Badge" tone="outline">Helpline 1800-000-0000 (demo)</x-import>
+    </div>
+  </header>
+
+  <div class="lay in" style="animation-delay: 60ms;">
+    <section class="box" aria-labelledby="new-c">
+      <div class="bh"><h2 class="bt" id="new-c">File a complaint</h2><span class="muted">Takes about 2 minutes</span></div>
+      <form onSubmit="{{submit}}" style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="two">
+          <x-import component-from-global-scope="CareFusion.Select" label="What is it about?" options="{{cats}}" value="{{cat}}" on-change="{{setCat}}" required="{{yes}}"></x-import>
+          <x-import component-from-global-scope="CareFusion.Select" label="Where" options="{{places}}" value="{{place}}" on-change="{{setPlace}}" required="{{yes}}"></x-import>
+        </div>
+        <div class="two">
+          <x-import component-from-global-scope="CareFusion.TextField" label="Date of visit" type="date" default-value="2026-10-17"></x-import>
+          <x-import component-from-global-scope="CareFusion.Select" label="How serious?" options="{{levels}}" value="{{level}}" on-change="{{setLevel}}"></x-import>
+        </div>
+        <x-import component-from-global-scope="CareFusion.Textarea" label="What happened" placeholder="Describe what happened, when, and who was involved if you know." value="{{text}}" on-change="{{setText}}" rows="{{n5}}" required="{{yes}}" helper="{{textHelp}}" error="{{textErr}}"></x-import>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span class="cf-field-label">Attach proof <span class="cf-opt">(optional)</span></span>
+          <button type="button" class="drop" onClick="{{attach}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12l-8.5 8.5a5 5 0 0 1-7-7L14 5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 8"></path></svg><span><strong style="display: block; font-size: 14px;">Add a photo, bill or token slip</strong><span class="muted">JPG, PNG or PDF · up to 5 MB</span></span></button>
+          <sc-for list="{{files}}" as="f" hint-placeholder-count="1"><div class="file"><span aria-hidden="true">📎</span><span style="flex: 1;">{{f.name}}</span><span class="muted">{{f.size}}</span></div></sc-for>
+        </div>
+        <x-import component-from-global-scope="CareFusion.Checkbox" label="The hospital may call me about this" description="+91 ••••• 43210 · 09:00–18:00" default-checked="{{yes}}"></x-import>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <x-import component-from-global-scope="CareFusion.Button" type="submit" size="lg" loading="{{sending}}">Submit complaint</x-import>
+          <span class="muted">Sent to the hospital admin and the district health office.</span>
+        </div>
+        <div aria-live="polite">
+          <sc-if value="{{done}}" hint-placeholder-val="{{no}}">
+            <div class="success"><span class="tick" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"></path></svg></span><div><strong style="display: block;">Complaint {{lastRef}} filed</strong><span style="font-size: 13px;">Dr. Meera Krishnan (hospital admin) and the Pathanamthitta district office were notified at {{lastAt}}. <a href="HospitalAdmin.dc.html">See it in the admin console →</a></span></div></div>
+          </sc-if>
+        </div>
+      </form>
+      <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <span class="cf-field-label">What happens next</span>
+        <ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; font-size: 13px;">
+          <li style="padding: 10px 12px; border-radius: 12px; background: var(--surface);"><strong style="display: block; color: var(--ink);">Within 24 h</strong>Hospital admin acknowledges</li>
+          <li style="padding: 10px 12px; border-radius: 12px; background: var(--surface);"><strong style="display: block; color: var(--ink);">Within 7 days</strong>Reply with what was done</li>
+          <li style="padding: 10px 12px; border-radius: 12px; background: var(--surface);"><strong style="display: block; color: var(--ink);">Day 8</strong>Escalates to district if open</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="box" aria-labelledby="trk-t">
+      <div class="bh"><h2 class="bt" id="trk-t">Track {{sel.ref}}</h2><x-import component-from-global-scope="CareFusion.Badge" tone="{{sel.tone}}">{{sel.status}}</x-import></div>
+      <p style="margin: 0; font-size: 14px;"><strong style="color: var(--ink);">{{sel.title}}</strong> · {{sel.place}}</p>
+      <div class="trk" role="img" aria-label="{{sel.aria}}">
+        <span class="trk-line"><span class="{{sel.fill}}"></span></span>
+        <sc-for list="{{sel.steps}}" as="s" hint-placeholder-count="3"><div class="{{s.cls}}"><span class="tk-d">{{s.mark}}</span><b>{{s.label}}</b><span>{{s.when}}</span></div></sc-for>
+      </div>
+      <ol class="tl" aria-label="Updates">
+        <sc-for list="{{sel.log}}" as="l" hint-placeholder-count="3"><li><span class="d" aria-hidden="true"></span><span><strong style="color: var(--ink);">{{l.who}}</strong> — {{l.what}}</span><span class="muted">{{l.at}}</span></li></sc-for>
+      </ol>
+      <div class="esc" aria-label="Who handles it">
+        <p class="esc-h">Who handles it</p>
+        <div class="esc-r"><span class="esc-n">1</span><span><strong>Hospital admin</strong><br>Replies within 2 days</span></div>
+        <div class="esc-r"><span class="esc-n">2</span><span><strong>District health office</strong><br>Sees every complaint · steps in after 7 days</span></div>
+        <div class="esc-r"><span class="esc-n">3</span><span><strong>State grievance cell</strong><br>If you're still not satisfied</span></div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm" on-click="{{advance}}">{{advLabel}}</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm" on-click="{{toMessages}}">Message the hospital</x-import>
+      </div>
+      <p class="muted" style="margin: 0;">Not happy with the answer? You can escalate to the State grievance cell after 7 days.</p>
+    </section>
+  </div>
+
+  <section class="box in" style="animation-delay: 120ms;" aria-labelledby="past-c">
+    <div class="bh"><h2 class="bt" id="past-c">Your complaints</h2><span class="muted">Select one to track it</span></div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px;">
+      <sc-for list="{{past}}" as="c" hint-placeholder-count="4">
+        <button type="button" class="{{c.cls}}" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}"><span class="{{c.icls}}">{{c.ref4}}</span><span style="flex: 1; min-width: 0;"><strong style="display: block; color: var(--ink); font-size: 14px;">{{c.title}}</strong><span class="muted">{{c.place}} · {{c.date}}</span></span><x-import component-from-global-scope="CareFusion.Badge" tone="{{c.tone}}">{{c.status}}</x-import></button>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":1460}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var CF_FROM = { citizen: 'Citizen', doctor: 'Doctor', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacist', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District', state: 'State', zonal: 'Zonal', central: 'Central' };
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { cat: 'Long waiting time', place: 'Demo General Hospital, Pathanamthitta', level: 'Normal', text: '', files: [], sending: false, done: false, lastRef: '', lastAt: '', sel: 0, tried: false,
+      list: [
+        { ref: 'CMP-0412', title: 'Long OP wait', place: 'Demo General Hospital', date: '14 Oct', stage: 1, log: [['You', 'Filed: waited 2 h 40 min at OP block 2', '14 Oct, 14:02'], ['Dr. Meera Krishnan', 'Reviewing OP token data for that day', '15 Oct, 10:20']] },
+        { ref: 'CMP-0377', title: 'Medicine out of stock', place: 'Demo Hospital Pharmacy', date: '28 Sep', stage: 2, log: [['You', 'Filed: Atorvastatin unavailable twice', '28 Sep, 11:40'], ['Suma Thomas', 'Stock reorder approved', '29 Sep, 09:15'], ['Suma Thomas', 'Resolved: stock now shown live in the medicine finder', '2 Oct, 16:00']] },
+        { ref: 'CMP-0301', title: 'Rude behaviour at registration', place: 'Taluk Hospital Adoor', date: '3 Sep', stage: 2, log: [['You', 'Filed', '3 Sep, 10:05'], ['Hospital admin', 'Staff counselled; apology sent', '6 Sep, 12:30']] },
+        { ref: 'CMP-0266', title: 'Lab report delayed', place: 'PHC Konni', date: '12 Aug', stage: 2, log: [['You', 'Filed', '12 Aug, 09:00'], ['Lab supervisor', 'Report uploaded; delay due to courier', '13 Aug, 15:20']] }
+      ] };
+  }
+  componentDidMount() {
+    this.bt = setInterval(() => {
+      var ups = busFor('citizen').filter(function (e) { return e.type === 'complaint-update'; });
+      if (!ups.length) return;
+      var changed = false;
+      var L = this.state.list.map(function (c) {
+        var u = ups.filter(function (e) { return (e.text + ' ' + e.title).indexOf(c.ref) >= 0; })[0];
+        if (!u || c.seen === u.id) return c;
+        changed = true;
+        var resolved = /resolv/i.test(u.title + u.text);
+        return Object.assign({}, c, { seen: u.id, stage: resolved ? 2 : Math.max(c.stage, 1), log: c.log.concat([['Hospital admin', u.text, 'Today, ' + u.at]]) });
+      });
+      if (changed) this.setState({ list: L });
+    }, 2000);
+  }
+  componentWillUnmount() { clearTimeout(this.st); clearInterval(this.bt); }
+  renderVals() {
+    var st = this.state;
+    var go = (s) => () => { if (this.props.go) this.props.go(s); };
+    var STATUS = [['Filed', 'warning'], ['Under review', 'warning'], ['Resolved', 'success']];
+    var cur = st.list[st.sel];
+    var stepWhen = [cur.log[0] ? cur.log[0][2] : '', cur.stage >= 1 && cur.log[1] ? cur.log[1][2] : 'Within 2 days', cur.stage >= 2 ? cur.log[cur.log.length - 1][2] : 'Within 7 days'];
+    var errOn = st.tried && !st.text;
+    return {
+      yes: true, no: false, n5: 5,
+      openCount: String(st.list.filter(function (c) { return c.stage < 2; }).length),
+      cats: ['Long waiting time', 'Medicine not available', 'Staff behaviour', 'Cleanliness', 'Billing or fees', 'Privacy — record opened wrongly', 'Lab or report delay', 'Other'],
+      cat: st.cat, setCat: (v) => this.setState({ cat: v }),
+      places: ['Demo General Hospital, Pathanamthitta', 'Demo Hospital Pharmacy', 'District Hospital Kozhencherry', 'PHC Konni', 'Taluk Hospital Adoor'],
+      place: st.place, setPlace: (v) => this.setState({ place: v }),
+      levels: ['Normal', 'Urgent — affecting my treatment', 'Safety concern'], level: st.level, setLevel: (v) => this.setState({ level: v }),
+      text: st.text, setText: (e) => this.setState({ text: e && e.target ? e.target.value : String(e || '') }),
+      textHelp: errOn ? undefined : (st.text.length + ' / 1000 characters · no medical details needed'),
+      textErr: errOn ? 'Please describe what happened.' : undefined,
+      files: st.files,
+      attach: () => this.setState({ files: st.files.concat([{ name: ['op-token-slip.jpg', 'pharmacy-bill.pdf', 'photo-ward.png'][st.files.length % 3], size: ['412 KB', '96 KB', '1.2 MB'][st.files.length % 3] }]) }),
+      sending: st.sending, done: st.done, lastRef: st.lastRef, lastAt: st.lastAt,
+      submit: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        if (!st.text) { this.setState({ tried: true }); return; }
+        this.setState({ sending: true, done: false });
+        this.st = setTimeout(() => {
+          var ref = 'CMP-0' + (413 + st.list.length);
+          var item = busPush({ type: 'complaint', from: 'citizen', to: ['hospitaladmin', 'district'], title: 'Complaint filed · ' + st.cat.toLowerCase(), text: st.place.split(',')[0] + ' · ticket ' + ref + (st.level !== 'Normal' ? ' · ' + st.level.split(' —')[0] : ''), href: 'HospitalAdmin.dc.html' });
+          var c = { ref: ref, title: st.cat, place: st.place.split(',')[0], date: 'Today', stage: 0, log: [['You', 'Filed: ' + st.text.slice(0, 70), 'Today, ' + item.at]] };
+          this.setState({ sending: false, done: true, lastRef: ref, lastAt: item.at, text: '', files: [], tried: false, list: [c].concat(st.list), sel: 0 });
+        }, 900);
+      },
+      sel: {
+        ref: cur.ref, title: cur.title, place: cur.place, status: STATUS[cur.stage][0], tone: STATUS[cur.stage][1],
+        fill: 'trk-fill p' + cur.stage,
+        aria: 'Status: ' + STATUS[cur.stage][0] + ', step ' + (cur.stage + 1) + ' of 3',
+        steps: STATUS.map(function (s, i) { return { label: s[0], when: stepWhen[i], mark: i < cur.stage || (i === 2 && cur.stage === 2) ? '✓' : String(i + 1), cls: i < cur.stage || (cur.stage === 2) ? 'tk on' : i === cur.stage ? 'tk now' : 'tk' }; }),
+        log: cur.log.map(function (l) { return { who: l[0], what: l[1], at: l[2] }; })
+      },
+      advLabel: cur.stage < 2 ? 'Simulate next update' : 'Reopen (demo)',
+      advance: () => {
+        var L = st.list.slice(); var c = Object.assign({}, cur); c.log = cur.log.slice();
+        if (c.stage < 2) { c.stage += 1; c.log.push(c.stage === 1 ? ['Dr. Meera Krishnan', 'Under review · assigned to OP in-charge', 'Just now'] : ['Dr. Meera Krishnan', 'Resolved · second token counter opened 07:30–10:00', 'Just now']); }
+        else { c.stage = 1; c.log.push(['You', 'Reopened: still waiting over 2 hours', 'Just now']); }
+        L[st.sel] = c; this.setState({ list: L });
+      },
+      toMessages: go('messages'),
+      past: st.list.map((c, i) => ({ ref4: c.ref.slice(-4), title: c.title, place: c.place, date: c.date, status: STATUS[c.stage][0], tone: STATUS[c.stage][1],
+        cls: i === st.sel ? 'cm on' : 'cm', pressed: i === st.sel ? 'true' : 'false', icls: 'cm-i ' + (c.stage === 2 ? 'cf-tone-sage' : 'cf-tone-peach'),
+        pick: () => this.setState({ sel: i }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

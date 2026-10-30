@@ -1,5 +1,5 @@
-import RolePage from '../components/RolePage'
+import RadiologyTechScreen from './staff/RadiologyTech'
 
 export default function RadioTechHome() {
-  return <RolePage role="RADIOLOGY_TECH" />
+  return <RadiologyTechScreen />
 }

@@ -1,0 +1,78 @@
+/* App shell (sidebar, top bar, drawer, bottom nav) and event toast.
+   Built on the tokens in tokens.css and the cf-* components in bundle.css. */
+
+.cf-skip { position: absolute; left: var(--spacer-4); top: -64px; z-index: 100; padding: var(--spacer-2) var(--spacer-4); border-radius: var(--radius-md); background: var(--primary); color: var(--on-primary); font-weight: 600; text-decoration: none; transition: top 160ms ease; }
+.cf-skip:focus { top: var(--spacer-2); }
+
+.cf-shell { --cf-head-h: 56px; display: flex; flex-direction: column; min-height: 100vh; }
+.cf-shell-head { position: sticky; top: 0; z-index: 40; }
+.cf-shell-body { display: flex; flex: 1; min-width: 0; }
+
+.cf-shell-side { position: sticky; top: var(--cf-head-h); align-self: flex-start; flex: none; width: var(--sidebar-width, 264px); height: calc(100vh - var(--cf-head-h)); overflow-y: auto; display: none; }
+.cf-shell-side .cf-sidebar { min-height: 100%; background: rgba(250, 245, 239, .92); backdrop-filter: blur(12px) saturate(1.08); -webkit-backdrop-filter: blur(12px) saturate(1.08); }
+
+.cf-shell-main-col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+
+.cf-topbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacer-3); padding: var(--spacer-2) var(--spacer-4); background: rgba(243, 238, 232, .88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.cf-topbar-left { display: flex; align-items: center; gap: var(--spacer-3); min-width: 0; }
+.cf-crumb { margin: 0; font-size: 13px; line-height: 18px; color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cf-crumb strong { color: var(--ink); font-weight: 600; }
+.cf-topbar-logo { display: inline-flex; }
+.cf-topbar-logo img { display: block; height: 28px; width: auto; }
+.cf-topbar-role { display: none; }
+
+.cf-shell-main { flex: 1; min-width: 0; padding: var(--spacer-6) var(--spacer-4) calc(var(--spacer-6) + 72px); }
+.cf-shell-content { max-width: 1200px; margin: 0 auto; }
+
+.cf-shell-bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; }
+
+.cf-side-who { display: flex; flex-direction: column; gap: var(--spacer-3); padding-top: var(--spacer-3); border-top: 1px solid var(--border); }
+.cf-side-who-id { display: flex; align-items: center; gap: var(--spacer-3); min-width: 0; }
+.cf-side-who-text { min-width: 0; }
+.cf-side-who-name { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--ink-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-side-who-role { margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+.cf-side-who-actions { display: flex; flex-direction: column; gap: var(--spacer-2); }
+
+/* Mobile drawer */
+.cf-drawer-scrim { position: fixed; inset: 0; z-index: 60; background: rgba(83, 101, 120, .28); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: cfFade 180ms ease both; }
+.cf-drawer { position: absolute; top: 0; bottom: 0; left: 0; width: min(88vw, 320px); overflow-y: auto; background: var(--surface-raised); box-shadow: var(--shadow-lift); animation: cfSlideIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both; outline: none; }
+.cf-drawer .cf-sidebar { width: 100%; border-right: 0; min-height: 100%; }
+.cf-drawer-close { position: absolute; top: var(--spacer-2); right: var(--spacer-2); z-index: 1; }
+@keyframes cfFade { from { opacity: 0; } }
+@keyframes cfSlideIn { from { transform: translateX(-24px); opacity: 0; } }
+
+@media (min-width: 768px) {
+  .cf-shell-side { display: block; }
+  .cf-topbar { padding: var(--spacer-3) var(--spacer-8); }
+  .cf-topbar-logo, .cf-menu-btn { display: none; }
+  .cf-topbar-role { display: block; }
+  .cf-shell-main { padding: var(--spacer-8) var(--spacer-8) var(--spacer-8); }
+  .cf-shell-bottom { display: none; }
+}
+@media (max-width: 767.98px) {
+  .cf-crumb { display: none; }
+  .cf-topbar-role { display: block; margin: 0; font-size: 13px; font-weight: 600; color: var(--ink); }
+}
+
+/* Event toast */
+.cf-toast { position: fixed; top: calc(var(--cf-head-h, 56px) + 16px); right: 24px; z-index: 70; width: 340px; max-width: calc(100vw - 32px); display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; background: var(--surface-raised); border: 1px solid var(--border); box-shadow: var(--shadow-lift); animation: cfToastIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.cf-toast-tag { flex: none; width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font: 600 11px var(--font-mono); }
+.cf-toast-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cf-toast-title { color: var(--ink); font-size: 14px; line-height: 20px; }
+.cf-toast-text { color: var(--ink-muted); font-size: 13px; line-height: 18px; }
+.cf-toast-link { margin-top: 6px; font-size: 13px; font-weight: 600; }
+.cf-toast-link a { color: var(--primary-text); }
+.cf-toast-close { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-muted); cursor: pointer; }
+.cf-toast-close:hover { background: var(--surface-cream); color: var(--ink); }
+.cf-toast-close:focus-visible, .cf-toast-link a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.cf-tk-blue { background: var(--tint-blue); color: var(--info); }
+.cf-tk-teal { background: var(--tint-teal); color: var(--primary-text); }
+.cf-tk-peach { background: var(--tint-peach); color: var(--peach-text); }
+.cf-tk-sage { background: var(--tint-sage); color: var(--success); }
+.cf-tk-lav { background: var(--tint-lavender); color: var(--ai); }
+.cf-tk-cream { background: var(--surface-cream); color: var(--ink); }
+@keyframes cfToastIn { from { opacity: 0; transform: translateX(24px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-toast, .cf-drawer, .cf-drawer-scrim, .cf-skip { animation: none; transition: none; }
+}

@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pharmacy — Staff Portal — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.chip-s{white-space:nowrap;flex:none;display:inline-flex;align-items:center;padding:3px 10px;border-radius:9999px;background:var(--tint-blue);color:var(--info);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px;background:rgba(243,238,232,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.pg{padding:28px 40px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px}
+.grid{display:grid;gap:20px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.gm{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)}
+@media (max-width:1100px){.gm{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.h1{margin:0;font-family:var(--font-serif);font-size:30px;line-height:38px;font-weight:600;color:var(--ink-strong)}
+.muted{color:var(--ink-muted);font-size:13px}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.q{display:flex;flex-direction:column;gap:8px}
+.qi{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--border);background:var(--surface-raised);font:inherit;color:inherit;text-align:left;cursor:pointer;transition:transform 180ms cubic-bezier(0.22,1,0.36,1),border-color 180ms ease,box-shadow 180ms ease}
+.qi:hover{transform:translateY(-1px);border-color:var(--primary-soft)}
+.qi.sel{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}
+.qi.done{opacity:.6}
+.tok{flex:none;width:46px;height:46px;border-radius:14px;background:var(--tint-teal);color:var(--primary-text);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:500;font-size:14px}
+.qi:focus-visible,.lk:focus-visible,.stp:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.rx{border-radius:20px;border:1px solid var(--border);background:var(--surface-raised);overflow:hidden;box-shadow:var(--shadow-card)}
+.rx-h{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:18px 22px;background:var(--surface-cream);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.rx-b{padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.checks{grid-template-columns:1fr}}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:14px;font-size:13px;line-height:18px}
+.ck strong{display:block;font-size:14px;color:var(--ink)}
+.ck.ok{background:var(--success-bg)}.ck.wait{background:var(--surface)}.ck.warn{background:var(--warning-bg)}.ck.bad{background:var(--danger-bg)}
+.ico{flex:none;width:24px;height:24px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.ck.ok .ico{background:var(--success);color:#fff}.ck.wait .ico{background:var(--border);color:var(--ink)}.ck.warn .ico{background:#c99a45;color:#fff}
+.spin{width:14px;height:14px;border-radius:9999px;border:2px solid var(--border-strong);border-top-color:transparent;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.it{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface)}
+.it.short{background:var(--warning-bg)}
+.stp{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:12px;background:var(--surface-raised)}
+.stp button{width:32px;height:32px;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);cursor:pointer;border-radius:10px}
+.stp button:hover{background:var(--surface-cream)}
+.stp button:focus-visible{outline:2px solid var(--focus-ring)}
+.stp span{min-width:36px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+.lvl{height:8px;border-radius:9999px;background:var(--surface-cream);overflow:hidden;width:120px}
+.lvl span{display:block;height:100%;border-radius:9999px}
+.lv-ok{background:var(--success-soft)}.lv-low{background:#e7c58e}.lv-out{background:var(--danger-soft)}
+.w5{width:5%}.w10{width:10%}.w15{width:15%}.w20{width:20%}.w30{width:30%}.w45{width:45%}.w60{width:60%}.w70{width:70%}.w80{width:80%}.w90{width:90%}
+.ex{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.days{flex:none;width:58px;text-align:center;padding:6px 0;border-radius:12px;font-weight:700;line-height:1.1}
+.days small{display:block;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.d-bad{background:var(--danger-bg);color:var(--danger)}.d-warn{background:var(--warning-bg);color:var(--warning)}.d-ok{background:var(--tint-sage);color:var(--success)}
+.in{animation:in 500ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion: reduce){.spin,.in{animation:none}.qi{transition:none}}
+@media (max-width:900px){.shell-side{position:static;height:auto;width:100%}}
+.checks{grid-template-columns:repeat(6,minmax(0,1fr))}.checks>:nth-child(-n+3){grid-column:span 2}.checks>:nth-child(n+4){grid-column:span 3}@media (max-width:900px){.checks>*{grid-column:auto!important}}
+.flag{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:3px 10px;border-radius:9999px;background:var(--danger-bg);color:var(--danger);font-size:12px;font-weight:600}
+.flag svg{flex:none}
+.sub{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--ink-body)}
+.tip{position:relative;display:inline-flex}
+.tip-b{width:22px;height:22px;border-radius:9999px;border:1px solid var(--border-strong);background:var(--surface-raised);color:var(--ink);font:600 12px var(--font-sans);cursor:help}
+.tip-b:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.tip-t{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);width:240px;padding:10px 12px;border-radius:12px;background:var(--ink-strong);color:var(--on-primary);font-size:12px;line-height:17px;font-weight:400;opacity:0;pointer-events:none;transition:opacity 160ms ease,transform 160ms ease;z-index:6;box-shadow:var(--shadow-lift)}
+.tip:hover .tip-t,.tip:focus-within .tip-t{opacity:1;transform:translateX(-50%) translateY(0)}
+.lv-low,.lv-out{animation:lowp 1.8s ease-in-out infinite}
+@keyframes lowp{0%,100%{opacity:1}50%{opacity:.45}}
+.src{display:inline-flex;margin-left:6px;padding:1px 8px;border-radius:9999px;background:var(--tint-lavender);color:var(--ai);font-size:11px;font-weight:600;vertical-align:middle}
+.feed{display:flex;flex-direction:column;gap:8px}
+.fe{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.fe-t{flex:none;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);padding-top:2px}
+.fe a{font-size:13px;font-weight:600}
+.hist{display:flex;flex-direction:column;gap:0}
+.hr{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.hr:last-child{border-bottom:0}
+.hr b{font-family:var(--font-mono);font-weight:500;color:var(--ink-muted);font-size:12px}
+.toast{position:fixed;top:76px;right:24px;z-index:40;max-width:340px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:tin 380ms cubic-bezier(0.22,1,0.36,1) both}
+.toast strong{display:block;color:var(--ink);font-size:14px}
+.toast-dot{flex:none;width:10px;height:10px;margin-top:5px;border-radius:9999px;background:var(--primary)}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}}
+.confetti{position:fixed;left:50%;top:42%;width:0;height:0;z-index:45;pointer-events:none}
+.cf{position:absolute;width:9px;height:14px;border-radius:3px;opacity:0;animation:boom 1.5s cubic-bezier(0.22,1,0.36,1) forwards}
+.cf.k0{background:#3a726d}.cf.k1{background:#d2b277}.cf.k2{background:#86bdb8}.cf.k3{background:#b7a6d4}.cf.k4{background:#d99a96}
+@keyframes boom{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(540deg)}}
+.cf.p0{--dx:-220px;--dy:-160px;animation-delay:0ms}.cf.p1{--dx:-160px;--dy:-230px;animation-delay:30ms}.cf.p2{--dx:-90px;--dy:-260px;animation-delay:60ms}.cf.p3{--dx:0px;--dy:-280px;animation-delay:90ms}.cf.p4{--dx:90px;--dy:-260px;animation-delay:120ms}.cf.p5{--dx:160px;--dy:-230px;animation-delay:0ms}.cf.p6{--dx:220px;--dy:-160px;animation-delay:30ms}.cf.p7{--dx:260px;--dy:-60px;animation-delay:60ms}.cf.p8{--dx:240px;--dy:60px;animation-delay:90ms}.cf.p9{--dx:180px;--dy:140px;animation-delay:120ms}.cf.p10{--dx:90px;--dy:190px;animation-delay:0ms}.cf.p11{--dx:0px;--dy:210px;animation-delay:30ms}.cf.p12{--dx:-90px;--dy:190px;animation-delay:60ms}.cf.p13{--dx:-180px;--dy:140px;animation-delay:90ms}.cf.p14{--dx:-240px;--dy:60px;animation-delay:120ms}.cf.p15{--dx:-260px;--dy:-60px;animation-delay:0ms}.cf.p16{--dx:-130px;--dy:-120px;animation-delay:30ms}.cf.p17{--dx:130px;--dy:-120px;animation-delay:60ms}
+@media (prefers-reduced-motion: reduce){.lv-low,.lv-out,.toast{animation:none}.confetti{display:none}.tip-t{transition:none}}
+
+.kvx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}.kvx div{padding:10px 12px;border-radius:12px;background:var(--surface)}.kvx dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}.kvx dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}.kvx dd.bad{color:var(--danger)}.kvx dd.good{color:var(--success)}
+.pendx{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:14px;background:var(--surface)}.pend-r{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border)}.pend-r:last-child{border-bottom:0}.pd{width:8px;height:8px;border-radius:9999px;background:var(--primary-soft);flex:none}.pd.bad{background:var(--danger)}.pd.ok{background:var(--success)}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-stf" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Prescriptions and patients are simulated. You only see what's on an e-signed prescription.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Staff Portal"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div class="topbar">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Pharmacy <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Counter 2 open</x-import>
+          <x-import component-from-global-scope="CareFusion.Badge" tone="outline">Demo Hospital Pharmacy · DEMO-DL-KL-2041</x-import>
+        </div>
+      </div>
+      <main style="flex: 1;">
+
+        <sc-if value="{{is.queue}}" hint-placeholder-val="{{yes}}">
+        <div class="pg in">
+          <div class="bh"><div><h1 class="h1">Dispense queue</h1><p class="muted" style="margin: 4px 0 0;">Scan the patient's prescription QR or pick from the queue.</p></div>
+            <x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{scan}}">Scan prescription QR</x-import></div>
+          <section class="grid g4">
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Waiting" value="{{waiting}}" hint="Average wait 9 min" tone="peach"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Dispensed today" value="{{doneCount}}" hint="3 partial" tone="sage"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Low stock" value="4" hint="Atorvastatin 10 mg lowest"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Expiring ≤ 30 days" value="6" hint="₹ 8,420 value" tone="blue"></x-import>
+          </section>
+          <section class="grid gm">
+            <div class="box">
+              <div class="bh"><h2 class="bt">Queue</h2><span class="muted">e-signed only</span></div>
+              <div class="q">
+                <sc-for list="{{queue}}" as="p" hint-placeholder-count="6">
+                  <button type="button" class="{{p.cls}}" onClick="{{p.open}}" aria-label="{{p.aria}}">
+                    <span class="tok">{{p.tok}}</span>
+                    <span style="flex: 1; min-width: 0;"><strong style="color: var(--ink); display: block;">{{p.patient}}<sc-if value="{{p.bus}}" hint-placeholder-val="{{no}}"><span class="src">From Doctor app</span></sc-if></strong><span class="muted">{{p.doctor}} · {{p.items}} items · {{p.time}}</span></span>
+                    <x-import component-from-global-scope="CareFusion.Badge" tone="{{p.tone}}" dot="{{yes}}">{{p.state}}</x-import>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+
+            <div class="rx" aria-label="Prescription">
+              <div class="rx-h">
+                <div><p class="muted" style="margin: 0; font-family: var(--font-mono);">{{rx.id}} · issued {{rx.issued}}</p><h2 style="margin: 2px 0 0; font-size: 20px; color: var(--ink-strong);">{{rx.patient}}</h2><p class="muted" style="margin: 2px 0 0;">{{rx.meta}}</p></div>
+                <div style="text-align: right;"><strong style="color: var(--ink);">{{rx.doctor}}</strong><div class="muted">{{rx.reg}}</div></div>
+              </div>
+              <div class="rx-b">
+                <div class="checks">
+                  <div class="{{chk.sig.cls}}"><span class="ico" aria-hidden="true">{{chk.sig.icon}}</span><span><strong>e-Signature</strong>{{chk.sig.text}}</span></div>
+                  <div class="{{chk.qr.cls}}"><span class="ico" aria-hidden="true">{{chk.qr.icon}}</span><span><strong>QR code</strong>{{chk.qr.text}}</span></div>
+                  <div class="{{chk.hpr.cls}}"><span class="ico" aria-hidden="true">{{chk.hpr.icon}}</span><span><strong>Prescriber HPR ID</strong>{{chk.hpr.text}}</span></div>
+                  <div class="{{chk.val.cls}}"><span class="ico" aria-hidden="true">{{chk.val.icon}}</span><span><strong>Validity</strong>{{chk.val.text}}</span></div>
+                  <div class="{{chk.alg.cls}}"><span class="ico" aria-hidden="true">{{chk.alg.icon}}</span><span><strong>Allergy &amp; interactions</strong>{{chk.alg.text}}</span></div>
+                </div>
+                <sc-if value="{{showSpin}}" hint-placeholder-val="{{no}}"><div style="display: flex; gap: 10px; align-items: center;" class="muted" role="status"><span class="spin" aria-hidden="true"></span>Checking with the national signature service…</div></sc-if>
+                <sc-if value="{{rx.warn}}" hint-placeholder-val="{{yes}}">
+                  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="{{rx.warnTitle}}">{{rx.warnText}}</x-import>
+                </sc-if>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{lines}}" as="l" hint-placeholder-count="3">
+                    <div class="{{l.cls}}">
+                      <div style="min-width: 0;"><strong style="color: var(--ink);">{{l.name}}</strong><div class="muted">{{l.sig}} · prescribed {{l.qty}} · in stock {{l.stock}}</div>
+                        <sc-if value="{{l.hasFlag}}" hint-placeholder-val="{{no}}"><span class="flag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 8v5M12 16.5h.01M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18z"></path></svg>{{l.flag}}</span></sc-if>
+                        <sc-if value="{{l.hasSub}}" hint-placeholder-val="{{no}}"><div class="sub"><span>Substitute: <strong style="color: var(--ink);">{{l.sub}}</strong></span><span class="tip"><button type="button" class="tip-b" aria-label="{{l.subAria}}">?</button><span class="tip-t" role="tooltip">{{l.subTip}}</span></span></div></sc-if></div>
+                      <x-import component-from-global-scope="CareFusion.Badge" tone="{{l.tone}}">{{l.tag}}</x-import>
+                      <div class="stp" role="group" aria-label="{{l.aria}}"><button type="button" aria-label="Less" onClick="{{l.dec}}">−</button><span>{{l.give}}</span><button type="button" aria-label="More" onClick="{{l.inc}}">+</button></div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                  <x-import component-from-global-scope="CareFusion.Button" variant="secondary" disabled="{{verified}}" on-click="{{verify}}">{{verifyLabel}}</x-import>
+                  <x-import component-from-global-scope="CareFusion.Button" variant="primary" disabled="{{cantDispense}}" on-click="{{dispense}}">{{dispenseLabel}}</x-import>
+                  <span class="muted" style="margin-left: auto;">{{partialNote}}</span>
+                </div>
+                <sc-if value="{{rx.done}}" hint-placeholder-val="{{no}}">
+                  <x-import component-from-global-scope="CareFusion.Alert" tone="success" title="Dispensed and logged">Patient gets an SMS with what was given. Any balance stays open on the prescription for another pharmacy.</x-import>
+                </sc-if>
+              </div>
+            </div>
+          </section>
+          <section class="grid g2">
+            <div class="box">
+              <div class="bh"><h2 class="bt">Medicine history · {{rx.patient}}</h2><x-import component-from-global-scope="CareFusion.Badge" tone="outline">Read-only</x-import></div>
+              <div class="hist">
+                <sc-for list="{{hist}}" as="x" hint-placeholder-count="4">
+                  <div class="hr"><b>{{x.d}}</b><span><strong style="color: var(--ink);">{{x.m}}</strong><span class="muted"> · {{x.by}}</span></span><x-import component-from-global-scope="CareFusion.Badge" tone="{{x.tone}}">{{x.k}}</x-import></div>
+                </sc-for>
+              </div>
+              <p class="muted" style="margin: 0;">Only medicines dispensed against e-signed prescriptions. Diagnoses and reports stay hidden from pharmacy.</p>
+              <dl class="kvx"><div><dt>Allergy</dt><dd class="bad">Penicillin</dd></div><div><dt>Adherence (refills)</dt><dd class="good">On time · 5 of 6</dd></div><div><dt>Last dispensed</dt><dd>02 Oct · this pharmacy</dd></div><div><dt>Next refill due</dt><dd>24 Oct · Metformin</dd></div></dl>
+            </div>
+            <div class="box">
+              <div class="bh"><h2 class="bt">Connected apps</h2><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Live</x-import></div>
+              <div class="feed" aria-live="polite">
+                <sc-for list="{{feed}}" as="f" hint-placeholder-count="4">
+                  <div class="fe"><span class="fe-t">{{f.at}}</span><div style="flex: 1; min-width: 0;"><x-import component-from-global-scope="CareFusion.Badge" tone="{{f.tone}}">{{f.from}}</x-import><div style="margin-top: 4px;"><strong style="color: var(--ink); font-size: 14px;">{{f.title}}</strong></div><div class="muted">{{f.text}}</div></div><a href="{{f.href}}">Open</a></div>
+                </sc-for>
+              </div>
+            </div>
+          </section>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.stock}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div class="bh"><div><h1 class="h1">Stock levels</h1><p class="muted" style="margin: 4px 0 0;">Shown to citizens as "in stock / low / out" — never the exact count.</p></div>
+            <div style="display: flex; gap: 8px;"><x-import component-from-global-scope="CareFusion.Button" variant="soft" on-click="{{noop}}">Record a delivery</x-import><x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{noop}}">Raise indent</x-import></div></div>
+          <section class="grid g4">
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Items tracked" value="412"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Low" value="4" tone="peach" hint="Below reorder level"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Out" value="1" hint="Amoxicillin 250 mg syrup"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Indent pending" value="2" tone="blue" hint="From district store"></x-import>
+          </section>
+          <div class="box"><x-import component-from-global-scope="CareFusion.Table" columns="{{stCols}}" rows="{{stRows}}" caption="Stock levels" is-row-highlighted="{{isLow}}"></x-import></div>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.expiry}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div><h1 class="h1">Expiry watch</h1><p class="muted" style="margin: 4px 0 0;">Batches expiring in the next 90 days. Pull expired stock from the shelf today.</p></div>
+          <section class="grid g2">
+            <div class="box"><div class="bh"><h2 class="bt">Next 30 days</h2><x-import component-from-global-scope="CareFusion.Badge" tone="danger">6 batches</x-import></div>
+              <sc-for list="{{exSoon}}" as="e" hint-placeholder-count="4"><div class="ex"><span class="{{e.cls}}">{{e.d}}<small>days</small></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">{{e.name}}</strong><div class="muted">Batch {{e.batch}} · {{e.qty}} · expires {{e.date}}</div></div><button type="button" class="lk" onClick="{{noop}}">{{e.act}}</button></div></sc-for>
+            </div>
+            <div class="box"><div class="bh"><h2 class="bt">31–90 days</h2><x-import component-from-global-scope="CareFusion.Badge" tone="warning">5 batches</x-import></div>
+              <sc-for list="{{exLater}}" as="e" hint-placeholder-count="4"><div class="ex"><span class="{{e.cls}}">{{e.d}}<small>days</small></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">{{e.name}}</strong><div class="muted">Batch {{e.batch}} · {{e.qty}} · expires {{e.date}}</div></div><button type="button" class="lk" onClick="{{noop}}">{{e.act}}</button></div></sc-for>
+            </div>
+          </section>
+          <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="First expiry, first out">When you dispense, the system picks the batch that expires first. You can override with a reason.</x-import>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.log}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div class="bh"><div><h1 class="h1">Dispensing log</h1><p class="muted" style="margin: 4px 0 0;">Everything given from this counter. Read-only, kept for audit.</p></div><x-import component-from-global-scope="CareFusion.Button" variant="secondary" on-click="{{noop}}">Download today (CSV)</x-import></div>
+          <div class="box"><x-import component-from-global-scope="CareFusion.Table" columns="{{logCols}}" rows="{{logRows}}" caption="Dispensing log" striped="{{yes}}"></x-import></div>
+        </div>
+        </sc-if>
+
+      </main>
+    </div>
+  </div>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{no}}">
+    <div class="toast" role="status"><span class="toast-dot" aria-hidden="true"></span><div><strong>{{toast.title}}</strong><span class="muted">{{toast.text}}</span></div></div>
+  </sc-if>
+  <sc-if value="{{confetti}}" hint-placeholder-val="{{no}}">
+    <div class="confetti" aria-hidden="true"><sc-for list="{{bits}}" as="b" hint-placeholder-count="18"><span class="{{b.cls}}"></span></sc-for></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var ROLE = 'pharmacist';
+var FROM = { citizen: 'Citizen app', doctor: 'Doctor app', nurse: 'Nurse', labtech: 'Lab', radiology: 'Radiology', pharmacist: 'Pharmacy', pharmacyadmin: 'Pharmacy admin', hospitaladmin: 'Hospital admin', district: 'District', state: 'State', zonal: 'Zonal', central: 'Central' };
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var b = busFor(ROLE);
+    this.state = { section: 'queue', sel: 0, verify: {}, checking: false, give: {}, done: {}, scans: 0, bus: b, seen: b.map(function (e) { return e.id; }), toast: null, confetti: 0 };
+  }
+  componentDidMount() {
+    var self = this;
+    this.pull = function () {
+      var b = busFor(ROLE), seen = self.state.seen;
+      var fresh = b.filter(function (e) { return seen.indexOf(e.id) < 0; });
+      var next = { bus: b };
+      if (fresh.length) { next.seen = seen.concat(fresh.map(function (e) { return e.id; })); next.toast = { title: fresh[0].title, text: fresh[0].text }; clearTimeout(self.tt); self.tt = setTimeout(function () { self.setState({ toast: null }); }, 4000); }
+      self.setState(next);
+    };
+    this.bt = setInterval(this.pull, 2000);
+    window.addEventListener('storage', this.pull);
+  }
+  componentWillUnmount() { clearTimeout(this.t); clearTimeout(this.tt); clearTimeout(this.ct); clearInterval(this.bt); window.removeEventListener('storage', this.pull); }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion, st = this.state, self = this;
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var RX = [
+      { id: 'DEMO-RX-88213', tok: 'A14', patient: 'Anjali Menon', meta: 'F · 38y · B+ · allergy: penicillin', doctor: 'Dr. Arun Nair', reg: 'HPR DEMO-KL-55102', issued: '17 Oct, 14:40', time: '6 min', alg: 'warn', warnTitle: 'Allergy on record: penicillin', warnText: 'Nothing on this prescription is a penicillin. No interactions between these three.',
+        lines: [['Metformin 500 mg tab', '1-0-1 after food · 30 days', 60, 420], ['Atorvastatin 10 mg tab', '0-0-1 · 30 days', 30, 18, null, ['Atorvastatin 10 mg (Demo Labs, same salt)', 'Same molecule and strength, 240 in stock. Generic substitution is allowed; the patient is told and it is logged against the prescription.']], ['Vitamin D3 60k cap', 'Weekly · 8 weeks', 8, 96]] },
+      { id: 'DEMO-RX-88219', tok: 'A15', patient: 'Thomas Kurian', meta: 'M · 61y · no allergies recorded', doctor: 'Dr. Sreeja Paul', reg: 'HPR DEMO-KL-48810', issued: '17 Oct, 14:52', time: '3 min', alg: 'warn', warnTitle: 'Interaction: clopidogrel + omeprazole', warnText: 'Moderate. The doctor marked it "aware, continue". Suggest taking them 12 hours apart.',
+        lines: [['Clopidogrel 75 mg tab', '0-1-0 · 30 days', 30, 210, 'Interaction with omeprazole'], ['Omeprazole 20 mg cap', '1-0-0 before food · 14 days', 14, 340, 'Interaction with clopidogrel', ['Pantoprazole 40 mg', 'Pantoprazole interacts less with clopidogrel. Needs the doctor to approve the change — tap Message doctor from the prescription.']]] },
+      { id: 'DEMO-RX-88207', tok: 'A12', patient: 'Divya Ramesh', meta: 'F · 27y · pregnant, 20 wks', doctor: 'Dr. Leela George', reg: 'HPR DEMO-KL-31277', issued: '17 Oct, 13:58', time: '14 min', alg: 'ok',
+        lines: [['Folic acid 5 mg tab', '1-0-0 · 30 days', 30, 800], ['Iron + folic acid tab', '0-1-0 · 30 days', 30, 640], ['Calcium 500 mg tab', '0-0-1 · 30 days', 30, 512]] },
+      { id: 'DEMO-RX-88222', tok: 'A16', patient: 'Akhil Suresh', meta: 'M · 19y · no allergies recorded', doctor: 'Dr. Arun Nair', reg: 'HPR DEMO-KL-55102', issued: '17 Oct, 14:58', time: '1 min', alg: 'ok',
+        lines: [['Paracetamol 650 mg tab', 'SOS, max 3/day · 5 days', 15, 1200], ['Amoxicillin 250 mg syrup', '5 ml thrice daily · 5 days', 1, 0, null, ['Amoxicillin 125 mg/5 ml syrup × 2', 'Same total dose using two bottles of the lower strength (5 in stock). Label the new volume clearly: 10 ml thrice daily.']]] },
+      { id: 'DEMO-RX-88224', tok: 'A17', patient: 'Rahul Sasi', meta: 'M · 11y · guardian: Sasi K.', doctor: 'Dr. Leela George', reg: 'HPR DEMO-KL-31277', issued: '17 Oct, 15:02', time: 'just now', alg: 'ok',
+        lines: [['Methylphenidate 10 mg tab', '1-0-0 · 30 days', 30, 60, 'Schedule X · enter in narcotics register, ID of guardian']] },
+      { id: 'DEMO-RX-88199', tok: 'A10', patient: 'Mariamma Joseph', meta: 'F · 72y · CKD stage 3', doctor: 'Casualty', reg: 'HPR DEMO-KL-20031', issued: '17 Oct, 12:20', time: 'Done 12:41', alg: 'ok', pre: true,
+        lines: [['Amlodipine 5 mg tab', '1-0-0 · 30 days', 30, 380]] }
+    ];
+    var BUSRX = st.bus.filter(function (e) { return e.type === 'prescription'; }).map(function (e, n) {
+      var pt = (e.title.split('·')[1] || 'Patient').trim();
+      var parts = e.text.split('·'), doc = (parts[1] || 'Doctor').trim();
+      var lines = parts[0].split(',').map(function (x) { var m = x.trim().match(/^(.*?)\s*×\s*(\d+)$/); return m ? [m[1] + ' tab', 'As prescribed', +m[2], 200] : [x.trim(), 'As prescribed', 1, 50]; });
+      return { id: 'DEMO-RX-9' + (101 + n), tok: 'B' + (n + 1), patient: pt, meta: 'Sent from the Doctor app at ' + e.at, doctor: doc, reg: 'HPR DEMO-KL-55102', issued: '18 Oct, ' + e.at, time: e.at, alg: 'ok', bus: true, lines: lines };
+    });
+    RX = BUSRX.concat(RX);
+    if (st.sel >= RX.length) st = Object.assign({}, st, { sel: 0 });
+    var cur = RX[st.sel], key = cur.id;
+    var vs = st.verify[key];
+    var isDone = !!st.done[key] || !!cur.pre;
+    var give = st.give[key] || cur.lines.map(function (l) { return Math.min(l[2], l[3]); });
+    var anyPartial = cur.lines.some(function (l, i) { return give[i] < l[2]; });
+    var done = Object.keys(st.done).length + 31;
+    var chk = vs === 'ok' ? {
+      sig: { cls: 'ck ok', icon: '✓', text: 'Valid digital signature' },
+      qr: { cls: 'ck ok', icon: '✓', text: 'Matches · not used before' },
+      hpr: { cls: 'ck ok', icon: '✓', text: cur.reg.replace('HPR ', '') + ' · active' },
+      val: { cls: 'ck ok', icon: '✓', text: 'Issued ' + cur.issued + ' · valid 30 days' },
+      alg: cur.alg === 'warn' ? { cls: 'ck warn', icon: '!', text: 'Check the note below' } : { cls: 'ck ok', icon: '✓', text: 'Nothing found' }
+    } : { sig: { cls: 'ck wait', icon: '·', text: 'Not checked yet' }, qr: { cls: 'ck wait', icon: '·', text: 'Not checked yet' }, hpr: { cls: 'ck wait', icon: '·', text: 'Not checked yet' }, val: { cls: 'ck wait', icon: '·', text: 'Not checked yet' }, alg: { cls: 'ck wait', icon: '·', text: 'Runs after signature' } };
+    if (cur.pre) chk = { sig: { cls: 'ck ok', icon: '✓', text: 'Valid' }, qr: { cls: 'ck ok', icon: '✓', text: 'Used at 12:41' }, hpr: { cls: 'ck ok', icon: '✓', text: 'Active' }, val: { cls: 'ck ok', icon: '✓', text: 'Within 30 days' }, alg: { cls: 'ck ok', icon: '✓', text: 'Nothing found' } };
+    var NAV = [
+      { items: [
+        { id: 'queue', label: 'Dispense queue', icon: ic('M4 6h16M4 12h16M4 18h10'), badge: 4 },
+        { id: 'stock', label: 'Stock levels', icon: ic('M3 7l9-4l9 4v10l-9 4l-9-4zM3 7l9 4l9-4M12 11v10'), badge: 5 },
+        { id: 'expiry', label: 'Expiry watch', icon: ic('M12 7v5l3 2M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18z'), badge: 6 },
+        { id: 'log', label: 'Dispensing log', icon: ic('M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6') }
+      ] }
+    ];
+    var labels = { queue: 'Dispense queue', stock: 'Stock levels', expiry: 'Expiry watch', log: 'Dispensing log' };
+    var is = {}; Object.keys(labels).forEach(function (k) { is[k] = k === st.section; });
+    var lvl = function (r) { return h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 10 } }, h('span', { className: 'lvl' }, h('span', { className: 'lv-' + r.lv + ' w' + r.w })), h(C.Badge, { tone: r.lv === 'ok' ? 'success' : r.lv === 'low' ? 'warning' : 'danger' }, r.lv === 'ok' ? 'In stock' : r.lv === 'low' ? 'Low' : 'Out')); };
+    var EX = function (a) { return a.map(function (e) { return { name: e[0], batch: e[1], qty: e[2], date: e[3], d: e[4], cls: 'days ' + (e[4] <= 0 ? 'd-bad' : e[4] <= 30 ? 'd-warn' : 'd-ok'), act: e[4] <= 0 ? 'Quarantine' : e[4] <= 30 ? 'Return to store' : 'Use first' }; }); };
+    var HIST = {
+      'Anjali Menon': [['17 Sep', 'Metformin 500 mg × 60', 'Dr. Arun Nair', 'Full'], ['17 Sep', 'Atorvastatin 10 mg × 30', 'Dr. Arun Nair', 'Full'], ['18 Aug', 'Metformin 500 mg × 60', 'Dr. Arun Nair', 'Full'], ['02 Aug', 'Azithromycin 500 mg × 3', 'Dr. Sreeja Paul', 'Full']],
+      'Thomas Kurian': [['30 Sep', 'Clopidogrel 75 mg × 30', 'Dr. Sreeja Paul', 'Full'], ['30 Sep', 'Aspirin 75 mg × 30', 'Dr. Sreeja Paul', 'Full'], ['01 Sep', 'Atorvastatin 40 mg × 10 of 30', 'Dr. Sreeja Paul', 'Partial']],
+      'Divya Ramesh': [['18 Sep', 'Folic acid 5 mg × 30', 'Dr. Leela George', 'Full'], ['18 Sep', 'Iron + folic acid × 30', 'Dr. Leela George', 'Full']]
+    };
+    var hist = (HIST[cur.patient] || [['—', 'No earlier dispensing on record', 'CareFusion AI', 'New']]).map(function (x) { return { d: x[0], m: x[1], by: x[2], k: x[3], tone: x[3] === 'Full' ? 'success' : x[3] === 'Partial' ? 'warning' : 'neutral' }; });
+    var mine = st.bus.map(function (e) { return e.id; });
+    var feed = st.bus.concat(busRead().filter(function (e) { return mine.indexOf(e.id) < 0 && (e.from === 'doctor' || e.from === 'pharmacist' || e.type === 'alert'); })).slice(0, 4).map(function (e) { return { at: e.at, from: FROM[e.from] || e.from, tone: e.from === 'doctor' ? 'info' : e.from === 'citizen' ? 'peach' : 'teal', title: e.title, text: e.text, href: e.href || 'Pharmacist.dc.html' }; });
+    var logRows = [
+      ['14:31', 'DEMO-RX-88190', 'Rajan P.', 'Losartan 50 mg × 30', 'Full', 'B2241'],
+      ['13:52', 'DEMO-RX-88188', 'Shibu T.', 'Insulin glargine × 1 pen', 'Full', 'IG0913'],
+      ['13:20', 'DEMO-RX-88183', 'Leela K.', 'Atorvastatin 10 mg × 10 of 30', 'Partial', 'AT1180'],
+      ['12:41', 'DEMO-RX-88199', 'Mariamma J.', 'Amlodipine 5 mg × 30', 'Full', 'AM5521'],
+      ['12:05', 'DEMO-RX-88177', 'Nisha B.', 'Salbutamol inhaler × 1', 'Full', 'SB0331'],
+      ['11:40', 'DEMO-RX-88170', 'Joy M.', 'Metformin 500 mg × 60', 'Full', 'MF2210'],
+      ['11:02', 'DEMO-RX-88162', 'Ammini V.', 'Amoxicillin syrup × 0 of 1', 'Partial', '—'],
+      ['10:18', 'DEMO-RX-88151', 'Faisal K.', 'Pantoprazole 40 mg × 14', 'Full', 'PT7720']
+    ].map(function (r) { return { t: r[0], rx: r[1], p: r[2], it: r[3], k: r[4], b: r[5], by: 'Joseph M.' }; });
+    Object.keys(st.done).forEach(function (k) { var r = RX.filter(function (x) { return x.id === k; })[0]; logRows.unshift({ t: '14:59', rx: k, p: r.patient, it: r.lines.map(function (l, i) { return l[0].split(' ')[0] + ' × ' + st.done[k][i]; }).join(', '), k: st.done[k].some(function (g, i) { return g < r.lines[i][2]; }) ? 'Partial' : 'Full', b: 'auto', by: 'Joseph M.' }); });
+    return {
+      yes: true, no: false, nav: NAV, section: st.section, is: is, crumb: labels[st.section],
+      hist: hist, feed: feed, hasToast: !!st.toast, toast: st.toast || { title: '', text: '' },
+      confetti: !!st.confetti, bits: Array.apply(null, Array(18)).map(function (_, i) { return { cls: 'cf k' + (i % 5) + ' p' + i }; }),
+      go: function (id) { self.setState({ section: id }); },
+      noop: function () {},
+      scan: function () { var n = (st.scans + 1) % 4; self.setState({ sel: n === 0 ? 3 : n, scans: st.scans + 1 }); },
+      waiting: String(RX.filter(function (r) { return !r.pre && !st.done[r.id]; }).length),
+      doneCount: String(done),
+      queue: RX.map(function (r, i) { var d = !!st.done[r.id] || !!r.pre; return { bus: !!r.bus, tok: r.tok, patient: r.patient, doctor: r.doctor, items: r.lines.length, time: d && !r.pre ? 'Done just now' : r.time, cls: 'qi' + (st.sel === i ? ' sel' : '') + (d ? ' done' : ''), state: d ? 'Dispensed' : st.verify[r.id] === 'ok' ? 'Verified' : 'Waiting', tone: d ? 'success' : st.verify[r.id] === 'ok' ? 'teal' : 'warning', aria: 'Open prescription for ' + r.patient, open: function () { self.setState({ sel: i }); } }; }),
+      rx: { id: cur.id, issued: cur.issued, patient: cur.patient, meta: cur.meta, doctor: cur.doctor, reg: cur.reg, warn: vs === 'ok' && cur.alg === 'warn', warnTitle: cur.warnTitle, warnText: cur.warnText, done: isDone },
+      chk: chk, showSpin: st.checking,
+      lines: cur.lines.map(function (l, i) {
+        var short = l[3] < l[2];
+        var set = function (v) { var g = give.slice(); g[i] = Math.max(0, Math.min(l[2], Math.min(l[3], v))); var o = Object.assign({}, st.give); o[key] = g; self.setState({ give: o }); };
+        return { hasFlag: !!l[4], flag: l[4] || '', hasSub: !!l[5], sub: l[5] ? l[5][0] : '', subTip: l[5] ? l[5][1] : '', subAria: 'Why this substitute for ' + l[0], name: l[0], sig: l[1], qty: l[2], stock: l[3], give: isDone ? (st.done[key] ? st.done[key][i] : l[2]) : give[i], cls: short ? 'it short' : 'it', tone: l[3] === 0 ? 'danger' : short ? 'warning' : 'success', tag: l[3] === 0 ? 'Out of stock' : short ? 'Only ' + l[3] + ' left' : 'Available', aria: 'Quantity to give for ' + l[0], dec: function () { if (!isDone) set(give[i] - 1); }, inc: function () { if (!isDone) set(give[i] + 1); } };
+      }),
+      verified: vs === 'ok' || st.checking || isDone,
+      verifyLabel: vs === 'ok' || isDone ? 'Verified' : st.checking ? 'Checking…' : 'Verify signature & QR',
+      verify: function () { self.setState({ checking: true }); clearTimeout(self.t); self.t = setTimeout(function () { var v = Object.assign({}, self.state.verify); v[key] = 'ok'; self.setState({ verify: v, checking: false }); }, 1400); },
+      cantDispense: vs !== 'ok' || isDone,
+      dispenseLabel: isDone ? 'Dispensed' : anyPartial ? 'Dispense partly' : 'Dispense all',
+      dispense: function () {
+        var d = Object.assign({}, st.done); d[key] = give.slice();
+        var ev = busPush({ type: 'dispensed', from: 'pharmacist', to: ['citizen', 'pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: cur.patient + ' · ' + cur.lines.map(function (l) { return l[0].split(' ')[0]; }).join(', ') + ' · Joseph Mathew', href: 'CitizenMedicines.dc.html' });
+        self.setState({ done: d, confetti: Date.now(), seen: self.state.seen.concat([ev.id]), toast: { title: 'Dispensed · sent to ' + cur.patient, text: 'Citizen app and pharmacy admin were notified.' } });
+        clearTimeout(self.ct); self.ct = setTimeout(function () { self.setState({ confetti: 0 }); }, 1700);
+        clearTimeout(self.tt); self.tt = setTimeout(function () { self.setState({ toast: null }); }, 4000);
+      },
+      partialNote: isDone ? 'Logged · ' + cur.id : anyPartial ? 'Balance stays open on the prescription' : 'Full quantity',
+      stCols: [
+        { key: 'name', header: 'Medicine' }, { key: 'form', header: 'Form' },
+        { key: 'lvl', header: 'Level', render: lvl },
+        { key: 'qty', header: 'On hand', align: 'right' }, { key: 'ro', header: 'Reorder at', align: 'right' }, { key: 'use', header: 'Used / day', align: 'right' }, { key: 'sup', header: 'Next supply' }
+      ],
+      stRows: [
+        { name: 'Metformin 500 mg', form: 'Tablet', lv: 'ok', w: 80, qty: 420, ro: 200, use: 64, sup: '—' },
+        { name: 'Atorvastatin 10 mg', form: 'Tablet', lv: 'low', w: 10, qty: 18, ro: 150, use: 40, sup: 'Indent · 19 Oct' },
+        { name: 'Amlodipine 5 mg', form: 'Tablet', lv: 'ok', w: 70, qty: 380, ro: 150, use: 52, sup: '—' },
+        { name: 'Clopidogrel 75 mg', form: 'Tablet', lv: 'ok', w: 60, qty: 210, ro: 100, use: 18, sup: '—' },
+        { name: 'Insulin glargine', form: 'Pen', lv: 'low', w: 15, qty: 6, ro: 20, use: 3, sup: 'Indent · 19 Oct' },
+        { name: 'Amoxicillin 250 mg', form: 'Syrup', lv: 'out', w: 5, qty: 0, ro: 25, use: 6, sup: 'District store · 18 Oct' },
+        { name: 'Salbutamol 100 mcg', form: 'Inhaler', lv: 'low', w: 20, qty: 9, ro: 25, use: 4, sup: 'Ordered' },
+        { name: 'Paracetamol 650 mg', form: 'Tablet', lv: 'ok', w: 90, qty: 1200, ro: 400, use: 150, sup: '—' },
+        { name: 'ORS sachet', form: 'Powder', lv: 'low', w: 20, qty: 60, ro: 200, use: 45, sup: 'Ordered' },
+        { name: 'Folic acid 5 mg', form: 'Tablet', lv: 'ok', w: 90, qty: 800, ro: 200, use: 30, sup: '—' }
+      ],
+      isLow: function (r) { return r.lv !== 'ok'; },
+      exSoon: EX([['Amoxicillin 500 mg cap', 'AX2209', '40 caps', '15 Oct', 0], ['Ceftriaxone 1 g inj', 'CF1180', '12 vials', '24 Oct', 7], ['Ranitidine 150 mg', 'RN0712', '120 tabs', '29 Oct', 12], ['Insulin regular', 'IR0450', '4 vials', '02 Nov', 16], ['Diclofenac gel', 'DG3301', '18 tubes', '09 Nov', 23], ['ORS sachet', 'OR9921', '80 sachets', '14 Nov', 28]]),
+      exLater: EX([['Cetirizine 10 mg', 'CT4410', '300 tabs', '28 Nov', 42], ['Azithromycin 500 mg', 'AZ1902', '36 tabs', '06 Dec', 50], ['Vitamin B complex', 'VB5520', '500 tabs', '20 Dec', 64], ['Salbutamol syrup', 'SS0118', '14 bottles', '04 Jan', 79], ['Losartan 50 mg', 'LS8812', '240 tabs', '12 Jan', 87]]),
+      logCols: [{ key: 't', header: 'Time', mono: true }, { key: 'rx', header: 'Prescription', mono: true }, { key: 'p', header: 'Patient' }, { key: 'it', header: 'Given' }, { key: 'k', header: 'Type', render: function (r) { return h(C.Badge, { tone: r.k === 'Full' ? 'success' : 'warning' }, r.k); } }, { key: 'b', header: 'Batch', mono: true }, { key: 'by', header: 'By' }],
+      logRows: logRows,
+      logo: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+        h('a', { href: 'StaffLogin.dc.html', 'aria-label': 'CareFusion AI Staff Portal', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 28 })),
+        h('span', { className: 'chip-s' }, 'Staff Portal')),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Joseph Mathew', size: 38, tone: 'sage' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Joseph Mathew'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Pharmacist · Counter 2')),
+        h('a', { href: 'StaffLogin.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+}
+</script>
+</body>
+</html>

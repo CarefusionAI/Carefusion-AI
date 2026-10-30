@@ -1,5 +1,5 @@
-import RolePage from '../components/RolePage'
+import LabTechScreen from './staff/LabTech'
 
 export default function LabTechHome() {
-  return <RolePage role="LAB_TECH" />
+  return <LabTechScreen />
 }

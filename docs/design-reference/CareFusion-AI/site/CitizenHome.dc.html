@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Citizen home — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.pg{padding:32px 40px 56px;box-sizing:border-box;max-width:1240px;display:flex;flex-direction:column;gap:24px}
+.grid{display:grid;gap:20px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.lk:focus-visible,.qa:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.qa{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px;border-radius:18px;border:1px solid var(--border);background:var(--surface-raised);font:inherit;text-align:left;color:var(--ink);cursor:pointer;transition:transform 200ms cubic-bezier(0.22,1,0.36,1),box-shadow 200ms ease,border-color 200ms ease}
+.qa:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--primary-soft)}
+.qa-i{width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center}
+.qa strong{font-size:14px}
+.qa span.s{font-size:12px;color:var(--ink-muted)}
+.key{position:relative;overflow:hidden;border-radius:24px;padding:24px;background:var(--primary);color:var(--on-primary);display:flex;flex-direction:column;gap:16px;box-shadow:0 22px 44px rgba(58,114,109,.22)}
+.key-code{font-family:var(--font-mono);font-size:34px;line-height:40px;letter-spacing:.14em;font-weight:500}
+.kb{height:4px;border-radius:9999px;background:rgba(250,245,239,.25);overflow:hidden}
+.kb span.k0{transform:scaleX(0.0)}.kb span.k1{transform:scaleX(0.1)}.kb span.k2{transform:scaleX(0.2)}.kb span.k3{transform:scaleX(0.3)}.kb span.k4{transform:scaleX(0.4)}.kb span.k5{transform:scaleX(0.5)}.kb span.k6{transform:scaleX(0.6)}.kb span.k7{transform:scaleX(0.7)}.kb span.k8{transform:scaleX(0.8)}.kb span.k9{transform:scaleX(0.9)}.kb span.k10{transform:scaleX(1.0)}
+.kb span{display:block;height:100%;background:#d2b277;transform-origin:left;transition:transform 1s linear}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.dt{flex:none;width:48px;text-align:center;padding:6px 0;border-radius:12px;font-weight:600;line-height:1.1}
+.dt b{display:block;font-size:18px}
+.dt i{display:block;font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.muted{color:var(--ink-muted);font-size:13px}
+.med{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--surface)}
+.med.done{background:var(--tint-sage)}
+.chk{flex:none;width:26px;height:26px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--surface-raised);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-primary);font-size:14px;font-weight:700}
+.med.done .chk{background:var(--primary);border-color:var(--primary)}
+.chk:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kv div{padding:12px 14px;border-radius:14px;background:var(--surface)}
+.kv dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.kv dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong)}
+.live{width:8px;height:8px;border-radius:9999px;background:var(--success);box-shadow:0 0 0 0 rgba(55,106,79,.5);animation:live 1.8s infinite}
+@keyframes live{70%{box-shadow:0 0 0 8px rgba(55,106,79,0)}100%{box-shadow:0 0 0 0 rgba(55,106,79,0)}}
+.in{animation:in 600ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.feed{display:flex;flex-direction:column;gap:8px}
+.ev{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--surface);text-decoration:none;color:inherit;transition:background-color 180ms ease,transform 180ms ease}
+.ev:hover{background:var(--surface-cream);transform:translateX(2px)}
+.ev:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.ev-f{flex:none;min-width:44px;padding:4px 6px;border-radius:8px;font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;text-align:center}
+.f-doctor{background:var(--tint-blue);color:var(--info)}.f-pharmacist,.f-pharmacyadmin{background:var(--tint-teal);color:var(--primary-text)}.f-labtech,.f-radiology{background:var(--tint-lavender);color:var(--ai)}
+.f-district,.f-state,.f-zonal,.f-central,.f-hospitaladmin{background:var(--tint-peach);color:var(--peach-text)}.f-nurse,.f-citizen{background:var(--tint-sage);color:var(--success)}
+.ev b{display:block;font-size:14px;color:var(--ink)}.ev span.t{display:block;font-size:13px;color:var(--ink-muted)}
+.ev time{margin-left:auto;flex:none;font-size:12px;color:var(--ink-muted);font-variant-numeric:tabular-nums}
+.jr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.js{display:flex;flex-direction:column;gap:6px;padding:14px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--border);min-height:118px;box-sizing:border-box}
+.js.on{background:var(--tint-sage);border-color:transparent}
+.js.now{background:var(--surface-raised);border-color:var(--primary-soft);box-shadow:0 0 0 3px rgba(134,189,184,.25)}
+.js-n{width:26px;height:26px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--surface-cream);color:var(--ink-muted)}
+.js.on .js-n{background:var(--primary);color:var(--on-primary)}.js.now .js-n{background:var(--tint-teal);color:var(--primary-text)}
+.js b{font-size:13px;color:var(--ink)}.js span{font-size:12px;color:var(--ink-muted)}
+.js a{margin-top:auto;font-size:12px;font-weight:600}
+@media (max-width: 700px){.jr{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (prefers-reduced-motion: reduce){.live,.in{animation:none}.kb span{transition:none}.ev{transition:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root pg"><div class="cf-fx cf-fx-cit" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+
+  <header class="in" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+    <div>
+      <p style="margin: 0 0 4px; font-size: 13px; color: var(--ink-muted);">Saturday, 17 October 2026 · Pathanamthitta · 29°C, humid</p>
+      <h1 style="margin: 0; font-family: var(--font-serif); font-size: 34px; line-height: 40px; font-weight: 600; color: var(--ink-strong);">Good afternoon, Anjali</h1>
+      <p style="margin: 4px 0 0;">You have 1 appointment this week, 2 medicines left today and a lab test due on 30 Oct.</p>
+    </div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Profile 92% complete</x-import>
+      <x-import component-from-global-scope="CareFusion.Badge" tone="outline">ABHA DEMO-0000-1234</x-import>
+    </div>
+  </header>
+
+  <section aria-label="Quick actions" class="grid g4 in" style="animation-delay: 60ms;">
+    <button type="button" class="qa" onClick="{{toAccess}}"><span class="qa-i" style="background: var(--tint-teal); color: var(--primary-text);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2z"></path></svg></span><strong>Share with a doctor</strong><span class="s">Show your rotating key</span></button>
+    <button type="button" class="qa" onClick="{{toAI}}"><span class="qa-i" style="background: var(--tint-lavender); color: var(--ai);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3h3a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 19.5v-15A1.5 1.5 0 0 1 10.5 3zM4.5 9h15A1.5 1.5 0 0 1 21 10.5v3a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 13.5v-3A1.5 1.5 0 0 1 4.5 9z"></path></svg></span><strong>Ask the AI</strong><span class="s">Guidance, not diagnosis</span></button>
+    <button type="button" class="qa" onClick="{{toCare}}"><span class="qa-i" style="background: var(--tint-blue); color: var(--info);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M12 13v4M10 15h4"></path></svg></span><strong>Book appointment</strong><span class="s">Free · pay at hospital</span></button>
+    <button type="button" class="qa" onClick="{{toDocs}}"><span class="qa-i" style="background: var(--tint-peach); color: var(--peach-text);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg></span><strong>Upload a report</strong><span class="s">PDF, photo or scan</span></button>
+  </section>
+
+  <section class="grid g3 in" style="animation-delay: 120ms;">
+    <div class="key" aria-label="Your sharing key">
+      <svg aria-hidden="true" viewBox="0 0 64 64" width="220" height="220" style="position: absolute; right: -50px; bottom: -60px; opacity: .12;"><rect x="21" y="5" width="18" height="50" rx="9" fill="#faf5ef"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#faf5ef"></rect></svg>
+      <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;">Share with doctor</span><span style="font-size: 13px;">New key in {{secs}} s</span></div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <span class="key-code" aria-live="polite">{{keyCode}}</span>
+        <svg width="78" height="78" viewBox="0 0 21 21" aria-hidden="true" style="flex: none; background: #faf5ef; border-radius: 12px; padding: 7px;"><g fill="#3f5263"><path d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"></path></g><g fill="#faf5ef"><path d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"></path></g><g fill="#3f5263"><path d="{{qr}}"></path></g></svg>
+      </div>
+      <div class="kb"><span class="{{barCls}}"></span></div>
+      <p style="margin: 0; font-size: 13px; position: relative;">Opens a 30-minute session for one doctor. Used once.</p>
+    </div>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Active session</h2><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--success); font-weight: 600;"><span class="live" aria-hidden="true"></span>Live now</span></div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <x-import component-from-global-scope="CareFusion.Avatar" name="Dr. Arun Nair" size="{{n44}}"></x-import>
+        <div style="min-width: 0;"><strong style="color: var(--ink);">Dr. Arun Nair</strong><div class="muted">General medicine · Demo General Hospital</div></div>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 32px; line-height: 40px; font-weight: 600; color: var(--ink-strong); font-variant-numeric: tabular-nums;">18:42</span><span class="muted">left of 30:00 · viewing Lab reports</span></div>
+      <div style="height: 6px; border-radius: 9999px; background: var(--surface-cream); overflow: hidden;"><div style="width: 62%; height: 100%; background: var(--primary-soft);"></div></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="danger" size="sm" on-click="{{toAccess}}">End session</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm" on-click="{{toAccess}}">See what was opened</x-import>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Emergency card</h2><button type="button" class="lk" onClick="{{toProfile}}">Edit</button></div>
+      <dl class="kv" style="margin: 0;">
+        <div><dt>Blood group</dt><dd>B+</dd></div>
+        <div><dt>Allergies</dt><dd>Penicillin</dd></div>
+        <div><dt>Conditions</dt><dd>Type 2 diabetes</dd></div>
+        <div><dt>Contact</dt><dd>Ravi Menon</dd></div>
+      </dl>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Badge" tone="peach">Special category: Diabetes — in progress</x-import></div>
+      <p class="muted" style="margin: 0;">Visible to a doctor in an emergency, even without your key.</p>
+    </div>
+  </section>
+
+  <section aria-label="Your numbers" class="grid g4 in" style="animation-delay: 180ms;">
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Next appointment" value="Tue 21" unit="Oct · 10:30" hint="Dr. Arun Nair · Confirmed" icon="{{iCal}}" tone="blue"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Medicines today" value="{{medsDone}}" unit="of 3 taken" hint="Next: Metformin at 20:00" icon="{{iPill}}"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Blood pressure" value="118/76" unit="mmHg" hint="On target · 4 lower than last month" icon="{{iHeart}}" tone="sage"></x-import>
+    <x-import component-from-global-scope="CareFusion.StatCard" label="Documents" value="24" hint="3 added by doctors this week" icon="{{iDoc}}"></x-import>
+  </section>
+
+  <section class="grid g2 in" style="animation-delay: 240ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Dates to remember</h2><button type="button" class="lk" onClick="{{toDates}}">All dates</button></div>
+      <div>
+        <div class="row"><span class="dt" style="background: var(--tint-blue); color: var(--info);"><b>21</b><i>Oct</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Follow-up with Dr. Arun Nair</strong><div class="muted">10:30 · OP block 2, Demo General Hospital</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Confirmed</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--tint-teal); color: var(--primary-text);"><b>24</b><i>Oct</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Metformin refill due</strong><div class="muted">Set by Dr. Arun Nair · 30 tablets</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="teal">Refill</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--tint-peach); color: var(--peach-text);"><b>30</b><i>Oct</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">HbA1c blood test</strong><div class="muted">Fasting · any government lab</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="warning">Test</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--tint-sage); color: var(--success);"><b>02</b><i>Nov</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Eligible to donate blood again</strong><div class="muted">3 months after your last donation</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="success">Donation</x-import></div>
+        <div class="row"><span class="dt" style="background: var(--tint-lavender); color: var(--ai);"><b>15</b><i>Nov</i></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">Influenza vaccine</strong><div class="muted">Yearly · any PHC</div></div><x-import component-from-global-scope="CareFusion.Badge" tone="ai">Vaccine</x-import></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Today's medicines</h2><button type="button" class="lk" onClick="{{toMeds}}">Prescriptions</button></div>
+      <sc-for list="{{meds}}" as="m" hint-placeholder-count="3">
+        <div class="{{m.cls}}"><button type="button" class="chk" aria-pressed="{{m.pressed}}" aria-label="{{m.aria}}" onClick="{{m.toggle}}">{{m.tick}}</button><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink);">{{m.name}}</strong><div class="muted">{{m.dose}}</div></div><span class="muted" style="font-variant-numeric: tabular-nums;">{{m.time}}</span></div>
+      </sc-for>
+      <div style="margin-top: 4px; padding: 14px; border-radius: 14px; background: var(--tint-blue); display: flex; gap: 12px; align-items: center;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14a7 7 0 0 0 0-14zM21 21l-5-5"></path></svg>
+        <span style="flex: 1; font-size: 14px;"><strong style="color: var(--ink);">Atorvastatin is in stock</strong> at Demo Hospital Pharmacy, 1.2 km · open till 20:00</span>
+        <button type="button" class="lk" onClick="{{toMeds}}">Find</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid g3 in" style="animation-delay: 300ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Recent documents</h2><button type="button" class="lk" onClick="{{toDocs}}">Open folders</button></div>
+      <div>
+        <div class="row"><span class="qa-i" style="width: 36px; height: 36px; background: var(--tint-blue); color: var(--info);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Lipid profile</strong><div class="muted">Lab · added by Rahul Varghese · today</div></div></div>
+        <div class="row"><span class="qa-i" style="width: 36px; height: 36px; background: var(--tint-lavender); color: var(--ai);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 14l3-3l2 2l3-4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">Chest X-ray, PA view</strong><div class="muted">Image Analysis · 15 Oct</div></div></div>
+        <div class="row"><span class="qa-i" style="width: 36px; height: 36px; background: var(--tint-teal); color: var(--primary-text);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13l2 2l4-4"></path></svg></span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">e-Signed prescription</strong><div class="muted">Dr. Arun Nair · valid till 14 Nov</div></div></div>
+      </div>
+    </div>
+
+    <x-import component-from-global-scope="CareFusion.AIInsight" module="Reviewed result · Image analysis" status="caution" title="Chest X-ray: no urgent findings" reviewed="{{yes}}" reviewed-by="Dr. Arun Nair">
+      <p style="margin: 0; font-size: 14px; line-height: 21px;">Your doctor reviewed this result and wrote: “Mild changes, likely from last month's infection. Repeat in 2 weeks.”</p>
+    </x-import>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Health alerts</h2><button type="button" class="lk" onClick="{{toAlerts}}">All alerts</button></div>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="danger" title="Heatwave — Pathanamthitta">Emergency alert · stay indoors 12:00–16:00. Can't be muted.</x-import>
+      <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="Dengue season">Kerala health department · remove standing water near your home.</x-import>
+    </div>
+  </section>
+
+  <section class="grid g3 in" style="animation-delay: 360ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Blood pressure · 30 days</h2><x-import component-from-global-scope="CareFusion.Badge" tone="neutral">Self-reported</x-import></div>
+      <svg viewBox="0 0 300 110" role="img" aria-label="Systolic pressure trend, steady between 116 and 128 over 30 days" style="width: 100%; height: auto;">
+        <path d="M0 20 H300 M0 55 H300 M0 90 H300" stroke="#e4ddd6" stroke-width="1"></path>
+        <path d="M0 62 C20 50 30 70 50 58 S80 40 100 52 S130 66 150 50 S180 38 200 46 S230 60 250 44 S280 40 300 42" fill="none" stroke="#3a726d" stroke-width="2.5" stroke-linecap="round"></path>
+        <path d="M0 62 C20 50 30 70 50 58 S80 40 100 52 S130 66 150 50 S180 38 200 46 S230 60 250 44 S280 40 300 42 V110 H0Z" fill="#86bdb8" opacity=".18"></path>
+        <circle cx="300" cy="42" r="4" fill="#3a726d"></circle>
+      </svg>
+      <div style="display: flex; justify-content: space-between;" class="muted"><span>18 Sep</span><span>Avg 121/78</span><span>Today</span></div>
+      <x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm" on-click="{{toVitals}}">Add a reading</x-import>
+    </div>
+
+    <div class="box" style="background: var(--tint-sage); border-color: transparent; box-shadow: none;">
+      <div class="bh"><h2 class="bt">Giving</h2></div>
+      <div style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 14px; background: rgba(250,245,239,.7);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"></path></svg>
+        <div style="flex: 1;"><strong style="color: var(--ink);">Blood donor · B+</strong><div class="muted">Resting until 02 Nov · 2 requests nearby</div></div>
+        <button type="button" class="lk" onClick="{{toBlood}}">Open</button>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 14px; background: rgba(250,245,239,.7);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>
+        <div style="flex: 1;"><strong style="color: var(--ink);">Organ pledge</strong><div class="muted">Kidneys, corneas · signing at hospital pending</div></div>
+        <button type="button" class="lk" onClick="{{toOrgan}}">Open</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="bh"><h2 class="bt">Who opened your record</h2><button type="button" class="lk" onClick="{{toAccess}}">History</button></div>
+      <div>
+        <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Dr. Arun Nair" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Dr. Arun Nair</strong><div class="muted">Today 14:24 · your key · inside hospital</div></div></div>
+        <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Rahul Varghese" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Rahul Varghese · Lab</strong><div class="muted">Today 11:05 · uploaded to an order</div></div></div>
+        <div class="row"><x-import component-from-global-scope="CareFusion.Avatar" name="Dr. Sreeja Paul" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink); font-size: 14px;">Dr. Sreeja Paul</strong><div class="muted">2 Oct · ended by you after 12 min</div></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="grid g2 in" style="animation-delay: 420ms;">
+    <div class="box">
+      <div class="bh"><h2 class="bt">Connected apps</h2><span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--success); font-weight: 600;"><span class="live" aria-hidden="true"></span>Live from your care team</span></div>
+      <div class="feed" aria-live="polite">
+        <sc-for list="{{feed}}" as="e" hint-placeholder-count="4">
+          <a class="ev" href="{{e.href}}"><span class="{{e.cls}}">{{e.from3}}</span><span style="min-width: 0;"><b>{{e.title}}</b><span class="t">{{e.text}}</span></span><time>{{e.at}}</time></a>
+        </sc-for>
+      </div>
+      <p class="muted" style="margin: 0;">Doctors, labs, pharmacies and your district health office update this as they act on your care.</p>
+    </div>
+    <div class="box">
+      <div class="bh"><h2 class="bt">Prescription journey</h2><x-import component-from-global-scope="CareFusion.Badge" tone="{{jrTone}}">{{jrBadge}}</x-import></div>
+      <p style="margin: 0; font-size: 14px;"><strong style="color: var(--ink);">Metformin 500 mg, Atorvastatin 10 mg</strong> · e-signed by Dr. Arun Nair today</p>
+      <ol class="jr" style="margin: 0; padding: 0; list-style: none;" aria-label="Prescription progress">
+        <sc-for list="{{journey}}" as="j" hint-placeholder-count="4">
+          <li class="{{j.cls}}"><span class="js-n">{{j.n}}</span><b>{{j.label}}</b><span>{{j.desc}}</span><a href="{{j.href}}">{{j.link}}</a></li>
+        </sc-for>
+      </ol>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm" on-click="{{toMeds}}">See in Medicines</x-import>
+        <x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm" on-click="{{toComplaints}}">Report a problem</x-import>
+        <span class="muted" style="margin-left: auto;">Pharmacy 1.2 km · open till 20:00</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"go":{"editor":null},"$preview":{"width":1176,"height":2050}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { t: 10, key: 482913, taken: { 0: true, 1: false, 2: false }, bus: busFor('citizen') };
+  }
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      var t = this.state.t - 1;
+      if (t <= 0) this.setState({ t: 10, key: 100000 + Math.floor(Math.random() * 900000) });
+      else this.setState({ t: t });
+    }, 1000);
+    this.bt = setInterval(() => this.setState({ bus: busFor('citizen') }), 2000);
+    this.onStorage = () => this.setState({ bus: busFor('citizen') });
+    window.addEventListener('storage', this.onStorage);
+  }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.bt); window.removeEventListener('storage', this.onStorage); }
+  renderVals() {
+    var h = React.createElement;
+    var go = (s) => () => { if (this.props.go) this.props.go(s); };
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var MEDS = [['Metformin 500 mg', 'After breakfast', '08:00'], ['Atorvastatin 10 mg', 'After lunch', '14:00'], ['Metformin 500 mg', 'After dinner', '20:00']];
+    var taken = this.state.taken;
+    var n = Object.keys(taken).filter(function (k) { return taken[k]; }).length;
+    var seed = this.state.key;
+    var cells = [];
+    for (var i = 0; i < 26; i++) { var v = (seed * (i + 7) * 2654435761) % 997; var x = 8 + (v % 6), y = (i * 7 + (v % 13)) % 21; if (!((x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12))) cells.push('M' + x + ' ' + y + 'h2v2h-2z'); }
+    for (var j = 0; j < 10; j++) { var w = (seed * (j + 3)) % 991; var xx = (w % 21), yy = 8 + (w % 5); cells.push('M' + xx + ' ' + yy + 'h1v1h-1z'); }
+    var bus = this.state.bus;
+    var has = function (t) { return bus.some(function (e) { return e.type === t; }); };
+    var stage = has('collected') ? 4 : has('dispensed') ? 3 : has('prescription') ? 2 : 1;
+    var J = [['Prescribed', 'Dr. Arun Nair e-signed', 'Doctor.dc.html', 'Doctor app'], ['Sent to pharmacy', 'Signature and QR checked', 'Pharmacist.dc.html', 'Pharmacy queue'], ['Ready to collect', 'Packed by Joseph Mathew', 'Pharmacist.dc.html', 'Dispensing log'], ['Collected', 'Show your key at the counter', 'CitizenMedicines.dc.html', 'My medicines']];
+    return {
+      yes: true, n44: 44, n32: 32,
+      feed: bus.slice(0, 4).map(function (e) { return { href: e.href || 'Citizen.dc.html', cls: 'ev-f f-' + e.from, from3: (e.from || '').slice(0, 3), title: e.title, text: e.text, at: e.at }; }),
+      journey: J.map(function (x, i) { var n = i + 1; return { n: n < stage ? '✓' : String(n), label: x[0], desc: x[1], href: x[2], link: x[3] + ' →', cls: n < stage ? 'js on' : n === stage ? 'js now' : 'js' }; }),
+      jrTone: stage >= 3 ? 'success' : 'teal', jrBadge: ['', 'Waiting for doctor', 'At pharmacy', 'Ready to collect', 'Collected'][stage],
+      toComplaints: go('complaints'),
+      secs: this.state.t,
+      keyCode: String(this.state.key).replace(/(\d{3})(\d{3})/, '$1 $2'),
+      qr: cells.join(''),
+      barCls: 'k' + this.state.t,
+      medsDone: String(n),
+      bpTrend: { direction: 'down', text: '4 points lower than last month' },
+      iCal: ic('M4 6h16v14H4zM4 10h16M8 3v4M16 3v4'),
+      iPill: ic('M8.5 3.5a5 5 0 0 1 7 7l-5 5a5 5 0 0 1-7-7zM6 11l7 7'),
+      iHeart: ic('M3 12h4l3-7l4 14l3-7h4'),
+      iDoc: ic('M6 3h8l4 4v14H6zM14 3v4h4'),
+      meds: MEDS.map((m, i) => ({
+        name: m[0], dose: m[1], time: m[2],
+        cls: taken[i] ? 'med done' : 'med', tick: taken[i] ? '✓' : '', pressed: taken[i] ? 'true' : 'false',
+        aria: (taken[i] ? 'Mark not taken: ' : 'Mark taken: ') + m[0] + ' at ' + m[2],
+        toggle: () => { var t = Object.assign({}, this.state.taken); t[i] = !t[i]; this.setState({ taken: t }); }
+      })),
+      toAccess: go('access'), toAI: go('ai'), toCare: go('care'), toDocs: go('documents'), toProfile: go('profile'),
+      toDates: go('dates'), toMeds: go('medicines'), toAlerts: go('alerts'), toVitals: go('vitals'), toBlood: go('blood'), toOrgan: go('organ')
+    };
+  }
+}
+</script>
+</body>
+</html>

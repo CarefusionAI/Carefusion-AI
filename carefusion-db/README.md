@@ -19,19 +19,46 @@ migrations/
   090_audit.sql             hash-chained activity log (per-stream chains), daily chain heads, log-view grants
   100_security_views.sql    row-level security, privileged helpers, views per user type, de-identified report views, grants
   110_reference_data.sql    5 zones, 36 states/UTs (approved mapping), Kerala districts, master lists, approval rules, partitions
+  --- Phase 2a (2026-10-21): tables for every dataset the 42 designed screens show ---
+  120_events_feed.sql       cross-role events feed (RLS: another patient's events are invisible), read state, notification prefs, citizen settings, family links; new schemas inpatient / lab / imaging / surveillance
+  121_outpatient_clinical.sql  folder colour + archive, document sensitivity / summary / scan, appointments + OP queue, doctor find-care fields, vitals targets, clinical alerts, messages, AI chat history, reviews, complaints, health-alert composer, special-category requests
+  122_inpatient.sql         wards + beds, admission details, vital sets with NEWS2 + escalation, nursing tasks / notes, medication orders + MAR, shift handover, ward stock, staff shifts
+  123_lab_radiology.sql     order refs (ORD-DEMO-NNNN) + priority, lab catalogue / specimens / results / critical calls / QC / instruments, imaging rooms / studies / files / exposure
+  124_pharmacy_ops.sql      rx number, drafts, verify / ready / collected, queue tokens, dose log, stock publish / block / FEFO, ledger, purchase orders, recalls, substitutes, search log
+  125_admin_ops.sql         approval priority + hospital-level approver, blocks + population, disease surveillance, platform flags, access rules, report exports, compliance docs, rota, invites, permission matrix, AI model register, rollup views
+  126_donation_organ.sql    donor code + checklist, blood banks + stock + camps, organ pledge steps + witnesses + next of kin, transplant centres, coordinator lookup
+  127_access_audit_extras.sql  break-glass fields + hospital review (72 h), unidentified patients, items viewed, scoped audit log, citizen activity view, flagged events
+  128_reference_data_ext.sql   access rules, platform flag defaults, permission matrix, lab test catalogue, diseases, organ list, notification templates, new approval rules
 tests/
   test_rules.sql            46 rule tests in one rolled-back transaction
   bench_audit_log.sql       pgbench script: parallel writes to the log
-run_migrations.sh
+run_migrations.sh            ledger-based runner: migrate | seed | all
+seed/
+  demo_data.sql             generated filler data (generate.py)
+  design/00_base.sql        design seed, base layer (personas, facilities, wards, beds) + IDS.md + build_base.py
 ```
+
+Canonical demo-data decisions for 120+ are in the header of `120_events_feed.sql` (Anjali Menon age 35, order ids `ORD-DEMO-NNNN`, HPR ids `DEMO-HPR-71-NNNN`, event type `imaging-order`).
+Migrations 120+ use `ALTER TYPE ... ADD VALUE`, so apply each file in its own `psql` call (as `run_migrations.sh` does), not in one big transaction.
 
 ## Run it
 ```bash
 # Local (Docker):  docker run -d --name cf-db -e POSTGRES_PASSWORD=dev -p 5432:5432 postgis/postgis:16-3.4
-./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres"
+./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres"          # migrations (default mode)
+./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres" seed     # demo data
+./run_migrations.sh "postgresql://postgres:dev@localhost:5432/postgres" all      # both
 psql "postgresql://postgres:dev@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f tests/test_rules.sql
 ```
 Neon (alpha): use the connection string from the Neon console. ⚠ Check that `postgis`, `pgcrypto`, `citext` and `btree_gist` are allowed on the Neon free plan first.
+
+With Docker Compose: `docker compose up -d` runs the `db-migrate` service (migrations only); the demo data is a separate, opt-in step: `docker compose --profile seed run --rm db-seed`.
+
+### The runner is safe to re-run
+- A ledger table `public.schema_migrations` (filename, sha256 checksum, kind, applied_at) records every file that was applied. A file already in the ledger is skipped, so a second run does nothing.
+- One `psql` call per file (never one big transaction); the ledger row is written by the same call, right after the file succeeded.
+- A database that was migrated before the ledger existed is detected and "baselined": the migrations that are already there are recorded without being run, and only the rest (for example 120+) are applied.
+- A migration file that changed after it was applied stops the run (exit code 3): never edit an applied migration, add a new numbered file. `ALLOW_CHECKSUM_DRIFT=1` only warns.
+- Seeds: `seed/demo_data.sql` first (generated, random-looking filler people; not re-runnable), then `seed/design/[0-9]*.sql` in name order (the design seed: named personas, facilities, wards; each file is idempotent). `SEED_FORCE=1` re-runs the `seed/design` files even if they are in the ledger. Identities used across the design seed are listed in `seed/design/IDS.md`.
 
 ## Tested (2026-10-11, PostgreSQL 16.15 + PostGIS 3.4)
 - All migrations apply on an empty database; **97 tables and views** in 12 schemas.

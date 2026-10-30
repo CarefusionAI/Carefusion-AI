@@ -41,3 +41,6 @@ pgdata/
 .DS_Store
 Thumbs.db
 .idea/
+
+# Assembled Vercel deploy folder
+.vercel-deploy/

@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Radiology — Staff Portal — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text)}a:hover{color:var(--ink-strong)}
+.shell-side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto}
+.chip-s{white-space:nowrap;flex:none;display:inline-flex;align-items:center;padding:3px 10px;border-radius:9999px;background:var(--tint-blue);color:var(--info);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 40px;background:rgba(243,238,232,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.pg{padding:28px 40px 56px;box-sizing:border-box;display:flex;flex-direction:column;gap:22px}
+.grid{display:grid;gap:20px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.gm{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+@media (max-width:1100px){.gm{grid-template-columns:1fr}}
+.box{background:var(--surface-raised);border:1px solid var(--border);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:14px;min-width:0}
+.bh{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bt{margin:0;font-size:16px;line-height:24px;font-weight:600;color:var(--ink)}
+.h1{margin:0;font-family:var(--font-serif);font-size:30px;line-height:38px;font-weight:600;color:var(--ink-strong)}
+.muted{color:var(--ink-muted);font-size:13px}
+.lk{border:0;background:none;padding:6px 4px;font:inherit;font-size:13px;font-weight:600;color:var(--primary-text);cursor:pointer;border-radius:8px}
+.lk:hover{background:var(--surface-cream)}
+.flt{display:flex;gap:8px;flex-wrap:wrap}
+.fb{border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:9999px;cursor:pointer;transition:background 160ms ease,border-color 160ms ease}
+.fb:hover{border-color:var(--border-strong)}
+.fb.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.wl{display:flex;flex-direction:column;gap:8px}
+.wi{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:12px 14px;border-radius:16px;border:1px solid var(--border);background:var(--surface-raised);text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform 180ms cubic-bezier(0.22,1,0.36,1),border-color 180ms ease,box-shadow 180ms ease}
+.wi:hover{transform:translateY(-1px);border-color:var(--primary-soft);box-shadow:var(--shadow-card)}
+.wi.sel{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}
+.mod{font-family:var(--font-mono);font-size:12px;font-weight:500;text-align:center;padding:8px 0;border-radius:12px}
+.m-xr{background:var(--tint-blue);color:var(--info)}.m-ct{background:var(--tint-teal);color:var(--primary-text)}.m-mri{background:var(--tint-lavender);color:var(--ai)}.m-usg{background:var(--tint-peach);color:var(--peach-text)}
+.fb:focus-visible,.wi:focus-visible,.lk:focus-visible,.drop:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.viewer{position:relative;border-radius:18px;overflow:hidden;background:#24323d;aspect-ratio:4/3.4;display:flex;align-items:center;justify-content:center}
+.vtag{position:absolute;font-family:var(--font-mono);font-size:11px;color:#c9d4dc;line-height:16px}
+.tools{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+.tools button{width:34px;height:34px;border-radius:10px;border:1px solid rgba(250,245,239,.18);background:rgba(250,245,239,.08);color:#e7edf1;cursor:pointer;font:inherit;font-size:13px}
+.tools button:hover{background:rgba(250,245,239,.18)}
+.thumbs{display:flex;gap:8px}
+.th{flex:1;height:64px;border-radius:12px;background:#2e3f4c;border:2px solid transparent;display:flex;align-items:flex-end;padding:6px;box-sizing:border-box;font-family:var(--font-mono);font-size:10px;color:#c9d4dc}
+.th.on{border-color:#d2b277}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.kv div{padding:10px 12px;border-radius:12px;background:var(--surface)}
+.kv dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}
+.kv dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:34px;border:2px dashed var(--primary-soft);border-radius:20px;background:var(--tint-teal);cursor:pointer;font:inherit;color:var(--ink);width:100%;transition:background 180ms ease}
+.drop:hover{background:#cfe4e0}
+.up{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface)}
+.bar{height:6px;border-radius:9999px;background:var(--surface-cream);overflow:hidden;flex:1}
+.bar span{display:block;height:100%;background:var(--primary);transform-origin:left;transition:transform 400ms ease}
+.p0{transform:scaleX(0)}.p1{transform:scaleX(.1)}.p2{transform:scaleX(.2)}.p3{transform:scaleX(.3)}.p4{transform:scaleX(.4)}.p5{transform:scaleX(.5)}.p6{transform:scaleX(.6)}.p7{transform:scaleX(.7)}.p8{transform:scaleX(.8)}.p9{transform:scaleX(.9)}.p10{transform:scaleX(1)}
+.eq{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.led{width:10px;height:10px;border-radius:9999px;flex:none}
+.led.ok{background:var(--success);box-shadow:0 0 0 4px var(--success-bg)}
+.led.warn{background:#c99a45;box-shadow:0 0 0 4px var(--warning-bg)}
+.led.bad{background:var(--danger);box-shadow:0 0 0 4px var(--danger-bg)}
+.pulse{animation:pl 1.8s infinite}
+@keyframes pl{50%{opacity:.4}}
+.sched{display:grid;grid-template-columns:70px repeat(4,minmax(0,1fr));gap:6px;font-size:12px}
+.sched .hd{font-weight:600;color:var(--ink);text-align:center;padding:8px 0;background:var(--surface-cream);border-radius:10px}
+.sched .tm{color:var(--ink-muted);font-family:var(--font-mono);padding:10px 0}
+.sl{border-radius:10px;padding:8px 10px;min-height:20px;line-height:16px}
+.sl b{display:block;color:var(--ink);font-size:12px}
+.sl.free{background:repeating-linear-gradient(135deg,var(--surface) 0 6px,var(--surface-raised) 6px 12px);color:var(--ink-muted);border:1px dashed var(--border)}
+.scan{position:absolute;left:0;right:0;height:60px;background:linear-gradient(180deg,rgba(134,189,184,0),rgba(134,189,184,.22),rgba(134,189,184,0));animation:scan 3.6s ease-in-out infinite}
+@keyframes scan{0%{top:-60px}100%{top:100%}}
+.in{animation:in 500ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion: reduce){.pulse,.scan,.in{animation:none}.wi,.bar span{transition:none}}
+@media (max-width:900px){.shell-side{position:static;height:auto;width:100%}}
+.hi{color:var(--danger)!important}
+.flagp{display:inline-flex;align-items:center;gap:4px;margin-left:8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--danger)}
+.src{display:inline-flex;margin-left:6px;padding:1px 8px;border-radius:9999px;background:var(--tint-lavender);color:var(--ai);font-size:11px;font-weight:600;vertical-align:middle}
+.wk{display:grid;grid-template-columns:64px minmax(0,1fr) 92px;gap:12px;align-items:center;font-size:13px}
+.wk-b{display:flex;height:14px;border-radius:9999px;overflow:hidden;background:var(--surface-cream)}
+.wk-d{background:var(--primary)}
+.wk-p{background:repeating-linear-gradient(135deg,#e7c58e 0 5px,#f6e9cf 5px 10px)}
+.wk-l{font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+.lg{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-muted)}
+.lg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:10px;border-radius:3px;display:inline-block}
+.feed{display:flex;flex-direction:column;gap:8px}
+.fe{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.fe-t{flex:none;font-family:var(--font-mono);font-size:12px;color:var(--ink-muted);padding-top:2px}
+.fe a{font-size:13px;font-weight:600}
+.note{padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:13px}
+.note b{font-family:var(--font-mono);font-weight:500;font-size:12px;color:var(--ink-muted);margin-right:8px}
+.toast{position:fixed;top:76px;right:24px;z-index:40;max-width:340px;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--surface-raised);border:1px solid var(--border);box-shadow:var(--shadow-lift);animation:tin 380ms cubic-bezier(0.22,1,0.36,1) both}
+.toast strong{display:block;color:var(--ink);font-size:14px}
+.toast-dot{flex:none;width:10px;height:10px;margin-top:5px;border-radius:9999px;background:var(--primary)}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}}
+.w0{width:0%}.w5{width:5%}.w10{width:10%}.w15{width:15%}.w20{width:20%}.w25{width:25%}.w30{width:30%}.w35{width:35%}.w40{width:40%}.w45{width:45%}.w50{width:50%}.w55{width:55%}.w60{width:60%}.w65{width:65%}.w70{width:70%}.w75{width:75%}.w80{width:80%}.w85{width:85%}.w90{width:90%}.w95{width:95%}.w100{width:100%}
+@media (prefers-reduced-motion: reduce){.toast{animation:none}}
+
+.kvx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}.kvx div{padding:10px 12px;border-radius:12px;background:var(--surface)}.kvx dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--ink-muted)}.kvx dd{margin:2px 0 0;font-weight:600;color:var(--ink-strong);font-size:14px}.kvx dd.bad{color:var(--danger)}.kvx dd.good{color:var(--success)}
+.pend{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:14px;background:var(--surface)}.pend-r{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border)}.pend-r:last-child{border-bottom:0}.pd{width:8px;height:8px;border-radius:9999px;background:var(--primary-soft);flex:none}.pd.bad{background:var(--danger)}.pd.ok{background:var(--success)}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-stf" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Patients, orders and images are simulated. You only see studies that a doctor ordered.</x-import>
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <div class="shell-side">
+      <x-import component-from-global-scope="CareFusion.Sidebar" sections="{{nav}}" active-id="{{section}}" on-select="{{go}}" header="{{logo}}" footer="{{who}}" label="Staff Portal"></x-import>
+    </div>
+    <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column;">
+      <div class="topbar">
+        <p style="margin: 0; font-size: 13px; color: var(--ink-muted);">Radiology <span aria-hidden="true">›</span> <strong style="color: var(--ink);">{{crumb}}</strong></p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">On shift · 08:00–16:00</x-import>
+          <x-import component-from-global-scope="CareFusion.Badge" tone="outline">Demo General Hospital · Radiology</x-import>
+        </div>
+      </div>
+      <main style="flex: 1;">
+
+        <sc-if value="{{is.worklist}}" hint-placeholder-val="{{yes}}">
+        <div class="pg in">
+          <div class="bh"><div><h1 class="h1">Good afternoon, Fathima</h1><p class="muted" style="margin: 4px 0 0;">Saturday 17 Oct · 14 studies ordered today · 3 marked urgent</p></div>
+            <x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{toUpload}}">Upload images to an order</x-import></div>
+          <section class="grid g4" aria-label="Today">
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Waiting" value="6" hint="Oldest: 38 min" tone="peach"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="In progress" value="2" hint="CT room 1 · USG 2"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Uploaded today" value="6" hint="All linked to orders" tone="sage"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Avg turnaround" value="42" unit="min" trend="{{tat}}" tone="blue"></x-import>
+          </section>
+          <section class="grid gm">
+            <div class="box">
+              <div class="bh"><h2 class="bt">Imaging worklist</h2>
+                <div class="flt" role="group" aria-label="Filter by modality">
+                  <sc-for list="{{mods}}" as="f" hint-placeholder-count="5"><button type="button" class="{{f.cls}}" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+                </div>
+              </div>
+              <div class="wl">
+                <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+                  <button type="button" class="{{r.cls}}" onClick="{{r.open}}" aria-label="{{r.aria}}">
+                    <span class="{{r.modCls}}">{{r.mod}}</span>
+                    <span style="min-width: 0;"><strong class="{{r.partCls}}" style="color: var(--ink); display: block;">{{r.part}}<sc-if value="{{r.high}}" hint-placeholder-val="{{no}}"><span class="flagp">⚑ {{r.prio}}</span></sc-if><sc-if value="{{r.bus}}" hint-placeholder-val="{{no}}"><span class="src">From Doctor app</span></sc-if></strong><span class="muted">{{r.patient}} · {{r.order}} · {{r.by}}</span></span>
+                    <x-import component-from-global-scope="CareFusion.Badge" tone="{{r.pTone}}">{{r.prio}}</x-import>
+                    <span style="text-align: right;"><x-import component-from-global-scope="CareFusion.Badge" tone="{{r.sTone}}" dot="{{yes}}">{{r.status}}</x-import><span class="muted" style="display: block; margin-top: 4px; font-family: var(--font-mono); font-size: 12px;">{{r.time}}</span></span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Rooms right now</h2><button type="button" class="lk" onClick="{{toEquip}}">Equipment</button></div>
+                <div class="eq"><span class="led ok pulse" aria-hidden="true"></span><div style="flex: 1;"><strong style="color: var(--ink);">CT room 1</strong><div class="muted">CT abdomen · DEMO-PT-4471 · 12 min in</div></div></div>
+                <div class="eq"><span class="led ok pulse" aria-hidden="true"></span><div style="flex: 1;"><strong style="color: var(--ink);">USG 2</strong><div class="muted">Obstetric scan · DEMO-PT-2093</div></div></div>
+                <div class="eq"><span class="led warn" aria-hidden="true"></span><div style="flex: 1;"><strong style="color: var(--ink);">X-ray DR 1</strong><div class="muted">Detector calibration due today</div></div></div>
+                <div class="eq"><span class="led bad" aria-hidden="true"></span><div style="flex: 1;"><strong style="color: var(--ink);">MRI 1.5T</strong><div class="muted">Down for service · back Mon 19 Oct</div></div></div>
+              </div>
+              <div class="box">
+                <div class="bh"><h2 class="bt">Connected apps</h2><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Live</x-import></div>
+                <div class="feed" aria-live="polite">
+                  <sc-for list="{{feed}}" as="f" hint-placeholder-count="3">
+                    <div class="fe"><span class="fe-t">{{f.at}}</span><div style="flex: 1; min-width: 0;"><strong style="color: var(--ink); font-size: 14px;">{{f.title}}</strong><div class="muted">{{f.text}}</div></div><a href="{{f.href}}">Open</a></div>
+                  </sc-for>
+                </div>
+                <p class="muted" style="margin: 0;">Studies open only from a doctor's imaging order. Results you send reach the doctor and the patient's documents.</p>
+              </div>
+            </div>
+          </section>
+          <section class="grid g2">
+            <div class="box">
+              <div class="bh"><h2 class="bt">Workload today</h2><span class="muted">{{wkTotal}}</span></div>
+              <sc-for list="{{wk}}" as="w" hint-placeholder-count="4">
+                <div class="wk"><strong style="color: var(--ink);">{{w.mod}}</strong><div class="wk-b" role="img" aria-label="{{w.aria}}"><span class="{{w.dCls}}"></span><span class="{{w.pCls}}"></span></div><span class="wk-l">{{w.label}}</span></div>
+              </sc-for>
+              <div class="lg"><span><i class="sw" style="background: var(--primary);"></i>Completed</span><span><i class="sw wk-p"></i>Pending (striped)</span></div>
+              <dl class="kvx"><div><dt>Median wait</dt><dd class="good">18 min</dd></div><div><dt>STAT in queue</dt><dd class="bad">1 · portable CXR</dd></div><div><dt>Rooms up</dt><dd>DR 1, CT, USG</dd></div><div><dt>Dose alerts today</dt><dd>0</dd></div></dl>
+            </div>
+            <div class="box">
+              <div class="bh"><h2 class="bt">Shift handover notes</h2><span class="muted">To Vinod Kurian · 16:00</span></div>
+              <x-import component-from-global-scope="CareFusion.Textarea" label="Add a note" placeholder="e.g. DR 1 calibration done at 15:10; CT head for Mariamma J. still pending" value="{{noteText}}" on-change="{{setNote}}" rows="{{n3}}"></x-import>
+              <div style="display: flex; gap: 8px; align-items: center;"><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm" disabled="{{noNote}}" on-click="{{saveNote}}">Save note</x-import><span class="muted">Timestamped and visible to the next shift.</span></div>
+              <sc-for list="{{notes}}" as="n" hint-placeholder-count="2"><div class="note"><b>{{n.at}}</b>{{n.text}}</div></sc-for>
+            </div>
+          </section>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.study}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div class="bh"><div><p class="muted" style="margin: 0;">Order {{cur.order}} · ordered by {{cur.by}} · {{cur.time}}</p><h1 class="h1">{{cur.part}}</h1></div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;"><x-import component-from-global-scope="CareFusion.Button" variant="secondary" on-click="{{toWorklist}}">Back to worklist</x-import><x-import component-from-global-scope="CareFusion.Button" variant="primary" on-click="{{toUpload}}">Upload to this order</x-import></div></div>
+          <section class="grid gm">
+            <div class="box" style="padding: 16px;">
+              <div class="viewer" role="img" aria-label="Image viewer placeholder showing a simulated chest radiograph">
+                <svg viewBox="0 0 400 340" width="78%" aria-hidden="true">
+                  <defs><radialGradient id="lg" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#5d6f7c"></stop><stop offset="1" stop-color="#24323d"></stop></radialGradient></defs>
+                  <rect width="400" height="340" fill="url(#lg)"></rect>
+                  <path d="M196 30 v290" stroke="#c9d4dc" stroke-width="14" opacity=".55"></path>
+                  <path d="M188 60 C120 60 70 120 70 210 C70 280 110 310 150 310 C175 310 186 280 186 240 Z" fill="#1b2730" opacity=".85"></path>
+                  <path d="M206 60 C280 60 330 120 330 210 C330 280 290 310 250 310 C225 310 210 280 210 240 Z" fill="#1b2730" opacity=".85"></path>
+                  <g stroke="#9fb0bc" stroke-width="5" fill="none" opacity=".5"><path d="M190 90 C140 80 100 100 80 130"></path><path d="M190 120 C140 110 96 130 76 165"></path><path d="M190 150 C140 140 94 160 74 200"></path><path d="M190 180 C140 172 96 192 78 232"></path><path d="M206 90 C256 80 296 100 316 130"></path><path d="M206 120 C256 110 300 130 320 165"></path><path d="M206 150 C256 140 302 160 322 200"></path><path d="M206 180 C256 172 300 192 318 232"></path></g>
+                  <ellipse cx="226" cy="236" rx="52" ry="44" fill="#8a9aa6" opacity=".45"></ellipse>
+                  <circle cx="122" cy="232" r="22" fill="none" stroke="#d2b277" stroke-width="2" stroke-dasharray="5 4"></circle>
+                </svg>
+                <span class="scan" aria-hidden="true"></span>
+                <span class="vtag" style="left: 14px; top: 12px;">DEMO-PT-1234 · F · 38y<br>CHEST PA · 15 Oct 2026</span>
+                <span class="vtag" style="left: 14px; bottom: 12px;">W 1500 · L -600 · 1:1</span>
+                <span class="vtag" style="right: 14px; bottom: 12px;">Img 1/2 · DR 1</span>
+                <div class="tools" role="toolbar" aria-label="Viewer tools"><button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">−</button><button type="button" aria-label="Window level">◐</button><button type="button" aria-label="Measure">⟷</button></div>
+              </div>
+              <div class="thumbs"><span class="th on">PA</span><span class="th">LAT</span><span class="th">Prior 09/26</span><span class="th">Prior 03/25</span></div>
+              <dl class="kvx" style="grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 14px;"><div><dt>kVp</dt><dd>110</dd></div><div><dt>mAs</dt><dd>2.5</dd></div><div><dt>Dose (DAP)</dt><dd class="good">0.08 Gy·cm²</dd></div><div><dt>Operator</dt><dd>Fathima B.</dd></div></dl>
+              <div class="pend" style="margin-top: 12px;">
+                <div class="bh"><strong style="color: var(--ink); font-size: 14px;">Before you send</strong><span class="muted">3 of 4 done</span></div>
+                <div class="pend-r"><span class="pd ok" aria-hidden="true"></span><span style="flex: 1;">Patient ID and order matched on the console</span></div>
+                <div class="pend-r"><span class="pd ok" aria-hidden="true"></span><span style="flex: 1;">Both views acquired, no motion blur</span></div>
+                <div class="pend-r"><span class="pd ok" aria-hidden="true"></span><span style="flex: 1;">Prior 09/26 linked for comparison</span></div>
+                <div class="pend-r"><span class="pd" aria-hidden="true"></span><span style="flex: 1;">Send to reporting doctor (Dr. Arun Nair)</span></div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div class="box">
+                <div class="bh"><h2 class="bt">Study details</h2><x-import component-from-global-scope="CareFusion.Badge" tone="{{cur.sTone}}" dot="{{yes}}">{{cur.status}}</x-import></div>
+                <dl class="kv">
+                  <div><dt>Patient</dt><dd>{{cur.patient}}</dd></div>
+                  <div><dt>Modality</dt><dd>{{cur.mod}}</dd></div>
+                  <div><dt>Priority</dt><dd>{{cur.prio}}</dd></div>
+                  <div><dt>Room</dt><dd>{{cur.room}}</dd></div>
+                  <div><dt>Clinical note</dt><dd>{{cur.note}}</dd></div>
+                  <div><dt>Contrast</dt><dd>{{cur.contrast}}</dd></div>
+                </dl>
+                <x-import component-from-global-scope="CareFusion.Alert" tone="danger" title="Allergy on record">Penicillin. No known contrast allergy.</x-import>
+              </div>
+              <x-import component-from-global-scope="CareFusion.AIInsight" module="Image analysis · pre-read" status="uncertain" confidence="{{conf}}" title="Possible small opacity, left lower zone" evidence="{{evidence}}">
+                <p style="margin: 0; font-size: 14px; line-height: 21px;">For the reporting doctor only. Not shown to the patient until a doctor reviews it. You don't act on this.</p>
+              </x-import>
+              <div class="box" style="background: var(--tint-lavender); border-color: transparent; box-shadow: none;">
+                <div class="bh"><h2 class="bt">Review</h2><x-import component-from-global-scope="CareFusion.Badge" tone="ai">Pending</x-import></div>
+                <p style="margin: 0; font-size: 14px;">{{reviewText}}</p>
+                <div><x-import component-from-global-scope="CareFusion.Button" variant="primary" size="sm" disabled="{{curFinished}}" on-click="{{finish}}">{{finishLabel}}</x-import></div>
+              </div>
+            </div>
+          </section>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.upload}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div><h1 class="h1">Upload images to an order</h1><p class="muted" style="margin: 4px 0 0;">Pick the order first. Files only attach to that patient and that study.</p></div>
+          <section class="grid g2">
+            <div class="box">
+              <h2 class="bt">1 · Choose the order</h2>
+              <x-import component-from-global-scope="CareFusion.Select" label="Imaging order" options="{{orderOpts}}" value="{{upOrder}}" on-change="{{pickOrder}}"></x-import>
+              <dl class="kv">
+                <div><dt>Patient</dt><dd>{{upCur.patient}}</dd></div>
+                <div><dt>Study</dt><dd>{{upCur.part}}</dd></div>
+                <div><dt>Ordered by</dt><dd>{{upCur.by}}</dd></div>
+                <div><dt>Modality</dt><dd>{{upCur.mod}}</dd></div>
+              </dl>
+              <h2 class="bt" style="margin-top: 6px;">2 · Add files</h2>
+              <button type="button" class="drop" onClick="{{addFile}}">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--primary-text)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"></path></svg>
+                <strong>Drop DICOM or images here, or click to add</strong>
+                <span class="muted">.dcm, .zip of a series, JPG/PNG · up to 2 GB per study</span>
+              </button>
+              <x-import component-from-global-scope="CareFusion.Checkbox" label="Patient name and ID on the images match the order" checked="{{match}}" on-change="{{toggleMatch}}"></x-import>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <x-import component-from-global-scope="CareFusion.Button" variant="primary" disabled="{{cantSend}}" on-click="{{send}}">{{sendLabel}}</x-import>
+                <x-import component-from-global-scope="CareFusion.Button" variant="ghost" on-click="{{toWorklist}}">Cancel</x-import>
+              </div>
+            </div>
+            <div class="box">
+              <div class="bh"><h2 class="bt">Files in this upload</h2><span class="muted">{{fileCount}}</span></div>
+              <sc-for list="{{files}}" as="u" hint-placeholder-count="3">
+                <div class="up"><span class="mod m-ct" style="width: 46px; flex: none; padding: 6px 0;">{{u.ext}}</span><div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;"><div style="display: flex; justify-content: space-between; gap: 8px;"><strong style="color: var(--ink); font-size: 14px;">{{u.name}}</strong><span class="muted">{{u.size}}</span></div><div class="bar"><span class="{{u.pCls}}"></span></div></div><span class="muted" style="width: 70px; text-align: right;">{{u.state}}</span></div>
+              </sc-for>
+              <sc-if value="{{sent}}" hint-placeholder-val="{{no}}">
+                <x-import component-from-global-scope="CareFusion.Alert" tone="success" title="Sent to the record">Images linked to {{upCur.order}}. {{upCur.by}} and the patient's Documents were notified. <a href="Doctor.dc.html">Open Doctor app</a></x-import>
+              </sc-if>
+              <div style="margin-top: auto; padding: 14px; border-radius: 14px; background: var(--surface-cream);">
+                <strong style="color: var(--ink); font-size: 14px;">Before you send</strong>
+                <ul style="margin: 8px 0 0; padding-left: 18px; font-size: 13px; line-height: 20px;"><li>Burned-in names are checked against the order</li><li>Wrong-patient uploads can be withdrawn within 24 h, with a reason</li><li>Every upload is in the audit log</li></ul>
+              </div>
+            </div>
+          </section>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.equipment}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div><h1 class="h1">Equipment</h1><p class="muted" style="margin: 4px 0 0;">Status of each machine, service dates and quality checks.</p></div>
+          <section class="grid g4">
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Working" value="5" unit="of 7" tone="sage"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Needs attention" value="1" hint="DR 1 calibration" tone="peach"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Down" value="1" hint="MRI · service Mon"></x-import>
+            <x-import component-from-global-scope="CareFusion.StatCard" label="Uptime · 30 days" value="96.4" unit="%" tone="blue"></x-import>
+          </section>
+          <div class="box"><x-import component-from-global-scope="CareFusion.Table" columns="{{eqCols}}" rows="{{eqRows}}" caption="Radiology equipment"></x-import></div>
+          <section class="grid g2">
+            <x-import component-from-global-scope="CareFusion.Alert" tone="warning" title="X-ray DR 1 · calibration due today">Run the flat-field calibration before 16:00. Studies can continue meanwhile.</x-import>
+            <x-import component-from-global-scope="CareFusion.Alert" tone="danger" title="MRI 1.5T is down">Helium level warning. Engineer visit Mon 19 Oct, 10:00. 4 MRI orders moved to Mon–Tue.</x-import>
+          </section>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{is.schedule}}" hint-placeholder-val="{{no}}">
+        <div class="pg in">
+          <div class="bh"><div><h1 class="h1">Today's schedule</h1><p class="muted" style="margin: 4px 0 0;">Saturday 17 Oct · booked slots by room</p></div><x-import component-from-global-scope="CareFusion.Badge" tone="teal">14 booked · 5 free</x-import></div>
+          <div class="box">
+            <div class="sched" role="table" aria-label="Schedule by room and time">
+              <span></span><span class="hd">X-ray DR 1</span><span class="hd">CT room 1</span><span class="hd">USG 2</span><span class="hd">MRI 1.5T</span>
+              <span class="tm">09:00</span><span class="sl m-xr"><b>Chest PA</b>DEMO-PT-1234</span><span class="sl m-ct"><b>CT head</b>DEMO-PT-6610</span><span class="sl m-usg"><b>Abdomen</b>DEMO-PT-3302</span><span class="sl free">Out of service</span>
+              <span class="tm">10:00</span><span class="sl m-xr"><b>Knee AP/LAT</b>DEMO-PT-8820</span><span class="sl free">Free</span><span class="sl m-usg"><b>Thyroid</b>DEMO-PT-1187</span><span class="sl free">Out of service</span>
+              <span class="tm">11:00</span><span class="sl m-xr"><b>Chest PA</b>DEMO-PT-5509</span><span class="sl m-ct"><b>CT KUB</b>DEMO-PT-2276</span><span class="sl free">Free</span><span class="sl free">Out of service</span>
+              <span class="tm">12:00</span><span class="sl free">Lunch</span><span class="sl free">Lunch</span><span class="sl free">Lunch</span><span class="sl free">Out of service</span>
+              <span class="tm">13:00</span><span class="sl m-xr"><b>Spine LS</b>DEMO-PT-9031</span><span class="sl m-ct"><b>CT chest</b>DEMO-PT-7754</span><span class="sl m-usg"><b>Obstetric</b>DEMO-PT-2093</span><span class="sl free">Out of service</span>
+              <span class="tm">14:00</span><span class="sl free">Free</span><span class="sl m-ct"><b>CT abdomen</b>DEMO-PT-4471</span><span class="sl m-usg"><b>Pelvis</b>DEMO-PT-6402</span><span class="sl free">Out of service</span>
+              <span class="tm">15:00</span><span class="sl m-xr"><b>Hand PA</b>DEMO-PT-3348</span><span class="sl free">Free</span><span class="sl free">Free</span><span class="sl free">Out of service</span>
+            </div>
+          </div>
+          <section class="grid g2">
+            <div class="box"><h2 class="bt">Moved because of MRI downtime</h2>
+              <div class="eq"><span class="mod m-mri" style="width: 54px;">MRI</span><div style="flex: 1;"><strong style="color: var(--ink);">MRI brain · DEMO-PT-4120</strong><div class="muted">Now Mon 19 Oct, 14:00 · patient told by SMS</div></div></div>
+              <div class="eq"><span class="mod m-mri" style="width: 54px;">MRI</span><div style="flex: 1;"><strong style="color: var(--ink);">MRI knee · DEMO-PT-0954</strong><div class="muted">Now Tue 20 Oct, 09:30 · patient told by SMS</div></div></div>
+            </div>
+            <div class="box"><h2 class="bt">Team on shift</h2>
+              <div class="eq"><x-import component-from-global-scope="CareFusion.Avatar" name="Fathima Beevi" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink);">Fathima Beevi (you)</strong><div class="muted">Radiographer · 08:00–16:00</div></div></div>
+              <div class="eq"><x-import component-from-global-scope="CareFusion.Avatar" name="Vinod Kurian" size="{{n32}}"></x-import><div style="flex: 1;"><strong style="color: var(--ink);">Vinod Kurian</strong><div class="muted">CT technologist · 08:00–20:00</div></div></div>
+            </div>
+          </section>
+        </div>
+        </sc-if>
+
+      </main>
+    </div>
+  </div>
+  <sc-if value="{{hasToast}}" hint-placeholder-val="{{no}}">
+    <div class="toast" role="status"><span class="toast-dot" aria-hidden="true"></span><div><strong>{{toast.title}}</strong><span class="muted">{{toast.text}}</span></div></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+var CF_BUS = 'cf-demo-bus-v1';
+var CF_SEED = [
+  { id: 's1', type: 'booking',      from: 'citizen',  to: ['doctor'],               title: 'New booking · Anjali Menon', text: 'Tue 21 Oct, 10:30 · follow-up', href: 'Doctor.dc.html', at: '09:12' },
+  { id: 's2', type: 'prescription', from: 'doctor',   to: ['pharmacist','citizen'], title: 'e-Signed prescription · Anjali Menon', text: 'Metformin 500 mg ×60, Atorvastatin 10 mg ×30 · Dr. Arun Nair', href: 'Pharmacist.dc.html', at: '10:05' },
+  { id: 's3', type: 'lab-order',    from: 'doctor',   to: ['labtech'],              title: 'Lab order · HbA1c, lipid profile', text: 'Anjali Menon · routine · Dr. Arun Nair', href: 'LabTech.dc.html', at: '10:07' },
+  { id: 's4', type: 'lab-result',   from: 'labtech',  to: ['doctor','citizen'],     title: 'Result ready · Lipid profile', text: 'LDL 142 mg/dL (high) · uploaded by Rahul Varghese', href: 'Doctor.dc.html', at: '11:05' },
+  { id: 's5', type: 'break-glass',  from: 'doctor',   to: ['hospitaladmin','citizen'], title: 'Emergency access used', text: 'Dr. Sreeja Paul · Thomas Kurian · unconscious on arrival', href: 'HospitalAdmin.dc.html', at: '03:12' },
+  { id: 's6', type: 'alert',        from: 'district', to: ['citizen','doctor','nurse','hospitaladmin'], title: 'Heatwave — Pathanamthitta', text: 'Stay indoors 12:00–16:00 · District health office', href: 'CitizenAlerts.dc.html', at: '08:00' },
+  { id: 's7', type: 'vitals-critical', from: 'nurse', to: ['doctor'],               title: 'Early-warning score 7 · Bed 7', text: 'Thomas Kurian · SpO₂ 91% · escalated by Lekha Pillai', href: 'Doctor.dc.html', at: '12:40' },
+  { id: 's8', type: 'dispensed',    from: 'pharmacist', to: ['citizen','pharmacyadmin'], title: 'Ready to collect · Demo Hospital Pharmacy', text: 'Anjali Menon · Metformin, Atorvastatin · Joseph Mathew', href: 'CitizenMedicines.dc.html', at: '13:20' },
+  { id: 's9', type: 'complaint',    from: 'citizen',  to: ['hospitaladmin','district'], title: 'Complaint filed · long OP wait', text: 'Demo General Hospital · ticket CMP-0412', href: 'HospitalAdmin.dc.html', at: '14:02' },
+  { id: 's10', type: 'blood-request', from: 'doctor', to: ['citizen','district'],   title: 'Blood needed · B+ · 2 units', text: 'Demo General Hospital · surgery tomorrow 08:00', href: 'CitizenBlood.dc.html', at: '14:30' }
+];
+function busRead() { try { var raw = localStorage.getItem(CF_BUS); return raw ? JSON.parse(raw) : CF_SEED.slice(); } catch (e) { return CF_SEED.slice(); } }
+function busFor(role) { return busRead().filter(function (e) { return e.to.indexOf(role) >= 0; }); }
+function busPush(ev) {
+  var now = new Date(); var at = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  var item = Object.assign({ id: 'e' + now.getTime() + Math.floor(Math.random() * 1000), at: at }, ev);
+  try { var L = busRead(); L.unshift(item); localStorage.setItem(CF_BUS, JSON.stringify(L.slice(0, 40))); } catch (e) {}
+  return item;
+}
+var ROLE = 'radiology';
+var RAD_SEED = [{ id: 'r1', type: 'imaging-order', from: 'doctor', to: ['radiology'], title: 'Imaging order · Chest X-ray PA', text: 'Joseph K. · urgent · Dr. Arun Nair', href: 'Doctor.dc.html', at: '14:36' }];
+function radBus() { var b = busFor(ROLE), ids = b.map(function (e) { return e.id; }); return b.concat(RAD_SEED.filter(function (e) { return ids.indexOf(e.id) < 0; })); }
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var b = radBus();
+    this.state = { section: 'worklist', mod: 'all', sel: 0, upOrder: 'DEMO-IMG-0417', files: [], match: false, sent: false, bus: b, seen: b.map(function (e) { return e.id; }), toast: null, fin: {}, noteText: '', notes: [{ at: '13:10', text: 'USG 2 gel warmer replaced. Obstetric list running 15 min late.' }, { at: '11:45', text: 'MRI orders for Mon–Tue confirmed with patients by SMS.' }] };
+  }
+  componentDidMount() {
+    var self = this;
+    this.pull = function () {
+      var b = radBus(), seen = self.state.seen;
+      var fresh = b.filter(function (e) { return seen.indexOf(e.id) < 0; });
+      var next = { bus: b };
+      if (fresh.length) { next.seen = seen.concat(fresh.map(function (e) { return e.id; })); self.flash({ title: fresh[0].title, text: fresh[0].text }); }
+      self.setState(next);
+    };
+    this.bt = setInterval(this.pull, 2000);
+    window.addEventListener('storage', this.pull);
+  }
+  flash(t) { var self = this; this.setState({ toast: t }); clearTimeout(this.tt); this.tt = setTimeout(function () { self.setState({ toast: null }); }, 4000); }
+  componentWillUnmount() { clearInterval(this.timer); clearInterval(this.bt); clearTimeout(this.tt); window.removeEventListener('storage', this.pull); }
+  startUpload() {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      var done = true;
+      var files = this.state.files.map(function (f) { if (f.p < 10) { done = false; return Object.assign({}, f, { p: f.p + 2 }); } return f; });
+      this.setState({ files: files });
+      if (done) clearInterval(this.timer);
+    }, 350);
+  }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion, st = this.state;
+    function ic(d) { return h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }, h('path', { d: d })); }
+    var STUDIES = [
+      { id: 'DEMO-IMG-0417', mod: 'X-ray', m: 'xr', part: 'Chest PA + lateral', patient: 'Anjali M. · DEMO-PT-1234', order: 'DEMO-IMG-0417', by: 'Dr. Arun Nair', prio: 'Routine', status: 'Waiting for review', time: '15 Oct 10:12', room: 'X-ray DR 1', note: 'Cough 3 wks, post infection', contrast: 'None' },
+      { id: 'DEMO-IMG-0431', mod: 'CT', m: 'ct', part: 'CT abdomen with contrast', patient: 'Thomas K. · DEMO-PT-4471', order: 'DEMO-IMG-0431', by: 'Dr. Sreeja Paul', prio: 'Urgent', status: 'Scanning', time: '14:05', room: 'CT room 1', note: 'RLQ pain, ? appendicitis', contrast: 'IV · creatinine 0.9' },
+      { id: 'DEMO-IMG-0433', mod: 'USG', m: 'usg', part: 'Obstetric scan, 20 wks', patient: 'Divya R. · DEMO-PT-2093', order: 'DEMO-IMG-0433', by: 'Dr. Leela George', prio: 'Routine', status: 'Scanning', time: '13:50', room: 'USG 2', note: 'Anomaly scan', contrast: 'None' },
+      { id: 'DEMO-IMG-0436', mod: 'X-ray', m: 'xr', part: 'Wrist AP/LAT, right', patient: 'Akhil S. · DEMO-PT-7302', order: 'DEMO-IMG-0436', by: 'Dr. Arun Nair', prio: 'Urgent', status: 'Waiting', time: '14:18', room: 'X-ray DR 1', note: 'Fall from bike, swelling', contrast: 'None' },
+      { id: 'DEMO-IMG-0438', mod: 'CT', m: 'ct', part: 'CT head, plain', patient: 'Mariamma J. · DEMO-PT-6610', order: 'DEMO-IMG-0438', by: 'Casualty', prio: 'Stat', status: 'Waiting', time: '14:22', room: 'CT room 1', note: 'Sudden weakness, 72y', contrast: 'None' },
+      { id: 'DEMO-IMG-0440', mod: 'MRI', m: 'mri', part: 'MRI brain', patient: 'Suresh P. · DEMO-PT-4120', order: 'DEMO-IMG-0440', by: 'Dr. Sreeja Paul', prio: 'Routine', status: 'Rescheduled', time: 'Mon 14:00', room: 'MRI 1.5T', note: 'Chronic headache', contrast: 'Gadolinium' },
+      { id: 'DEMO-IMG-0442', mod: 'USG', m: 'usg', part: 'Thyroid ultrasound', patient: 'Bindu V. · DEMO-PT-1187', order: 'DEMO-IMG-0442', by: 'Dr. Arun Nair', prio: 'Routine', status: 'Uploaded', time: '10:40', room: 'USG 2', note: 'Neck swelling', contrast: 'None' }
+    ];
+    var BUSST = st.bus.filter(function (e) { return e.type === 'imaging-order'; }).map(function (e, n) {
+      var part = (e.title.split('·')[1] || 'Imaging study').trim(), bits = e.text.split('·');
+      var pr = /stat/i.test(e.text) ? 'Stat' : /urgent/i.test(e.text) ? 'Urgent' : 'Routine';
+      var m = /ct/i.test(part) ? 'ct' : /mri/i.test(part) ? 'mri' : /usg|ultra/i.test(part) ? 'usg' : 'xr';
+      return { id: 'BUS-' + e.id, mod: { xr: 'X-ray', ct: 'CT', mri: 'MRI', usg: 'USG' }[m], m: m, part: part, patient: (bits[0] || 'Patient').trim(), order: 'DEMO-IMG-' + (500 + n), by: (bits[2] || 'Doctor').trim(), prio: pr, status: 'Waiting', time: e.at, room: m === 'ct' ? 'CT room 1' : 'X-ray DR 1', note: 'Ordered from the Doctor app', contrast: 'None', bus: true };
+    });
+    STUDIES = BUSST.concat(STUDIES);
+    STUDIES = STUDIES.map(function (s) { return st.fin[s.id] ? Object.assign({}, s, { status: 'Uploaded' }) : s; });
+    var PT = { Routine: 'neutral', Urgent: 'warning', Stat: 'danger' };
+    var STT = { Waiting: 'warning', Scanning: 'info', 'Waiting for review': 'ai', Rescheduled: 'neutral', Uploaded: 'success' };
+    var dec = function (s) { return Object.assign({}, s, { pTone: PT[s.prio], sTone: STT[s.status] }); };
+    var MODS = [['all', 'All'], ['xr', 'X-ray'], ['ct', 'CT'], ['mri', 'MRI'], ['usg', 'USG']];
+    var NAV = [
+      { items: [
+        { id: 'worklist', label: 'Worklist', icon: ic('M4 6h16M4 12h16M4 18h10'), badge: 6 },
+        { id: 'study', label: 'Study viewer', icon: ic('M3 5h18v14H3zM8 15l3-3l2 2l3-4') },
+        { id: 'upload', label: 'Upload images', icon: ic('M12 16V4M7 9l5-5l5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3') }
+      ] },
+      { title: 'Department', items: [
+        { id: 'equipment', label: 'Equipment', icon: ic('M4 7h16v10H4zM8 21h8M12 17v4'), badge: 2 },
+        { id: 'schedule', label: 'Schedule', icon: ic('M4 6h16v14H4zM4 10h16M8 3v4M16 3v4') }
+      ] }
+    ];
+    var labels = { worklist: 'Worklist', study: 'Study viewer', upload: 'Upload images', equipment: 'Equipment', schedule: 'Schedule' };
+    var is = {}; Object.keys(labels).forEach(function (k) { is[k] = k === st.section; });
+    var self = this;
+    var visible = STUDIES.map(function (s, i) { return [s, i]; }).filter(function (p) { return st.mod === 'all' || p[0].m === st.mod; });
+    var up = STUDIES.filter(function (s) { return s.id === st.upOrder; })[0] || STUDIES[0];
+    var curS = STUDIES[st.sel] || STUDIES[0];
+    var pushResult = function (s) {
+      var ev = busPush({ type: 'imaging-result', from: 'radiology', to: ['doctor', 'citizen'], title: 'Images ready · ' + s.part, text: s.patient + ' · ' + s.order + ' · uploaded by Fathima Beevi', href: 'Doctor.dc.html' });
+      var f = Object.assign({}, self.state.fin); f[s.id] = true;
+      self.setState({ fin: f, seen: self.state.seen.concat([ev.id]) });
+      self.flash({ title: 'Sent to ' + s.by + ' and the patient', text: s.part + ' · ' + s.order });
+    };
+    var WK = [['X-ray', 4, 2], ['CT', 2, 2], ['USG', 3, 1], ['MRI', 0, 4]];
+    var nDone = Object.keys(st.fin).length;
+    var allDone = st.files.length > 0 && st.files.every(function (f) { return f.p >= 10; });
+    var eqLed = function (t, txt) { return h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 8 } }, h('span', { className: 'led ' + t, 'aria-hidden': 'true' }), txt); };
+    return {
+      yes: true, no: false, n32: 32, n3: 3,
+      feed: st.bus.concat(busRead().filter(function (e) { return e.from === 'doctor' && e.type !== 'imaging-order'; })).slice(0, 3).map(function (e) { return { at: e.at, title: e.title, text: e.text, href: e.href || 'Doctor.dc.html' }; }),
+      hasToast: !!st.toast, toast: st.toast || { title: '', text: '' },
+      wk: WK.map(function (w, i) { var d = w[1] + (i === 0 ? nDone : 0), p = Math.max(0, w[2] - (i === 0 ? nDone : 0)), t = d + p || 1; var dw = Math.round(d / t * 20) * 5; return { mod: w[0], dCls: 'wk-d w' + dw, pCls: 'wk-p w' + (100 - dw), label: d + ' done · ' + p + ' left', aria: w[0] + ': ' + d + ' completed, ' + p + ' pending' }; }),
+      wkTotal: (9 + nDone) + ' completed · ' + Math.max(0, 9 - nDone) + ' pending',
+      noteText: st.noteText, setNote: function (e) { self.setState({ noteText: e && e.target ? e.target.value : e }); }, noNote: !st.noteText,
+      saveNote: function () { var d = new Date(); var at = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); self.setState({ notes: [{ at: at, text: st.noteText }].concat(st.notes), noteText: '' }); },
+      notes: st.notes,
+      curFinished: !!st.fin[curS.id],
+      finishLabel: st.fin[curS.id] ? 'Sent to doctor & patient' : 'Mark complete & notify',
+      reviewText: st.fin[curS.id] ? 'Study complete. ' + curS.by + ' was notified in the Doctor app and the images are in the patient\'s Documents.' : 'When imaging is done, mark it complete. ' + curS.by + ' is notified and reviews the images before the patient sees a report.',
+      finish: function () { pushResult(curS); },
+      nav: NAV, section: st.section, is: is, crumb: labels[st.section],
+      go: function (id) { self.setState({ section: id }); },
+      toUpload: function () { self.setState({ section: 'upload' }); },
+      toWorklist: function () { self.setState({ section: 'worklist' }); },
+      toEquip: function () { self.setState({ section: 'equipment' }); },
+      tat: { direction: 'up', text: '8 min faster than last week' },
+      mods: MODS.map(function (m) { var on = st.mod === m[0]; return { label: m[1], cls: on ? 'fb on' : 'fb', pressed: on ? 'true' : 'false', pick: function () { self.setState({ mod: m[0] }); } }; }),
+      rows: visible.map(function (p) { var s = dec(p[0]), i = p[1]; return Object.assign({}, s, { high: s.prio !== 'Routine', partCls: s.prio !== 'Routine' ? 'hi' : '', bus: !!s.bus, mod: s.mod, modCls: 'mod m-' + s.m, cls: st.sel === i ? 'wi sel' : 'wi', aria: 'Open ' + s.part + ' for ' + s.patient + ', ' + s.status, open: function () { self.setState({ sel: i, section: 'study' }); } }); }),
+      cur: dec(curS),
+      conf: 0.58,
+      evidence: ['Left lower zone, about 22 mm', 'Not seen on 09/26 prior'],
+      orderOpts: STUDIES.filter(function (s) { return s.status !== 'Rescheduled'; }).map(function (s) { return { value: s.id, label: s.id + ' · ' + s.part }; }),
+      upOrder: st.upOrder, upCur: up,
+      pickOrder: function (e) { var v = e && e.target ? e.target.value : e; self.setState({ upOrder: v, files: [], sent: false }); },
+      addFile: function () {
+        var n = st.files.length;
+        var pool = [['series_001.dcm', 'DCM', '48 MB'], ['series_002.dcm', 'DCM', '51 MB'], ['lateral.dcm', 'DCM', '22 MB'], ['scout.png', 'PNG', '2.1 MB']];
+        var f = pool[n % pool.length];
+        self.setState({ files: st.files.concat([{ name: f[0], ext: f[1], size: f[2], p: 0 }]), sent: false }, function () { self.startUpload(); });
+      },
+      files: st.files.map(function (f) { return { name: f.name, ext: f.ext, size: f.size, pCls: 'p' + Math.min(10, f.p), state: f.p >= 10 ? 'Ready' : (f.p * 10) + '%' }; }),
+      fileCount: st.files.length + (st.files.length === 1 ? ' file' : ' files'),
+      match: st.match, toggleMatch: function (v) { self.setState({ match: typeof v === 'boolean' ? v : !st.match }); },
+      cantSend: !(allDone && st.match) || st.sent,
+      sendLabel: st.sent ? 'Sent' : 'Send to patient record',
+      send: function () { self.setState({ sent: true }); pushResult(up); },
+      sent: st.sent,
+      eqCols: [
+        { key: 'name', header: 'Machine' }, { key: 'room', header: 'Room' },
+        { key: 'status', header: 'Status', render: function (r) { return eqLed(r.led, r.status); } },
+        { key: 'last', header: 'Last QC', mono: true }, { key: 'next', header: 'Next service', mono: true }, { key: 'today', header: 'Studies today', align: 'right' }
+      ],
+      eqRows: [
+        { name: 'Digital X-ray DR 1', room: 'Ground floor, R12', led: 'warn', status: 'Calibration due', last: '10 Oct', next: '17 Oct', today: 6 },
+        { name: 'Portable X-ray', room: 'Wards', led: 'ok', status: 'Working', last: '14 Oct', next: '02 Nov', today: 2 },
+        { name: 'CT 64-slice', room: 'CT room 1', led: 'ok', status: 'Working', last: '16 Oct', next: '30 Oct', today: 4 },
+        { name: 'Ultrasound A', room: 'USG 1', led: 'ok', status: 'Working', last: '12 Oct', next: '12 Nov', today: 3 },
+        { name: 'Ultrasound B', room: 'USG 2', led: 'ok', status: 'Working', last: '12 Oct', next: '12 Nov', today: 3 },
+        { name: 'MRI 1.5T', room: 'MRI suite', led: 'bad', status: 'Down', last: '01 Oct', next: '19 Oct', today: 0 },
+        { name: 'Mammography', room: 'R14', led: 'ok', status: 'Working', last: '09 Oct', next: '09 Nov', today: 0 }
+      ],
+      logo: h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+        h('a', { href: 'StaffLogin.dc.html', 'aria-label': 'CareFusion AI Staff Portal', style: { display: 'inline-flex' } }, h('img', { src: 'assets/logo.svg', alt: 'CareFusion AI', height: 28 })),
+        h('span', { className: 'chip-s' }, 'Staff Portal')),
+      who: h('div', { style: { display: 'flex', gap: 12, alignItems: 'center', padding: '12px 8px', borderTop: '1px solid var(--border)' } },
+        h(C.Avatar, { name: 'Fathima Beevi', size: 38, tone: 'blue' }),
+        h('div', { style: { minWidth: 0, flex: 1 } }, h('div', { style: { fontWeight: 600, color: 'var(--ink)', fontSize: 14 } }, 'Fathima Beevi'), h('div', { style: { fontSize: 12, color: 'var(--ink-muted)' } }, 'Radiology tech · Demo GH')),
+        h('a', { href: 'StaffLogin.dc.html', className: 'cf-icon-btn', 'aria-label': 'Sign out', style: { width: 36, height: 36 } }, ic('M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5l-5-5M15 12H3')))
+    };
+  }
+}
+</script>
+</body>
+</html>

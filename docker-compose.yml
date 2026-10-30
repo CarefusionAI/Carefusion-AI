@@ -95,6 +95,20 @@ services:
         condition: service_healthy
     restart: on-failure:3
 
+  # Demo data (synthetic). Not started by default:  docker compose --profile seed run --rm db-seed
+  # Loads seed/demo_data.sql, then seed/design/*.sql in order. Each file is recorded in the
+  # schema_migrations ledger, so running it again does nothing (SEED_FORCE=1 re-runs idempotent seeds).
+  db-seed:
+    profiles: ["seed"]
+    build:
+      context: ./carefusion-db
+      dockerfile: Dockerfile
+    command: ["sh", "-c", "./run_migrations.sh \"$$DATABASE_URL\" seed"]
+    env_file: .env
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+
   api:
     build:
       context: .

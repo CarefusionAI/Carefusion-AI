@@ -9,7 +9,7 @@ export class DatabaseService implements OnModuleDestroy {
   constructor(config: ConfigService) {
     this.pool = new Pool({
       connectionString: config.get<string>('DATABASE_URL'),
-      max: 10,
+      max: Number(config.get<string>('DB_POOL_MAX') ?? 10),
     })
   }
 

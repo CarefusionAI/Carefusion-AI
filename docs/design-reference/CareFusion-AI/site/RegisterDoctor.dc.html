@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Register as a doctor — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text);font-weight:600}a:hover{color:var(--ink-strong)}
+.rail-step{display:flex;gap:14px;align-items:flex-start;padding:10px 12px;border-radius:14px}
+.rail-step.is-current{background:var(--surface-raised);box-shadow:var(--shadow-card)}
+.rail-dot{flex:none;width:30px;height:30px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;border:1.5px solid var(--border-strong);color:var(--ink-muted);background:var(--surface-raised);transition:all 260ms ease}
+.is-done .rail-dot{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.is-current .rail-dot{background:var(--tint-teal);border-color:var(--primary);color:var(--primary-text);box-shadow:0 0 0 4px rgba(134,189,184,.28)}
+.step-in{animation:stepIn 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px)}}
+.h2{margin:0 0 6px;font-size:26px;line-height:34px;font-weight:600;color:var(--ink-strong)}
+.lead{margin:0;color:var(--ink-muted)}
+.doc{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.doc-i{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:var(--tint-blue);color:var(--info)}
+.tl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0}
+.tl li{position:relative;display:flex;gap:16px;padding-bottom:22px}
+.tl li:not(:last-child)::before{content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border)}
+
+.tl .dot.is-bad{background:var(--danger-bg);color:var(--danger)}
+.tl .dot.is-now{background:var(--tint-teal);color:var(--primary-text);box-shadow:0 0 0 4px rgba(134,189,184,.28)}
+.tl .dot{flex:none;width:32px;height:32px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.wm{position:absolute;pointer-events:none}
+.wm-a{right:-140px;bottom:-160px;width:640px;height:640px;opacity:.07;animation:wmr 120s linear infinite}
+.wm-b{left:42%;top:-70px;width:200px;height:200px;opacity:.06;animation:wmf 14s ease-in-out infinite}
+.wm-c{left:-60px;bottom:18%;width:120px;height:120px;opacity:.05;animation:wmf 18s ease-in-out infinite reverse}
+@keyframes wmr{to{transform:rotate(360deg)}}
+@keyframes wmf{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(26px) rotate(8deg)}}
+@media (prefers-reduced-motion: reduce){.step-in,.wm{animation:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-pub" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">HPR, e-Sign and document checks are mock connectors.</x-import>
+
+  <div style="flex: 1; display: flex; flex-wrap: wrap;">
+    <aside aria-label="Registration progress" style="flex: 1 1 300px; max-width: 360px; background: var(--tint-blue); padding: 40px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px;">
+      <a href="Main.dc.html" aria-label="CareFusion AI home" style="display: inline-flex; padding: 0 12px;"><img src="assets/logo.svg" alt="CareFusion AI" style="height: 32px; width: auto;"></a>
+      <div style="padding: 0 12px;">
+        <h1 style="margin: 0 0 6px; font-family: var(--font-serif); font-size: 30px; line-height: 36px; font-weight: 600; color: var(--ink-strong);">Register as a doctor</h1>
+        <p style="margin: 0; font-size: 14px;">Checked against HPR, then approved by your district admin and confirmed by the state.</p>
+      </div>
+      <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px;">
+        <sc-for list="{{rail}}" as="s" hint-placeholder-count="6">
+          <li class="{{s.cls}}"><span class="rail-dot" aria-hidden="true">{{s.mark}}</span><span><strong style="display: block; font-size: 15px; color: var(--ink);">{{s.label}}</strong><span style="font-size: 13px; color: var(--ink-muted);">{{s.desc}}</span></span></li>
+        </sc-for>
+      </ol>
+      <p style="margin: auto 0 0; padding: 0 12px; font-size: 13px;">Your doctor account is separate from your own citizen health record, and can never open it.</p>
+    </aside>
+
+    <main style="position: relative; overflow: hidden; flex: 999 1 560px; min-width: 0; background: var(--surface-raised); padding: 48px clamp(24px, 5vw, 72px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
+      <svg class="wm wm-a" viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="5" width="18" height="50" rx="9" fill="#5e9e98"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#d2b277"></rect><rect x="21" y="25" width="18" height="18" rx="2" fill="#3a726d"></rect></svg>
+      <svg class="wm wm-b" viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="5" width="18" height="50" rx="9" fill="#86bdb8"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#b7a6d4"></rect></svg>
+      <svg class="wm wm-c" viewBox="0 0 64 64" aria-hidden="true"><rect x="21" y="5" width="18" height="50" rx="9" fill="#c9a86a"></rect><rect x="9" y="25" width="50" height="18" rx="9" fill="#86bdb8"></rect></svg>
+      <div style="position: relative; width: 100%; max-width: 780px; margin: 0 auto; display: flex; flex-direction: column;">
+
+        <sc-if value="{{s0}}" hint-placeholder-val="{{yes}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 1 of 6</p><h2 class="h2">Link your citizen account</h2><p class="lead">Every doctor is first a verified citizen. We link the doctor account to that identity.</p></div>
+            <div style="display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: 16px; background: var(--tint-sage);">
+              <x-import component-from-global-scope="CareFusion.Avatar" name="Arun Nair" size="{{n44}}"></x-import>
+              <span style="flex: 1;"><strong style="color: var(--ink);">Arun Nair</strong><br><span style="font-size: 13px;">Citizen · ABHA DEMO-0000-5678 · e-KYC and face check verified</span></span>
+              <x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Signed in</x-import>
+            </div>
+            <x-import component-from-global-scope="CareFusion.Alert" tone="info" title="How the two accounts work">Use the User / Doctor switch on the login page. Opening a family member's record from the doctor account is allowed but flagged in the log.</x-import>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s1}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 2 of 6</p><h2 class="h2">Professional registration</h2><p class="lead">We check these automatically with the Health Professional Registry (HPR).</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px;">
+              <x-import component-from-global-scope="CareFusion.TextField" label="HPR ID" default-value="DEMO-HPR-71-4402" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.Select" label="Medical council" options="{{councils}}" default-value="Travancore-Cochin Medical Council (demo)" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Council registration number" default-value="DEMO-TCMC-58213" required="{{yes}}"></x-import>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <x-import component-from-global-scope="CareFusion.Button" variant="soft" on-click="{{checkHpr}}" loading="{{hprLoading}}">Check with HPR</x-import>
+              <sc-if value="{{hprDone}}" hint-placeholder-val="{{no}}"><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">HPR match · Dr. Arun Nair · MBBS, MD</x-import></sc-if>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s2}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 18px;">
+            <div><p class="lead" style="font-size: 13px;">Step 3 of 6</p><h2 class="h2">Qualifications</h2><p class="lead">Upload a certificate for each degree. PDF or photo, up to 10 MB each.</p></div>
+            <x-import component-from-global-scope="CareFusion.Select" label="Specialisation" options="{{specs}}" default-value="General medicine"></x-import>
+            <div class="doc"><span class="doc-i" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg></span><span style="flex: 1; min-width: 180px;"><strong style="color: var(--ink);">MBBS — degree certificate</strong><br><span style="font-size: 13px; color: var(--ink-muted);">mbbs_certificate.pdf · 1.2 MB</span></span><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Checked</x-import><x-import component-from-global-scope="CareFusion.Button" variant="ghost" size="sm">Replace</x-import></div>
+            <div class="doc"><span class="doc-i" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg></span><span style="flex: 1; min-width: 180px;"><strong style="color: var(--ink);">MD General Medicine — certificate</strong><br><span style="font-size: 13px; color: var(--ink-muted);">md_certificate.jpg · 3.4 MB</span></span><x-import component-from-global-scope="CareFusion.Badge" tone="warning" dot="{{yes}}">Blurry — re-upload</x-import><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm">Upload again</x-import></div>
+            <button type="button" class="doc" style="justify-content: center; border-style: dashed; cursor: pointer; font: inherit; color: var(--primary-text); font-weight: 600;">+ Add another degree</button>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s3}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 18px;">
+            <div><p class="lead" style="font-size: 13px;">Step 4 of 6</p><h2 class="h2">Where you work</h2><p class="lead">Your hospital's map pin sets the area where you can open records.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px;">
+              <x-import component-from-global-scope="CareFusion.Select" label="Hospital" options="{{hospitals}}" default-value="Demo General Hospital, Pathanamthitta"></x-import>
+              <x-import component-from-global-scope="CareFusion.Select" label="Department" options="{{depts}}" default-value="General medicine"></x-import>
+            </div>
+            <x-import component-from-global-scope="CareFusion.Tabs" variant="segmented" label="Employment type" tabs="{{empTabs}}" value="{{emp}}" on-change="{{setEmp}}"></x-import>
+            <div class="doc"><span class="doc-i" aria-hidden="true" style="background: var(--tint-peach); color: var(--peach-text);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 15c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M10 10.5a1.5 1.5 0 1 0 0-.01M15 10h3M15 13h3"></path></svg></span><span style="flex: 1; min-width: 180px;"><strong style="color: var(--ink);">{{proofLabel}}</strong><br><span style="font-size: 13px; color: var(--ink-muted);">{{proofHint}}</span></span><x-import component-from-global-scope="CareFusion.Button" variant="secondary" size="sm">Upload</x-import></div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s4}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><p class="lead" style="font-size: 13px;">Step 5 of 6</p><h2 class="h2">Security and e-signature</h2><p class="lead">Doctor accounts always use two-step verification. Your e-signature signs prescriptions.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px;">
+              <x-import component-from-global-scope="CareFusion.TextField" label="Doctor username" default-value="dr.arun.nair"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Password" type="password" default-value="cardamom-ridge-27" helper="At least 12 characters."></x-import>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; padding: 20px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border);">
+              <svg width="104" height="104" viewBox="0 0 21 21" role="img" aria-label="Authenticator setup QR (demo)" style="background: var(--surface-raised); border-radius: 12px; padding: 8px; border: 1px solid var(--border);"><g fill="#3f5263"><path d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"></path></g><g fill="#faf5ef"><path d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"></path></g><g fill="#3f5263"><path d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM9 0h2v3H9zM8 5h4v2H8zM13 9h3v2h-3zM9 9h2v4H9zM17 9h4v2h-4zM8 15h2v4H8zM12 14h3v2h-3zM16 16h3v3h-3zM12 18h2v3h-2zM1 9h4v2H1z"></path></g></svg>
+              <div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 10px;">
+                <strong style="color: var(--ink);">Scan with your authenticator app</strong>
+                <x-import component-from-global-scope="CareFusion.TextField" label="Enter the 6-digit code" default-value="304 118" input-mode="numeric"></x-import>
+              </div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding: 18px 20px; border-radius: 18px; background: var(--tint-peach);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--peach-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17c3-1 4-6 6-6s1 6 3 6s3-4 5-4s2 2 4 2M3 21h18"></path></svg>
+              <span style="flex: 1; min-width: 200px;"><strong style="color: var(--ink);">Set up e-Sign / DSC</strong><br><span style="font-size: 14px;">Government-approved signature for prescriptions with a verifiable QR. Mock provider in the alpha.</span></span>
+              <x-import component-from-global-scope="CareFusion.Button" variant="secondary" on-click="{{setSign}}">{{signLabel}}</x-import>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{s5}}" hint-placeholder-val="{{no}}">
+          <section class="step-in" style="display: flex; flex-direction: column; gap: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+              <div><p class="lead" style="font-size: 13px;">Step 6 of 6</p><h2 class="h2" style="font-family: var(--font-serif); font-size: 34px; line-height: 40px;">{{statusTitle}}</h2></div>
+              <x-import component-from-global-scope="CareFusion.Badge" tone="{{statusTone}}" dot="{{yes}}">{{statusWord}}</x-import>
+            </div>
+            <p class="lead" style="font-size: 16px;">{{statusText}}</p>
+            <ol class="tl">
+              <li><span class="dot" style="background: var(--primary); color: var(--on-primary);">✓</span><span><strong style="color: var(--ink);">Submitted</strong><br><span style="font-size: 13px; color: var(--ink-muted);">17 Oct 2026, 15:20 · 3 documents</span></span></li>
+              <li><span class="dot" style="background: var(--primary); color: var(--on-primary);">✓</span><span><strong style="color: var(--ink);">HPR checked automatically</strong><br><span style="font-size: 13px; color: var(--ink-muted);">Registration and degrees matched</span></span></li>
+              <li><span class="{{distCls}}">{{distMark}}</span><span><strong style="color: var(--ink);">District admin, Pathanamthitta</strong><br><span style="font-size: 13px; color: var(--ink-muted);">{{distText}}</span></span></li>
+              <li><span class="dot" style="background: var(--surface-cream); color: var(--ink-muted);">4</span><span><strong style="color: var(--ink);">State admin, Kerala — confirmation</strong><br><span style="font-size: 13px; color: var(--ink-muted);">Central admin checks flagged cases only</span></span></li>
+              <li><span class="dot" style="background: var(--surface-cream); color: var(--ink-muted);">5</span><span><strong style="color: var(--ink);">Active</strong><br><span style="font-size: 13px; color: var(--ink-muted);">You'll get an SMS and email</span></span></li>
+            </ol>
+            <div style="padding: 14px 16px; border-radius: 14px; border: 1px dashed var(--border-strong);">
+              <x-import component-from-global-scope="CareFusion.Switch" label="Demo: show a rejected application" checked="{{rejected}}" on-change="{{setRej}}"></x-import>
+            </div>
+            <sc-if value="{{rejected}}" hint-placeholder-val="{{no}}">
+              <x-import component-from-global-scope="CareFusion.Alert" tone="danger" title="Reason from the district admin" action="{{fixBtn}}">The MD certificate is unreadable. Upload a clear copy and resubmit — your other checks are kept.</x-import>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <div style="margin-top: auto; padding-top: 28px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--border); margin-top: 40px;">
+          <x-import component-from-global-scope="CareFusion.Button" variant="ghost" on-click="{{back}}" disabled="{{atStart}}">Back</x-import>
+          <sc-if value="{{notLast}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Button" size="lg" on-click="{{next}}" disabled="{{blocked}}">{{nextLabel}}</x-import></sc-if>
+          <sc-if value="{{isLast}}" hint-placeholder-val="{{no}}"><a class="cf-btn cf-btn-secondary cf-btn-lg" href="Main.dc.html">Back to home</a></sc-if>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 0, hpr: 'idle', emp: 'govt', sign: false, rejected: false };
+  }
+  renderVals() {
+    var h = React.createElement, C = window.CareFusion;
+    var s = this.state.step, st = this.state;
+    var STEPS = [['Citizen account', 'Identity link'], ['Registration', 'HPR + council'], ['Qualifications', 'Degree certificates'], ['Workplace', 'Hospital + proof'], ['Security', 'MFA + e-Sign'], ['Status', 'Approval chain']];
+    var rej = st.rejected;
+    return {
+      yes: true, no: false, n44: 44,
+      rail: STEPS.map(function (x, i) { return { label: x[0], desc: x[1], mark: i < s ? '✓' : String(i + 1), cls: 'rail-step ' + (i < s ? 'is-done' : i === s ? 'is-current' : '') }; }),
+      s0: s === 0, s1: s === 1, s2: s === 2, s3: s === 3, s4: s === 4, s5: s === 5,
+      atStart: s === 0, notLast: s < 5, isLast: s === 5,
+      blocked: s === 1 && st.hpr !== 'done',
+      nextLabel: s === 4 ? 'Submit for approval' : 'Continue',
+      councils: ['Travancore-Cochin Medical Council (demo)', 'National Medical Commission (demo)'],
+      specs: ['General medicine', 'Cardiology', 'Paediatrics', 'Obstetrics and gynaecology', 'Radiology'],
+      hospitals: ['Demo General Hospital, Pathanamthitta', 'Demo Taluk Hospital, Adoor', 'Demo Private Hospital, Thiruvalla'],
+      depts: ['General medicine', 'Casualty', 'Cardiology', 'Paediatrics'],
+      hprLoading: st.hpr === 'loading', hprDone: st.hpr === 'done',
+      checkHpr: () => { this.setState({ hpr: 'loading' }); setTimeout(() => this.setState({ hpr: 'done' }), 1100); },
+      empTabs: [{ id: 'govt', label: 'Government' }, { id: 'private', label: 'Private' }],
+      emp: st.emp, setEmp: (v) => this.setState({ emp: v }),
+      proofLabel: st.emp === 'govt' ? 'Government employee ID or posting order' : 'Hospital employee ID',
+      proofHint: st.emp === 'govt' ? 'Issued by the health department' : 'Issued by your hospital',
+      signLabel: st.sign ? 'e-Sign linked ✓' : 'Link e-Sign',
+      setSign: () => this.setState({ sign: true }),
+      rejected: rej, setRej: (v) => this.setState({ rejected: v }),
+      statusTitle: rej ? 'Changes needed' : 'Waiting for district approval',
+      statusWord: rej ? 'Rejected' : 'Pending',
+      statusTone: rej ? 'danger' : 'warning',
+      statusText: rej ? 'Your application was returned with a reason. Fix it and resubmit.' : 'Most applications are reviewed within [N] working days. If not, they escalate to the state admin automatically.',
+      distCls: rej ? 'dot is-bad' : 'dot is-now',
+      distMark: rej ? '!' : '3',
+      distText: rej ? 'Returned 18 Oct · see reason below' : 'In review · due 24 Oct 2026',
+      fixBtn: h(C.Button, { size: 'sm', variant: 'secondary', onClick: () => this.setState({ step: 2, rejected: false }) }, 'Fix documents'),
+      next: () => this.setState({ step: Math.min(5, s + 1) }),
+      back: () => this.setState({ step: Math.max(0, s - 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

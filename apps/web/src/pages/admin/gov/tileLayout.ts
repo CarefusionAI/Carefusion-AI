@@ -1,0 +1,105 @@
+// Tile positions (column, row) for the SVG tile map, copied from the design's per-level CFG.
+// Names use "and" (the API spelling). The API returns units without coordinates, so the layout is keyed by the unit name.
+import type { GovLevel } from '@carefusion/shared'
+
+export interface TileLayout {
+  cols: number
+  rows: number
+  tiles: Record<string, [number, number]>
+}
+
+export const TILE_LAYOUT: Record<GovLevel, TileLayout> = {
+  district: {
+    cols: 5,
+    rows: 4,
+    tiles: {
+      "Pulikeezhu": [0, 0],
+      "Thiruvalla": [1, 0],
+      "Mallappally": [2, 0],
+      "Vennikulam": [3, 0],
+      "Kozhencherry": [1, 1],
+      "Elanthoor": [2, 1],
+      "Ranni": [3, 1],
+      "Perunad": [4, 1],
+      "Pandalam": [1, 2],
+      "Pathanamthitta": [2, 2],
+      "Konni": [3, 2],
+      "Adoor": [2, 3],
+    },
+  },
+  state: {
+    cols: 4,
+    rows: 8,
+    tiles: {
+      "Kasaragod": [0, 0],
+      "Kannur": [0, 1],
+      "Wayanad": [1, 1],
+      "Kozhikode": [0, 2],
+      "Malappuram": [1, 2],
+      "Thrissur": [1, 3],
+      "Palakkad": [2, 3],
+      "Ernakulam": [1, 4],
+      "Idukki": [2, 4],
+      "Alappuzha": [1, 5],
+      "Kottayam": [2, 5],
+      "Kollam": [2, 6],
+      "Pathanamthitta": [3, 6],
+      "Thiruvananthapuram": [2, 7],
+    },
+  },
+  zonal: {
+    cols: 5,
+    rows: 7,
+    tiles: {
+      "Telangana": [3, 4],
+      "Karnataka": [2, 5],
+      "Andhra Pradesh": [3, 5],
+      "Lakshadweep": [0, 6],
+      "Kerala": [2, 6],
+      "Tamil Nadu": [3, 6],
+      "Puducherry": [4, 6],
+    },
+  },
+  central: {
+    cols: 8,
+    rows: 7,
+    tiles: {
+      "Jammu and Kashmir": [2, 0],
+      "Ladakh": [3, 0],
+      "Punjab": [1, 1],
+      "Himachal Pradesh": [2, 1],
+      "Uttarakhand": [3, 1],
+      "Chandigarh": [1, 2],
+      "Haryana": [2, 2],
+      "Delhi": [3, 2],
+      "Uttar Pradesh": [4, 2],
+      "Bihar": [5, 2],
+      "Sikkim": [6, 2],
+      "Arunachal Pradesh": [7, 2],
+      "Rajasthan": [1, 3],
+      "Madhya Pradesh": [2, 3],
+      "Chhattisgarh": [3, 3],
+      "Jharkhand": [4, 3],
+      "West Bengal": [5, 3],
+      "Assam": [6, 3],
+      "Nagaland": [7, 3],
+      "Gujarat": [0, 4],
+      "Dadra and Nagar Haveli and Daman and Diu": [1, 4],
+      "Maharashtra": [2, 4],
+      "Telangana": [3, 4],
+      "Odisha": [4, 4],
+      "Meghalaya": [6, 4],
+      "Manipur": [7, 4],
+      "Goa": [1, 5],
+      "Karnataka": [2, 5],
+      "Andhra Pradesh": [3, 5],
+      "Tripura": [6, 5],
+      "Mizoram": [7, 5],
+      "Lakshadweep": [0, 6],
+      "Kerala": [2, 6],
+      "Tamil Nadu": [3, 6],
+      "Puducherry": [4, 6],
+      "Andaman and Nicobar Islands": [6, 6],
+    },
+  },
+}

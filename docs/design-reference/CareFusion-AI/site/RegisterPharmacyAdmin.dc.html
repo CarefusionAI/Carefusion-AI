@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Register a pharmacy — CareFusion AI</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/carefusion/tokens.css">
+<link rel="stylesheet" href="ds/carefusion/components/bundle.css">
+<script src="ds/carefusion/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap">
+<style>
+body{margin:0;background:var(--surface);color:var(--ink-body);font-family:var(--font-sans)}
+a{color:var(--primary-text);font-weight:600}a:hover{color:var(--ink-strong)}
+.step-in{animation:stepIn 420ms cubic-bezier(0.22,1,0.36,1) both}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px)}}
+.h2{margin:0 0 6px;font-size:26px;line-height:34px;font-weight:600;color:var(--ink-strong)}
+.lead{margin:0;color:var(--ink-muted)}
+.opt{display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface-raised);text-align:left;font:inherit;color:var(--ink-body);cursor:pointer;transition:border-color 180ms ease,background-color 180ms ease,box-shadow 180ms ease}
+.opt:hover{border-color:var(--primary-soft)}
+.opt.on{border-color:var(--primary);background:var(--tint-teal);box-shadow:0 0 0 4px rgba(134,189,184,.22)}
+.opt:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.doc{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.doc-i{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:var(--tint-sage);color:var(--success)}
+@media (prefers-reduced-motion: reduce){.step-in{animation:none}}
+/*cf-fx:start*/
+.cf-root{isolation:isolate;position:relative;--surface:rgba(243,238,232,.52);--surface-raised:rgba(250,245,239,.84);--surface-cream:rgba(239,231,222,.78)}
+.cf-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.cf-root .cf-root .cf-fx{display:none}
+.cf-fx-pub{--fx-o1:#86bdb8;--fx-o2:#ecd9b2;--fx-o3:#dfeaf4;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-cit{--fx-o1:#cfe5d6;--fx-o2:#f3d9cd;--fx-o3:#cfe6e2;--fx-a:#5e9e98;--fx-b:#d2b277}
+.cf-fx-doc{--fx-o1:#d3e2f1;--fx-o2:#cfe6e2;--fx-o3:#e3d9f0;--fx-a:#45658a;--fx-b:#86bdb8}
+.cf-fx-stf{--fx-o1:#cfe6e2;--fx-o2:#d6e4f2;--fx-o3:#f3e4c6;--fx-a:#3a726d;--fx-b:#c9a86a}
+.cf-fx-adm{--fx-o1:#e3d9f0;--fx-o2:#f3e4c6;--fx-o3:#d6e4f2;--fx-a:#6a5a8c;--fx-b:#c9a86a}
+.fx-orb{position:absolute;border-radius:9999px;filter:blur(70px);opacity:.85;animation:fxDrift 26s ease-in-out infinite alternate}
+.fx-o1{width:560px;height:560px;background:var(--fx-o1);right:-140px;top:-160px}
+.fx-o2{width:480px;height:480px;background:var(--fx-o2);left:-160px;bottom:-140px;animation-duration:32s;animation-delay:-8s}
+.fx-o3{width:380px;height:380px;background:var(--fx-o3);left:38%;top:30%;animation-duration:38s;animation-delay:-16s;opacity:.6}
+@keyframes fxDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(1.08)}100%{transform:translate(40px,-30px) scale(.95)}}
+.fx-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(58,114,109,.16) 1px,transparent 1.5px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse 70% 60% at 78% 18%,#000 0%,transparent 70%)}
+.fx-cross{position:absolute;overflow:visible}
+.fx-cross .v{fill:var(--fx-a)}.fx-cross .h{fill:var(--fx-b)}
+.fx-c1{width:560px;height:560px;right:-150px;bottom:-170px;opacity:.09;animation:fxSpin 90s linear infinite}
+.fx-c2{width:230px;height:230px;left:5%;top:12%;opacity:.08;animation:fxFloat 14s ease-in-out infinite}
+.fx-c3{width:150px;height:150px;right:30%;top:58%;opacity:.16;animation:fxFloat 18s ease-in-out -6s infinite}
+.fx-c3 .v,.fx-c3 .h{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke}.fx-c3 .v{stroke:var(--fx-a)}.fx-c3 .h{stroke:var(--fx-b)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+.fx-ecg{position:absolute;left:0;bottom:16%;width:100%;height:110px;opacity:.2}
+.fx-ecg path{fill:none;stroke:var(--fx-a);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:420 2600;animation:fxEcg 7s linear infinite}
+@keyframes fxEcg{from{stroke-dashoffset:3020}to{stroke-dashoffset:0}}
+.fx-p{position:absolute;bottom:-60px;width:10px;height:26px;border-radius:9999px;background:var(--fx-a);opacity:0;animation:fxRise 22s linear infinite}
+.fx-p:nth-of-type(even){background:var(--fx-b);width:22px;height:9px}
+.fx-p1{left:8%;animation-delay:0s}.fx-p2{left:22%;animation-delay:-5s;animation-duration:26s}.fx-p3{left:41%;animation-delay:-11s}.fx-p4{left:57%;animation-delay:-3s;animation-duration:30s}.fx-p5{left:73%;animation-delay:-15s}.fx-p6{left:90%;animation-delay:-8s;animation-duration:24s}
+@keyframes fxRise{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.22}85%{opacity:.18}100%{transform:translateY(-115vh) rotate(160deg);opacity:0}}
+.cf-root .box,.cf-root .cf-card,.cf-root .cf-stat,.cf-root .cf-sidebar,.cf-root .card,.cf-root .panel{-webkit-backdrop-filter:blur(12px) saturate(1.08);backdrop-filter:blur(12px) saturate(1.08)}
+@media (prefers-reduced-motion: reduce){.fx-orb,.fx-cross,.fx-ecg path,.fx-p{animation:none}.fx-p{display:none}}
+/*cf-fx:end*/
+</style>
+</helmet>
+<div class="cf-root" style="min-height: 100vh; display: flex; flex-direction: column;"><div class="cf-fx cf-fx-adm" aria-hidden="true"><span class="fx-orb fx-o1"></span><span class="fx-orb fx-o2"></span><span class="fx-orb fx-o3"></span><span class="fx-grid"></span><svg class="fx-cross fx-c1" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c2" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-cross fx-c3" viewBox="0 0 64 64"><rect class="v" x="21" y="5" width="18" height="50" rx="9"></rect><rect class="h" x="9" y="25" width="50" height="18" rx="9"></rect></svg><svg class="fx-ecg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0 70 H260 L280 70 L294 40 L310 100 L328 14 L348 92 L362 70 H520 L536 56 L552 70 H820 L840 70 L854 44 L870 96 L888 20 L906 88 L920 70 H1200"></path></svg><span class="fx-p fx-p1"></span><span class="fx-p fx-p2"></span><span class="fx-p fx-p3"></span><span class="fx-p fx-p4"></span><span class="fx-p fx-p5"></span><span class="fx-p fx-p6"></span></div>
+  <x-import component-from-global-scope="CareFusion.Alert" tone="warning" banner="{{yes}}" title="Synthetic demo data">Drug licence checks are a mock connector for state drug control / CDSCO records.</x-import>
+
+  <header style="background: var(--surface-raised); border-bottom: 1px solid var(--border);">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 18px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+      <a href="AdminLogin.dc.html" aria-label="CareFusion Admin Console" style="display: inline-flex;"><img src="assets/logo.svg" alt="CareFusion AI" style="height: 32px; width: auto;"></a>
+      <p style="margin: 0; font-size: 14px;">Already approved? <a href="AdminLogin.dc.html">Admin login</a></p>
+    </div>
+  </header>
+
+  <main style="flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 40px 32px 56px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px;">
+    <x-import component-from-global-scope="CareFusion.PageHeader" eyebrow="Pharmacy admin" title="Register your pharmacy" subtitle="Government hospital pharmacies and private pharmacies. Your district admin approves the account."></x-import>
+    <x-import component-from-global-scope="CareFusion.Stepper" label="Registration progress" steps="{{steps}}" current="{{step}}"></x-import>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start;">
+      <section aria-label="Form" style="flex: 999 1 600px; min-width: 0; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow-card); padding: 36px; box-sizing: border-box;">
+        <sc-if value="{{s0}}" hint-placeholder-val="{{yes}}">
+          <div class="step-in" style="display: flex; flex-direction: column; gap: 20px;">
+            <div><h2 class="h2">What kind of pharmacy?</h2><p class="lead">A government hospital pharmacy is linked to its hospital so doctors there can send prescriptions directly.</p></div>
+            <div role="radiogroup" aria-label="Pharmacy type" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+              <button type="button" role="radio" aria-checked="{{govtChecked}}" class="{{govtCls}}" onClick="{{pickGovt}}"><strong style="color: var(--ink); font-size: 16px;">Government hospital pharmacy</strong><span style="font-size: 14px;">Inside a government hospital</span></button>
+              <button type="button" role="radio" aria-checked="{{privChecked}}" class="{{privCls}}" onClick="{{pickPriv}}"><strong style="color: var(--ink); font-size: 16px;">Private pharmacy</strong><span style="font-size: 14px;">Independent or chain store</span></button>
+            </div>
+            <sc-if value="{{isGovt}}" hint-placeholder-val="{{yes}}">
+              <x-import component-from-global-scope="CareFusion.Select" label="Linked hospital" options="{{hospitals}}" default-value="Demo General Hospital, Pathanamthitta"></x-import>
+            </sc-if>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;">
+              <div style="flex: 1 1 260px;"><x-import component-from-global-scope="CareFusion.TextField" label="Drug licence number" default-value="DEMO-DL-KL-2041" required="{{yes}}"></x-import></div>
+              <x-import component-from-global-scope="CareFusion.Button" variant="soft" on-click="{{check}}" loading="{{checking}}">Check licence</x-import>
+            </div>
+            <sc-if value="{{found}}" hint-placeholder-val="{{no}}">
+              <x-import component-from-global-scope="CareFusion.Alert" tone="success" title="Licence valid until 31 Mar 2029">Demo Hospital Pharmacy · Retail and wholesale (Forms 20, 21) · Pathanamthitta</x-import>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{s1}}" hint-placeholder-val="{{no}}">
+          <div class="step-in" style="display: flex; flex-direction: column; gap: 14px;">
+            <div><h2 class="h2">Documents and hours</h2><p class="lead">Patients see your hours and location in the medicine stock finder.</p></div>
+            <div class="doc"><span class="doc-i" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h4"></path></svg></span><span style="flex: 1; min-width: 200px;"><strong style="color: var(--ink);">Drug licence copy</strong><br><span style="font-size: 13px; color: var(--ink-muted);">drug_licence.pdf · 880 KB</span></span><x-import component-from-global-scope="CareFusion.Badge" tone="success" dot="{{yes}}">Checked</x-import></div>
+            <div class="doc"><span class="doc-i" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 15c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M10 10.5a1.5 1.5 0 1 0 0-.01M15 10h3M15 13h3"></path></svg></span><span style="flex: 1; min-width: 200px;"><strong style="color: var(--ink);">Your photo ID</strong><br><span style="font-size: 13px; color: var(--ink-muted);">Not uploaded yet</span></span><x-import component-from-global-scope="CareFusion.Button" variant="soft" size="sm">Upload</x-import></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 16px; margin-top: 8px;">
+              <x-import component-from-global-scope="CareFusion.TextField" label="Opens" default-value="08:00"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Closes" default-value="20:00"></x-import>
+              <x-import component-from-global-scope="CareFusion.Select" label="Weekly holiday" options="{{days}}" default-value="None — open daily"></x-import>
+            </div>
+            <x-import component-from-global-scope="CareFusion.Switch" label="We already use billing or stock software" description="We can sync stock automatically from supported software. Spreadsheet uploads aren't used." default-checked="{{yes}}"></x-import>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{s2}}" hint-placeholder-val="{{no}}">
+          <div class="step-in" style="display: flex; flex-direction: column; gap: 18px;">
+            <div><h2 class="h2">Your account</h2><p class="lead">You'll create pharmacist accounts after approval.</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px;">
+              <x-import component-from-global-scope="CareFusion.TextField" label="Full name" default-value="Suma Thomas" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Email" default-value="suma.t@demo-pharmacy.example" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Mobile" prefix="+91" default-value="96330 44871" required="{{yes}}"></x-import>
+              <x-import component-from-global-scope="CareFusion.TextField" label="Password" type="password" default-value="pepper-garden-19" helper="At least 12 characters." required="{{yes}}"></x-import>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{s3}}" hint-placeholder-val="{{no}}">
+          <div class="step-in" style="display: flex; flex-direction: column; gap: 18px; align-items: flex-start;">
+            <x-import component-from-global-scope="CareFusion.Badge" tone="warning" dot="{{yes}}">Pending district approval</x-import>
+            <h2 class="h2" style="font-family: var(--font-serif); font-size: 34px; line-height: 40px;">Thank you, Suma.</h2>
+            <p class="lead" style="font-size: 16px;">Your licence check passed. The district admin will review your documents; overdue reviews escalate to the state.</p>
+            <a class="cf-btn cf-btn-secondary cf-btn-md" href="PharmacyAdmin.dc.html">Preview the pharmacy workspace</a>
+          </div>
+        </sc-if>
+
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px;">
+          <x-import component-from-global-scope="CareFusion.Button" variant="ghost" on-click="{{back}}" disabled="{{atStart}}">Back</x-import>
+          <sc-if value="{{notLast}}" hint-placeholder-val="{{yes}}"><x-import component-from-global-scope="CareFusion.Button" size="lg" on-click="{{next}}" disabled="{{blocked}}">{{nextLabel}}</x-import></sc-if>
+        </div>
+      </section>
+      <aside aria-label="Notes" style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 16px;">
+        <x-import component-from-global-scope="CareFusion.Card" tone="sage" eyebrow="After approval" title="Run your pharmacy here" title-as="h2">
+          <ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px;"><li>Live stock from the national medicine catalogue</li><li>Near-expiry and low-stock alerts</li><li>Controlled-drug register (Schedule H, H1, X)</li><li>Pharmacist accounts and dispensing reports</li></ul>
+        </x-import>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 0, type: 'govt', lic: 'idle' };
+  }
+  renderVals() {
+    var s = this.state.step, st = this.state, g = st.type === 'govt';
+    return {
+      yes: true, no: false,
+      steps: ['Licence', 'Documents & hours', 'Your account', 'Submitted'],
+      step: s, s0: s === 0, s1: s === 1, s2: s === 2, s3: s === 3,
+      atStart: s === 0, notLast: s < 3, blocked: s === 0 && st.lic !== 'done',
+      nextLabel: s === 2 ? 'Submit for approval' : 'Continue',
+      isGovt: g,
+      govtCls: g ? 'opt on' : 'opt', privCls: g ? 'opt' : 'opt on',
+      govtChecked: g ? 'true' : 'false', privChecked: g ? 'false' : 'true',
+      pickGovt: () => this.setState({ type: 'govt' }), pickPriv: () => this.setState({ type: 'private' }),
+      hospitals: ['Demo General Hospital, Pathanamthitta', 'Demo Taluk Hospital, Adoor'],
+      days: ['None — open daily', 'Sunday', 'Monday'],
+      checking: st.lic === 'loading', found: st.lic === 'done',
+      check: () => { this.setState({ lic: 'loading' }); setTimeout(() => this.setState({ lic: 'done' }), 1000); },
+      next: () => this.setState({ step: Math.min(3, s + 1) }),
+      back: () => this.setState({ step: Math.max(0, s - 1) })
+    };
+  }
+}
+</script>
+</body>
+</html>

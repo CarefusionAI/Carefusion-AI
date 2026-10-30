@@ -99,7 +99,7 @@ def demo_hfr(n: int) -> str:
     return f"DEMO-HFR-{n:06d}"
 
 def demo_hpr(n: int) -> str:
-    return f"DEMO-HPR-{n:06d}"
+    return f"DEMO-HPR-71-{n:04d}"   # canonical (identity.is_canonical_hpr_id); n < 42 so it never meets the design doctors (0042+)
 
 def demo_licence(prefix: str, n: int) -> str:
     return f"DEMO-{prefix}-{n:06d}"

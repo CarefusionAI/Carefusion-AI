@@ -1,0 +1,151 @@
+/* CareFusion AI — generated from tokens.json */
+:root, [data-theme="light"] {
+  --surface: #f3eee8; /* Warm canvas: the app background behind everything (brief: Warm canvas #F3EEE8). Never pure white. */
+  --surface-raised: #faf5ef; /* Card surface: cards, forms, sidebar, modals, table bodies (brief: Card surface #FAF5EF). */
+  --surface-cream: #efe7de; /* Sunken cream: secondary buttons, hover rows, input wells, segmented-control track. Derived one step deeper than the canvas. */
+  --tint-sage: #dcebe0; /* Soft sage panels: health-positive summaries, vitals, donor cards (brief: Soft sage #DCEBE0). */
+  --tint-blue: #dfeaf4; /* Powder blue panels: information, appointments, schedules (brief: Powder blue #DFEAF4). */
+  --tint-lavender: #eae2f2; /* Lavender mist: every AI-generated panel and AI entry point, and nothing else (brief: Lavender mist #EAE2F2). */
+  --tint-peach: #f5e1d8; /* Peach blush: warm highlights, friendly callouts, onboarding tips (brief: Peach blush #F5E1D8). */
+  --tint-teal: #d7e9e6; /* Teal mist: selected rows, active nav item, chosen options. Derived from the brief's muted teal. */
+  --ink: #536578; /* Primary ink for headings, labels and key text (brief: Primary ink #536578). 4.7:1 or more on every surface and tint. */
+  --ink-body: #536170; /* Paragraph and table text (brief: Body text #536170). 5.0:1 or more on every surface and tint. */
+  --ink-strong: #3f5263; /* Large numbers, page titles and emphasis that must stand out (6.4:1 or more everywhere). Derived. */
+  --ink-muted: #586470; /* Helper text, timestamps, secondary labels. Darkened from the brief's #7C8792 (3.2:1, fails) to 4.8:1 or more on every surface and tint; set it smaller rather than lighter. */
+  --border: #e4ddd6; /* Soft dividers, card outlines, table lines (brief: Soft border #E4DDD6). Decorative only. */
+  --border-strong: #857c74; /* Input, checkbox and outline-button edges: 3.2:1 or more on every surface. Derived. */
+  --primary: #3a726d; /* Dusty teal fill for primary buttons, switches, done steps and the active nav marker. Deepened from the brief's #86BDB8 so `on-primary` text reads at 5.1:1. */
+  --on-primary: #faf5ef; /* Text and icons on `primary` fills (5.1:1). Cream, never pure white. */
+  --primary-soft: #86bdb8; /* The brief's muted teal: progress fills, chart bars, illustration, logo. Decorative — never text or a lone meaning-carrying icon (2.2:1). */
+  --primary-text: #356a65; /* Teal as text: links, ghost and outline buttons, selected tab labels, info icons (4.9:1 or more on every surface and tint). */
+  --accent: #c9a86a; /* Soft gold: star ratings, the logo's fusion core, gentle highlights and chart accents. Decorative; text on it uses `on-accent`. */
+  --on-accent: #2e3f4c; /* Text and icons on `accent` fills (4.8:1). */
+  --accent-text: #7e6028; /* Gold as text: premium labels, eyebrows (4.6:1 or more everywhere). */
+  --ai: #6a5a8c; /* Lavender ink for AI labels, AI icons and the 'Simulated AI output' tag, on `tint-lavender` (4.8:1). */
+  --ai-soft: #b7a6d4; /* Decorative lavender for AI illustrations and confidence bars. Never text. */
+  --info: #45658a; /* Information text and icons on `tint-blue` (4.6:1). */
+  --peach-text: #8e5641; /* Warm callout text and icons on `tint-peach` (4.7:1). */
+  --focus-ring: #3a726d; /* Solid 2px focus outline, 2px offset, on every interactive element; 4.4:1 or more on all surfaces. */
+  --success: #376a4f; /* Verified, Resolved, Open, Dispensed: text and icons on surfaces and on `success-bg` (5.1:1). Always with a word or check icon. */
+  --success-bg: #dcebe0; /* Sage ground for success badges and alerts. */
+  --success-soft: #8ebba5; /* Soft success fill (brief): dots, chart segments, progress. Never text. */
+  --warning: #7e5820; /* Pending, Under review, Near expiry, Demo data banner: text and icons on surfaces and `warning-bg` (5.3:1). Pair with a word or icon. */
+  --warning-bg: #f6e9cf; /* Soft amber ground for warning badges, the synthetic-data banner and caution alerts. */
+  --warning-soft: #e7c58e; /* Soft warning fill (brief): dots, chart segments. Never text. */
+  --danger: #9a4a46; /* Errors, Alert, Missed, critical health alerts, destructive buttons: text and icons on surfaces and `danger-bg` (4.8:1). Always with an icon or word. */
+  --danger-bg: #f5e1de; /* Rose ground for danger badges, error alerts and flagged rows. */
+  --danger-soft: #d99a96; /* Soft danger fill (brief): dots, chart segments. Never text. */
+  --shadow-card: 0 1px 2px rgba(83, 101, 120, 0.06), 0 4px 14px rgba(83, 101, 120, 0.06); /* Resting cards — very soft and tinted by the ink, only where needed. */
+  --shadow-lift: 0 14px 36px rgba(83, 101, 120, 0.14); /* Hover lift, menus and modals; animate from `shadow-card` over 180ms. */
+}
+:root {
+  --spacer-1: 4px; /* Icon-to-label gaps, badge padding-y. */
+  --spacer-2: 8px; /* Gaps inside controls, list item gaps. */
+  --spacer-3: 12px; /* Gaps between related fields and chips. */
+  --spacer-4: 16px; /* Compact card padding, mobile page padding. */
+  --spacer-6: 24px; /* Default card padding, desktop page padding, grid gutter. */
+  --spacer-8: 32px; /* Wide gutters, desktop page padding, gaps between sections. */
+  --spacer-12: 48px; /* Generous breathing room between major page regions. */
+  --radius-sm: 8px; /* Chips, small tags, checkbox, table pills. */
+  --radius-md: 12px; /* Buttons, inputs, selects, nav items (brief: 10–12px). */
+  --radius-lg: 16px; /* Cards, panels, modals (brief: 12–16px). */
+  --radius-xl: 24px; /* Hero panels, login cards, the session-key card. */
+  --radius-pill: 9999px; /* Status badges, toggle tracks, avatars. */
+  --bp-mobile: 360px; /* Mobile (brief: 360px): single column, drawer or bottom navigation. */
+  --bp-tablet: 768px; /* Tablet: sidebar collapses. */
+  --bp-laptop: 1280px; /* Laptop. */
+  --bp-desktop: 1440px; /* Desktop. */
+  --tap-target-min: 44px; /* Minimum height and width of any touch target. */
+  --sidebar-width: 264px; /* Desktop sidebar width. */
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --text-display: 600 48px/54px var(--font-serif); /* Landing hero and brand moments only. Never in app screens, forms or tables. */
+  --text-greeting: 600 30px/38px var(--font-serif); /* The one welcome line at the top of a role's home screen. */
+  --text-page-title: 600 28px/36px var(--font-sans); /* One per screen (brief: 28–32px). */
+  --text-section-title: 600 20px/28px var(--font-sans); /* Section headings inside a screen (brief: 18–22px). */
+  --text-card-title: 600 16px/24px var(--font-sans); /* Card and panel headings (brief: 15–17px). */
+  --text-body-lg: 400 17px/28px var(--font-sans); /* Lead paragraphs and chat messages. */
+  --text-body: 400 15px/24px var(--font-sans); /* Default UI text, inputs and table cells (brief: 14–16px). */
+  --text-caption: 400 13px/18px var(--font-sans); /* Helper text, timestamps, badge labels (brief: 12–13px). Never primary content. */
+  --text-overline: 600 12px/16px var(--font-sans); /* Small uppercase labels above values and section groups. */
+  --text-stat: 600 32px/40px var(--font-sans); /* Metric values in StatCards; always with tabular numerals (`font-variant-numeric: tabular-nums`). */
+  --text-log: 400 13px/20px var(--font-mono); /* IDs, activity logs, hashes and audit viewers. */
+}
+.display {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  line-height: 54px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.greeting {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.page-title {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.section-title {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.card-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.body-lg {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 28px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.caption {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.overline {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.stat {
+  font-family: var(--font-sans);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.log {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
