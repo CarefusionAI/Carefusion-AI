@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/.turbo
+**/.vite
+**/*.tsbuildinfo
+.git
+.env
+.env.*
+!.env.example
+docs
+carefusion-db
+keycloak
+.github

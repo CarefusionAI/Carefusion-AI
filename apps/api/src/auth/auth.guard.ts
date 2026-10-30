@@ -3,7 +3,9 @@ import { Reflector } from '@nestjs/core'
 import { AuthGuard } from '@nestjs/passport'
 import { ConfigService } from '@nestjs/config'
 import { Role } from '@carefusion/shared'
+import { DatabaseService } from '../database/database.service'
 import { IS_PUBLIC_KEY } from './public.decorator'
+import { lookupDemoIdentity } from './demo-identity'
 import type { AuthenticatedUser } from './types'
 
 const ROLE_VALUES = new Set<string>(Object.values(Role))
@@ -15,6 +17,7 @@ export class CfAuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     config: ConfigService,
+    private readonly db: DatabaseService,
   ) {
     this.demoMode = config.get<string>('DEMO_MODE', 'false') === 'true'
   }
@@ -48,6 +51,11 @@ export class CfAuthGuard implements CanActivate {
           username: `demo-${demoRole.toLowerCase().replace(/_/g, '-')}`,
           role: demoRole as Role,
           isDemo: true,
+        }
+        const identity = await lookupDemoIdentity(this.db, demoRole)
+        if (identity) {
+          user.personId = identity.personId
+          user.userId = identity.userId
         }
         request.user = user
         return true

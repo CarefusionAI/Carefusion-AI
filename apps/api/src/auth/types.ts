@@ -18,4 +18,6 @@ export interface AuthenticatedUser {
   lastName?: string
   role: Role
   isDemo: boolean
+  personId?: string // identity.person.id
+  userId?: string // identity.app_user.id
 }

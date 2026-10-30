@@ -19,11 +19,11 @@ export async function post<T>(path: string, body: unknown): Promise<T & { messag
 }
 
 export const btnPrimary =
-  'rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50'
+  'rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50'
 export const btnGhost =
-  'rounded-md border border-primary-200 bg-white px-4 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-50 disabled:opacity-50'
+  'rounded-lg border border-border-strong bg-surface-raised px-4 py-2.5 text-sm font-semibold text-ink transition-colors disabled:opacity-50'
 export const inputCls =
-  'mt-1 block w-full rounded-md border border-primary-200 bg-white px-3 py-2 text-sm text-primary-900 placeholder:text-primary-300 focus:border-primary focus:outline-none'
+  'mt-1 block w-full rounded-lg border border-border-strong bg-white px-3 py-2 text-sm text-ink-strong placeholder:text-ink-muted focus:border-primary focus:outline-none'
 
 export const Spinner = () => (
   <span
@@ -34,19 +34,19 @@ export const Spinner = () => (
 )
 
 export const Alert = ({ children }: { children: ReactNode }) => (
-  <p role="alert" className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+  <p role="alert" className="rounded-lg border border-danger-soft bg-danger-soft px-3 py-2 text-sm text-danger-text">
     {children}
   </p>
 )
 
 export const Notice = ({ children }: { children: ReactNode }) => (
-  <p role="status" className="rounded-md border border-accent-200 bg-accent-50 px-3 py-2 text-sm text-accent-600">
+  <p role="status" className="rounded-lg border border-warning-soft bg-warning-soft px-3 py-2 text-sm text-warning-text">
     {children}
   </p>
 )
 
 export const Success = ({ children }: { children: ReactNode }) => (
-  <p role="status" className="rounded-md border border-green-300 bg-green-50 px-3 py-2 text-sm font-semibold text-green-800">
+  <p role="status" className="rounded-lg border border-ok-soft bg-ok-soft px-3 py-2 text-sm font-semibold text-ok-text">
     {children}
   </p>
 )
@@ -55,11 +55,11 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
   const id = useId()
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-primary-800">
+      <label htmlFor={id} className="block text-sm font-medium text-ink-strong">
         {label}
       </label>
       {children(id)}
-      {hint && <p className="mt-1 text-xs text-primary-500">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-ink-muted">{hint}</p>}
     </div>
   )
 }
@@ -85,12 +85,12 @@ export function StepIndicator({ steps, step }: { steps: string[]; step: number }
                   ? 'border-primary bg-primary text-white'
                   : active
                     ? 'border-accent bg-accent text-accent-foreground'
-                    : 'border-primary-200 bg-white text-primary-300'
+                    : 'border-border bg-surface-raised text-ink-muted'
               }`}
             >
               {done ? '✓' : i + 1}
             </span>
-            {i < steps.length - 1 && <span className={`mx-1 h-0.5 flex-1 ${done ? 'bg-primary' : 'bg-primary-100'}`} />}
+            {i < steps.length - 1 && <span className={`mx-1 h-0.5 flex-1 ${done ? 'bg-primary' : 'bg-border'}`} />}
           </li>
         )
       })}
@@ -102,19 +102,25 @@ export function StepIndicator({ steps, step }: { steps: string[]; step: number }
 export function RegisterShell({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
     <div className="mx-auto w-full max-w-lg">
-      <div className="rounded-lg border border-primary-200 bg-white shadow-sm">
-        <div className="rounded-t-lg border-b-4 border-accent bg-primary px-6 py-5 text-white">
-          <div className="flex items-center gap-3">
-            <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded bg-accent text-sm font-bold text-accent-foreground">CF</span>
-            <div>
-              <p className="text-lg font-bold leading-tight">CareFusion AI</p>
-              <p className="text-xs text-primary-100">Unified Medical Affairs Platform</p>
-            </div>
-          </div>
-          <h1 className="mt-4 text-xl font-bold">{title}</h1>
-          <p className="mt-1 text-sm text-primary-100">{subtitle} &middot; synthetic demo data only</p>
+      <div
+        className="cf-card overflow-hidden rounded-xl border shadow-card"
+        style={{
+          background: 'rgba(250,245,239,.92)',
+          borderColor: 'rgba(83,101,120,.13)',
+        }}
+      >
+        <div className="px-6 pb-4 pt-6">
+          <span className="text-lg font-semibold tracking-tight" style={{ color: '#3f5263' }}>
+            CareFusion<span style={{ color: '#3a726d' }}> AI</span>
+          </span>
+          <h1 className="mt-4 font-serif text-2xl font-semibold" style={{ color: '#3f5263' }}>
+            {title}
+          </h1>
+          <p className="mt-1 text-sm" style={{ color: '#586470' }}>
+            {subtitle} &middot; synthetic demo data only
+          </p>
         </div>
-        <div className="space-y-5 p-6">{children}</div>
+        <div className="space-y-5 px-6 pb-6">{children}</div>
       </div>
     </div>
   )

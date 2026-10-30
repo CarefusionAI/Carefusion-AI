@@ -11,13 +11,13 @@ export interface RoleConfig {
   title: string
   badge: string
   group: RoleGroup
-  comingSoon: string
+  comingSoon?: string
 }
 
 export const ROLE_GROUPS: RoleGroup[] = ['Citizens', 'Medical Staff', 'Pharmacy', 'Administrators']
 
 export const ROLES: RoleConfig[] = [
-  { role: 'CITIZEN', path: '/citizen', label: 'Citizen', title: 'Citizen Dashboard', badge: 'CIT', group: 'Citizens', comingSoon: 'Coming in W2-W6' },
+  { role: 'CITIZEN', path: '/citizen', label: 'Citizen', title: 'Citizen Dashboard', badge: 'CIT', group: 'Citizens' },
   { role: 'DOCTOR', path: '/doctor', label: 'Doctor', title: 'Doctor Dashboard', badge: 'DOC', group: 'Medical Staff', comingSoon: 'Coming in W2-W8' },
   { role: 'NURSE', path: '/nurse', label: 'Nurse', title: 'Nurse Dashboard', badge: 'NUR', group: 'Medical Staff', comingSoon: 'Coming in a later week (see docs/13)' },
   { role: 'LAB_TECH', path: '/lab-tech', label: 'Lab Technician', title: 'Lab Technician Dashboard', badge: 'LAB', group: 'Medical Staff', comingSoon: 'Coming in a later week (see docs/13)' },

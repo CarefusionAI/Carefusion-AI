@@ -44,11 +44,11 @@ const ACCOUNT_LABELS: Record<string, string> = {
 const TOTAL_STEPS = 2
 
 const btnPrimary =
-  'rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-50'
+  'rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50'
 const btnGhost =
-  'rounded-md border border-primary-200 bg-white px-4 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-50 disabled:opacity-50'
+  'rounded-lg border border-border-strong bg-surface-raised px-4 py-2.5 text-sm font-semibold text-ink transition-colors disabled:opacity-50'
 const btnDanger =
-  'rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50'
+  'rounded-lg bg-danger px-4 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
 
 function humanise(value: string): string {
   const text = value.replace(/_/g, ' ')
@@ -83,7 +83,7 @@ function checkLabels(results: unknown): { label: string; ok: boolean }[] {
 
 function StatusBadge({ status }: { status: string }) {
   const escalated = status === 'escalated'
-  const cls = escalated ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+  const cls = escalated ? 'bg-danger-soft text-danger-text' : 'bg-warning-soft text-warning-text'
   return <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${cls}`}>{humanise(status)}</span>
 }
 
@@ -153,7 +153,7 @@ export default function ApprovalInbox({ adminLevel }: ApprovalInboxProps) {
 
   if (loading && items.length === 0) {
     return (
-      <div className="flex items-center gap-2 text-sm text-primary-500" role="status">
+      <div className="flex items-center gap-2 text-sm text-primary" role="status">
         <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
         Loading approvals...
       </div>
@@ -163,17 +163,17 @@ export default function ApprovalInbox({ adminLevel }: ApprovalInboxProps) {
   return (
     <section className="space-y-4" aria-label={`${adminLevel} approval inbox`}>
       {error && (
-        <p role="alert" className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="rounded-lg border border-danger-soft bg-danger-soft px-3 py-2 text-sm text-danger-text">
           {error}
         </p>
       )}
       {notice && (
-        <p role="status" className="rounded-md border border-accent-200 bg-accent-50 px-3 py-2 text-sm text-accent-600">
+        <p role="status" className="rounded-lg border border-ok-soft bg-ok-soft px-3 py-2 text-sm text-ok-text">
           {notice}
         </p>
       )}
       {!error && items.length === 0 && (
-        <p className="rounded-lg border border-primary-100 bg-white p-6 text-center text-sm text-primary-500">
+        <p className="rounded-xl border border-border bg-surface-raised p-6 text-center text-sm text-ink-muted">
           No pending approvals
         </p>
       )}
@@ -182,11 +182,11 @@ export default function ApprovalInbox({ adminLevel }: ApprovalInboxProps) {
         const checks = checkLabels(item.checkResults)
         const isActive = active?.id === item.id
         return (
-          <article key={item.id} className="space-y-3 rounded-lg border border-primary-100 bg-white p-4 shadow-sm">
+          <article key={item.id} className="cf-card space-y-3 rounded-xl border border-border bg-surface-raised p-4 shadow-card">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <h2 className="text-base font-semibold text-primary">{item.applicantName}</h2>
-                <p className="text-sm text-primary-500">
+                <h2 className="text-base font-semibold text-ink-strong">{item.applicantName}</h2>
+                <p className="text-sm text-ink-muted">
                   {ACCOUNT_LABELS[item.applicantAccountType] ?? humanise(item.applicantAccountType)}
                 </p>
               </div>
@@ -194,22 +194,22 @@ export default function ApprovalInbox({ adminLevel }: ApprovalInboxProps) {
             </div>
             <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
               <div>
-                <dt className="text-xs text-primary-400">Request</dt>
-                <dd className="text-primary-900">{SUBJECT_LABELS[item.subjectType] ?? humanise(item.subjectType)}</dd>
+                <dt className="text-xs text-ink-muted">Request</dt>
+                <dd className="text-ink-strong">{SUBJECT_LABELS[item.subjectType] ?? humanise(item.subjectType)}</dd>
               </div>
               <div>
-                <dt className="text-xs text-primary-400">Step</dt>
-                <dd className="text-primary-900">
+                <dt className="text-xs text-ink-muted">Step</dt>
+                <dd className="text-ink-strong">
                   Step {item.step} of {TOTAL_STEPS}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs text-primary-400">Submitted</dt>
-                <dd className="text-primary-900">{formatDate(item.submittedAt)}</dd>
+                <dt className="text-xs text-ink-muted">Submitted</dt>
+                <dd className="text-ink-strong">{formatDate(item.submittedAt)}</dd>
               </div>
               <div>
-                <dt className="text-xs text-primary-400">Due</dt>
-                <dd className={overdue ? 'font-semibold text-red-600' : 'text-primary-900'}>
+                <dt className="text-xs text-ink-muted">Due</dt>
+                <dd className={overdue ? 'font-semibold text-danger-text' : 'text-ink-strong'}>
                   {formatDate(item.dueAt)}
                   {overdue && ' (overdue)'}
                 </dd>
@@ -220,7 +220,7 @@ export default function ApprovalInbox({ adminLevel }: ApprovalInboxProps) {
                 {checks.map((c) => (
                   <li
                     key={c.label}
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${c.ok ? 'bg-accent-50 text-accent-600' : 'bg-amber-100 text-amber-700'}`}
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${c.ok ? 'bg-ok-soft text-ok-text' : 'bg-warning-soft text-warning-text'}`}
                   >
                     {c.label}
                   </li>
@@ -238,18 +238,18 @@ export default function ApprovalInbox({ adminLevel }: ApprovalInboxProps) {
               </div>
             )}
             {isActive && active && (
-              <div className="space-y-3 rounded-md border border-primary-100 bg-primary-50 p-3">
-                <label className="block text-sm font-medium text-primary-700">
+              <div className="space-y-3 rounded-lg border border-border bg-surface-cream p-3">
+                <label className="block text-sm font-medium text-ink">
                   {active.kind === 'approve' ? 'Reason (optional)' : 'Reason for rejection (required)'}
                   <textarea
                     rows={3}
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-primary-200 bg-white px-3 py-2 text-sm text-primary-900 focus:border-primary focus:outline-none"
+                    className="mt-1 block w-full rounded-lg border border-border-strong bg-white px-3 py-2 text-sm text-ink-strong focus:border-primary focus:outline-none"
                   />
                 </label>
                 {actionError && (
-                  <p role="alert" className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+                  <p role="alert" className="rounded-lg border border-danger-soft bg-danger-soft px-3 py-2 text-sm text-danger-text">
                     {actionError}
                   </p>
                 )}
