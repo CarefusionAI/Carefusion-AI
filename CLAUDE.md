@@ -67,4 +67,4 @@ docker-compose.yml  .env.example               (created in W1)
 ```
 
 ## Where we are (update this line each session)
-- 2026-10-30: W5 early — all 42 design screens ported to `apps/web`, migrations 120–129 + design seed + role APIs done on branch `w5-frontend-port` (on top of `w4-citizen-profile`, PR #3). Builds pass; **not yet run end to end in Docker/browser**. **Next: start Docker, seed (`docker compose --profile seed run --rm db-seed`), click through each role from `/demo-signin`, fix bugs, add API tests, open the W5 PR.**
+- 2026-10-30: W5 merged to `main` (PRs #3 and #4). **Live demo: https://carefusion-roan.vercel.app** (Vercel: static web app + API as one serverless function; Neon Postgres in Singapore; access-code gate on; deploy with `scripts/build-vercel.sh && cd .vercel-deploy && vercel deploy --prod`). Demo clock follows `DEMO_NOW`. **Next: switch on Cloudflare R2 (dashboard) and connect file storage (`MINIO_*`, `MINIO_REGION=auto`), then browser click-through of every role, API tests, CI.**
