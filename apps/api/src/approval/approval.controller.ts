@@ -1,4 +1,5 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Post, Req } from '@nestjs/common'
+import { createHash, timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
 import type { ZodType, ZodTypeDef } from 'zod'
 import { Role } from '@carefusion/shared'
@@ -83,11 +84,16 @@ export class ApprovalController {
   /**
    * Escalates overdue requests. Public on purpose so a cron job can call it later
    * (no user session there). It only moves requests up the chain and takes no input.
-   * TODO: protect with a shared secret header before any non-demo deployment.
+   * It needs the CRON_SECRET in the x-cron-secret header; with no CRON_SECRET set it is closed to everyone.
    */
   @Public()
   @Post('escalate')
-  async escalate(): Promise<{ success: boolean; escalated: number }> {
+  async escalate(@Req() req: { headers: Record<string, string | string[] | undefined> }): Promise<{ success: boolean; escalated: number }> {
+    const expected = process.env.CRON_SECRET ?? ''
+    const given = String(req.headers['x-cron-secret'] ?? '')
+    const a = createHash('sha256').update(given).digest()
+    const b = createHash('sha256').update(expected).digest()
+    if (!expected || !timingSafeEqual(a, b)) throw new ForbiddenException({ success: false, errorMessage: 'Not allowed.' })
     const escalated = await this.approvalService.escalateOverdue()
     return { success: true, escalated }
   }
