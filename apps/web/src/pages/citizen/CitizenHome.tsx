@@ -10,7 +10,7 @@ import {
   useAccessHistory,
   useAccessOverview,
   useAlertsSummary,
-  useAllDocuments,
+  useRecentDocuments,
   useCitizenProfile,
   useEndSession,
   useFolders,
@@ -401,11 +401,10 @@ const DOC_TONE: Record<string, { icon: string; bg: string; fg: string }> = {
 function RecentDocs() {
   const go = useNavigate()
   const folders = useFolders()
-  const ids = (folders.data ?? []).filter((f: FolderResponse) => f.documentCount > 0).map((f: FolderResponse) => f.id)
-  const docs = useAllDocuments(ids)
-  const recent = [...(docs.data ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 3)
+  const docs = useRecentDocuments(3)
+  const recent = docs.data ?? []
   const folderName = new Map((folders.data ?? []).map((f) => [f.id, f.name]))
-  const loading = folders.isPending || (ids.length > 0 && docs.isPending)
+  const loading = folders.isPending || docs.isPending
   return (
     <Box title="Recent documents" actions={<LinkBtn onClick={() => go('/citizen/documents')}>Open folders</LinkBtn>}>
       {loading ? (

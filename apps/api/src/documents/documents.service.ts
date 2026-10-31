@@ -118,6 +118,31 @@ export class DocumentsService {
     }))
   }
 
+  /** The newest documents across all of a citizen's folders, for the Home screen (one call instead of one per folder). */
+  async listRecentDocuments(personId: string, limit: number) {
+    const n = Math.min(Math.max(Math.trunc(limit) || 3, 1), 20)
+    const rows = await this.db.query(
+      `WITH ${DOC_CURRENT_FOLDER_CTE}
+       SELECT d.id, d.title, d.doc_type::text AS doc_type, d.mime_type, d.size_bytes,
+              d.is_self_reported, d.created_at, dc.current_folder_id AS folder_id
+         FROM records.document d
+         JOIN doc_current dc ON dc.id = d.id
+        ORDER BY d.created_at DESC, d.id DESC
+        LIMIT $2`,
+      [personId, n],
+    )
+    return rows.map((d) => ({
+      id: d.id,
+      title: d.title,
+      docType: d.doc_type,
+      mimeType: d.mime_type,
+      sizeBytes: d.size_bytes == null ? null : Number(d.size_bytes),
+      isSelfReported: d.is_self_reported,
+      createdAt: new Date(d.created_at).toISOString(),
+      folderId: d.folder_id,
+    }))
+  }
+
   async upload(
     personId: string,
     userId: string,

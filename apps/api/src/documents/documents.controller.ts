@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -64,6 +65,12 @@ export class DocumentsController {
     const { personId, userId } = requireCitizen(req)
     if (!file) throw new BadRequestException('A file is required (form field "file")')
     return this.documents.upload(personId, userId, file, parseBody(UploadDocumentRequestSchema, body))
+  }
+
+  @Get('documents/recent')
+  recentDocuments(@Req() req: CitizenRequest, @Query('limit') limit?: string) {
+    const { personId } = requireCitizen(req)
+    return this.documents.listRecentDocuments(personId, Number(limit ?? 3))
   }
 
   @Get('documents/:id/download')
