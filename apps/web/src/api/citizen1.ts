@@ -211,6 +211,14 @@ export function useAllDocuments(folderIds: string[]) {
 
 export type CitizenDocument = DocumentResponse & { folderId: string }
 
+/** The newest few documents across all folders, in one call (Home's "Recent documents"). */
+export function useRecentDocuments(limit = 3) {
+  return useQuery({
+    queryKey: [...ROOT, 'recent-docs', limit],
+    queryFn: () => getJson<CitizenDocument[]>(`/v1/citizen/documents/recent?limit=${limit}`),
+  })
+}
+
 export function useCreateFolder() {
   const qc = useQueryClient()
   return useMutation({
@@ -240,7 +248,7 @@ export function useUploadDocument() {
       // No Content-Type header: the browser adds the multipart boundary.
       return call<UploadDocumentResponse>('/v1/citizen/documents/upload', { method: 'POST', body: form })
     },
-    onSuccess: () => invalidate(qc, [...ROOT, 'folder-docs'], [...ROOT, 'all-docs'], citizenKeys.folders, citizenKeys.storage),
+    onSuccess: () => invalidate(qc, [...ROOT, 'folder-docs'], [...ROOT, 'all-docs'], [...ROOT, 'recent-docs'], citizenKeys.folders, citizenKeys.storage),
   })
 }
 
@@ -249,7 +257,7 @@ export function useMoveDocument() {
   return useMutation({
     mutationFn: (v: { id: string; toFolderId: string }) =>
       sendJson<unknown>(`/v1/citizen/documents/${v.id}/move`, 'POST', { toFolderId: v.toFolderId }),
-    onSuccess: () => invalidate(qc, [...ROOT, 'folder-docs'], [...ROOT, 'all-docs'], citizenKeys.folders),
+    onSuccess: () => invalidate(qc, [...ROOT, 'folder-docs'], [...ROOT, 'all-docs'], [...ROOT, 'recent-docs'], citizenKeys.folders),
   })
 }
 
