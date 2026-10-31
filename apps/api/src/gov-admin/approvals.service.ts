@@ -322,6 +322,16 @@ export class GovApprovalsService {
     const row = await this.loadInScope(scope, id)
     this.assertOpen(row)
     if (row.status === 'more_info') await this.resumeToPending(id)
+    // The database forbids the first and the deciding signer being the same person. Rejecting after giving the
+    // first signature means changing your mind, so the first signature is withdrawn (and logged) before the decision.
+    if (row.first_signer_id && row.first_signer_id === scope.userId) {
+      await this.db.query('UPDATE admin.approval_request SET second_approver_user_id = NULL WHERE id = $1::uuid', [id])
+      await this.audit.logAction(actor, 'approval.first_signature_withdrawn', {
+        entityType: 'approval_request',
+        entityId: id,
+        details: { subjectType: row.subject_type, actor: actor.username, mock: true },
+      })
+    }
     await this.approvals.reject(id, scope.userId, reason, actor)
     return { success: true }
   }
