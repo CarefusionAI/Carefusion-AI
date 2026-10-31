@@ -295,7 +295,7 @@ export const useEscalateFlag = () =>
   useGovMutation(({ id, note }: { id: string; note: string }) => post<unknown>(`/audit/flags/${id}/escalate`, { note }))
 
 export const useCreateExport = () =>
-  useGovMutation((v: { report: string; period: GovReportPeriod; format: 'csv' | 'pdf' }) => post<GovReportExport>('/reports/exports', v))
+  useGovMutation((v: { report: string; period: GovReportPeriod; format: 'csv' | 'pdf' }) => post<{ export: GovReportExport }>('/reports/exports', v))
 
 /** Downloads one de-identified CSV export through the authenticated API (a plain link cannot send the token). */
 export async function downloadExport(exp: Pick<GovReportExport, 'id' | 'filename'>): Promise<void> {
