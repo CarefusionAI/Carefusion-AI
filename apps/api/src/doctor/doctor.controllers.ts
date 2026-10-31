@@ -37,6 +37,12 @@ import { PrescriptionsService } from './prescriptions.service'
 import { ProfileService } from './profile.service'
 
 type Req_ = { user?: AuthenticatedUser }
+type ReqWithClient = Req_ & { headers: Record<string, string | string[] | undefined>; socket?: { remoteAddress?: string } }
+
+/** Vercel sets x-vercel-forwarded-for itself; elsewhere the first forwarded address, then the socket. */
+function clientOf(r: ReqWithClient): string {
+  return String(r.headers['x-vercel-forwarded-for'] ?? r.headers['x-forwarded-for'] ?? r.socket?.remoteAddress ?? 'unknown').split(',')[0]!.trim()
+}
 const uuid = new ParseUUIDPipe()
 
 /** Home, OP queue, schedule, alerts and the bell. */
@@ -68,7 +74,7 @@ export class DoctorSessionController {
     private readonly patient: PatientService,
   ) {}
 
-  @Post('access/open') open(@Req() r: Req_, @Body() b: unknown) { return this.access.openWithKey(r.user, parseBody(OpenSessionRequestSchema, b)) }
+  @Post('access/open') open(@Req() r: ReqWithClient, @Body() b: unknown) { return this.access.openWithKey(r.user, parseBody(OpenSessionRequestSchema, b), clientOf(r)) }
   @Get('patients/past') past(@Req() r: Req_) { return this.access.pastPatients(r.user) }
   @Get('patients/:personId/my-additions') additions(@Req() r: Req_, @Param('personId', uuid) id: string) { return this.access.myAdditions(r.user, id) }
   @Get('sessions') sessions(@Req() r: Req_) { return this.access.list(r.user) }

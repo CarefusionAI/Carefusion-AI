@@ -66,6 +66,7 @@ cat > "$OUT/vercel.json" <<'EOF'
     }
   ],
   "rewrites": [
+    { "source": "/health", "destination": "/api/index" },
     { "source": "/api/(.*)", "destination": "/api/index" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]

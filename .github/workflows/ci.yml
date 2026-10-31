@@ -39,6 +39,14 @@ jobs:
       - name: Build all TypeScript packages
         run: pnpm build
 
+      # Known moderate/high advisories are tracked in docs/18_SECURITY_REVIEW.md (upgrades deferred). A new critical one fails the build.
+      - name: Dependency audit (fail on critical)
+        run: pnpm audit --prod --audit-level=critical
+
+      - name: Dependency audit (full report, does not fail)
+        run: pnpm audit --prod
+        continue-on-error: true
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
