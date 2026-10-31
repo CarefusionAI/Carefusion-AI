@@ -45,10 +45,9 @@ export default function AdminLoginScreen() {
   const meta = ADMINS[key]
   const gov = isGov(key)
 
-  function enter(k: AdminKey) {
+  async function enter(k: AdminKey) {
     const role = ADMINS[k].role
-    login(role)
-    navigate(demoRole(role).path)
+    if (await login(role)) navigate(demoRole(role).path)
   }
 
   function submit(e: FormEvent) {

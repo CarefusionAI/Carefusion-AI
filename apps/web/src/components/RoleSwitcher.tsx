@@ -50,9 +50,8 @@ export default function RoleSwitcher() {
   const navigate = useNavigate()
   const { login } = useAuth()
 
-  function pick(r: RoleConfig) {
-    login(r.role)
-    navigate(r.path)
+  async function pick(r: RoleConfig) {
+    if (await login(r.role)) navigate(r.path)
   }
 
   return (

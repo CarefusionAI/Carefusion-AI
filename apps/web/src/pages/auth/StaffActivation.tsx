@@ -28,9 +28,8 @@ export default function StaffActivationScreen() {
     [matches, 'Both entries match'],
   ]
 
-  function open() {
-    login('NURSE')
-    navigate('/nurse')
+  async function open() {
+    if (await login('NURSE')) navigate('/nurse')
   }
 
   return (
