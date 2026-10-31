@@ -51,6 +51,7 @@ EOF
 
 cat > "$OUT/vercel.json" <<'EOF'
 {
+  "regions": ["sin1"],
   "functions": { "api/index.js": { "maxDuration": 30, "includeFiles": "dist/**" } },
   "headers": [
     {
