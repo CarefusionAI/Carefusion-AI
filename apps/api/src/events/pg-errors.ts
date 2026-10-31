@@ -25,7 +25,7 @@ export function mapPgError(err: unknown): HttpException {
     case '23503': // foreign_key_violation
       return new BadRequestException('A referenced record does not exist')
     case '23502': // not_null_violation
-      return new BadRequestException(`Missing required value (${e.message ?? ''})`)
+      return new BadRequestException('A required value is missing')
     case '23505': // unique_violation
       return new ConflictException('This already exists')
     case '22P02': // invalid_text_representation

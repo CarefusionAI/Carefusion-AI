@@ -5,7 +5,7 @@ services:
   db:
     image: postgis/postgis:16-3.4
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     env_file: .env
     volumes:
       - cf-pgdata:/var/lib/postgresql/data
@@ -18,7 +18,7 @@ services:
   valkey:
     image: valkey/valkey:8
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - cf-valkey:/data
     healthcheck:
@@ -31,7 +31,7 @@ services:
     image: quay.io/keycloak/keycloak:26.0
     command: start-dev --import-realm
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/carefusion-realm.json:ro
     environment:
@@ -50,7 +50,7 @@ services:
   localstack:
     image: localstack/localstack:3.6
     ports:
-      - "9000:4566"
+      - "127.0.0.1:9000:4566"
     environment:
       SERVICES: s3
       AWS_DEFAULT_REGION: ap-south-1
@@ -81,8 +81,8 @@ services:
   mailpit:
     image: axllent/mailpit:latest
     ports:
-      - "8025:8025"
-      - "1025:1025"
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
 
   db-migrate:
     build:
@@ -114,7 +114,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     env_file: .env
     volumes:
       - ./.env:/app/apps/api/.env:ro
@@ -129,7 +129,7 @@ services:
       context: ./apps/ai
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     env_file: .env
     depends_on:
       - db
@@ -139,7 +139,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
     env_file: .env
     environment:
       API_PROXY_TARGET: http://api:3000

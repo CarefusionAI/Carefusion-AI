@@ -15,6 +15,7 @@ import type {
 } from '../common/shared'
 import { ageYears, decodeDemoBytes, forbidden, iso, notFound, num, dateStr } from '../common/staff.util'
 import { demoNowMs } from '../common/demo-clock'
+import { neutraliseCsvText } from '../../csv'
 
 const UNRESOLVED = ['issued', 'partly_dispensed']
 
@@ -762,7 +763,7 @@ export class PharmacistService {
 
   async dispensingLogCsv(actor: StaffActor, from?: string, to?: string): Promise<string> {
     const rows = await this.dispensingLog(actor, from, to)
-    const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`
+    const esc = (v: unknown) => `"${neutraliseCsvText(String(v ?? '')).replace(/"/g, '""')}"`
     const head = ['dispensed_at', 'rx_number', 'pharmacist', 'medicine', 'outcome', 'quantity', 'batch_no', 'fefo_override_reason']
     return [head.join(','), ...rows.map((r) => [r.dispensedAt, r.rxNumber, r.pharmacist, r.medicine, r.outcome, r.quantity, r.batchNo, r.batchOverrideReason].map(esc).join(','))].join('\n') + '\n'
   }
