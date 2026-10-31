@@ -748,3 +748,9 @@ Template:
 - Setup done on Neon: `GRANT cf_app TO cf_owner WITH SET TRUE` so the API can switch to the restricted role.
 - Known gaps: demo mode is on, so anyone with the link can open any role (synthetic data only); file storage (R2) not connected; Keycloak not deployed; repo is under a different GitHub account than Vercel's link, so deploys are from the CLI, not on push.
 - Owner: Athun + Claude. Status: DONE (alpha)
+
+## 2026-10-31 — Security hardening pass 1
+- **Topic:** Audit of code and live site, then five fixes.
+- **Decision:** (1) pnpm overrides for multer 2.5, lodash 4.18, body-parser 1.20.9, qs 6.16 (24 advisories down to 6). NOT done, on purpose, because each is a major upgrade: NestJS 11 (moderate), Zod 4 (one high, memory use on huge arrays; body size is capped), react-router 7 (moderate, SSR-only plus a backslash open redirect). (2) `POST /admin/approvals/escalate` needs the `x-cron-secret` header and stays closed when `CRON_SECRET` is unset. (3) Security headers on the API and web (CSP, X-Frame-Options, nosniff, referrer and permissions policy), CORS limited to the web origin, no X-Powered-By. (4) Uploads limited to PDF, images, Word, text, CSV and DICOM, and the file's first bytes must match the claimed type. (5) The wrong-code limiter moved to the database (migration 131, hashed client address) so it holds across serverless instances.
+- **Reason:** Audit findings; demo mode lets anyone with the access code act as any role, so the code gate and upload paths matter.
+- **Owner:** Athun + Claude. **Next:** browser click-through of all roles; real staff/admin login (removes demo-mode role switching); decide on NestJS 11 / Zod 4 upgrade. **Status:** done pending deploy.
