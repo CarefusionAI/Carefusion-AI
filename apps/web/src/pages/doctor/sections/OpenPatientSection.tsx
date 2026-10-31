@@ -36,6 +36,7 @@ export default function OpenPatientSection() {
 
   const [mode, setMode] = useState<'key' | 'qr'>('key')
   const [keyText, setKeyText] = useState('')
+  const [abhaText, setAbhaText] = useState('')
   const [qrText, setQrText] = useState('')
   const [checkLocation, setCheckLocation] = useState(false)
   const [needReason, setNeedReason] = useState(false)
@@ -50,7 +51,13 @@ export default function OpenPatientSection() {
     e.preventDefault()
     setFormError(null)
     let key: string
+    let patientAbha: string | undefined
     if (mode === 'key') {
+      patientAbha = abhaText.trim()
+      if (patientAbha.length < 4) {
+        setFormError('Enter the patient\'s ABHA number, as well as the 6-digit key.')
+        return
+      }
       const digits = keyText.replace(/\D/g, '')
       if (digits.length !== 6) {
         setFormError('Enter all 6 digits of the patient\'s key.')
@@ -64,7 +71,7 @@ export default function OpenPatientSection() {
         return
       }
     }
-    const body: OpenSessionRequest = { key, visitId: linked?.visitId }
+    const body: OpenSessionRequest = { key, visitId: linked?.visitId, ...(patientAbha ? { patientAbha } : {}) }
     if (checkLocation) {
       setBusyLocation(true)
       try {
@@ -118,6 +125,19 @@ export default function OpenPatientSection() {
 
             {mode === 'key' ? (
               <div>
+                <label className="dr-lab" htmlFor="pabha">
+                  Patient's ABHA number
+                </label>
+                <input
+                  id="pabha"
+                  className="dr-keyin"
+                  style={{ fontSize: 16, letterSpacing: 0, marginBottom: 14 }}
+                  autoComplete="off"
+                  maxLength={40}
+                  placeholder="DEMO-0000-1234"
+                  value={abhaText}
+                  onChange={(e) => setAbhaText(e.target.value)}
+                />
                 <label className="dr-lab" htmlFor="pkey">
                   Patient's key
                 </label>
@@ -133,7 +153,7 @@ export default function OpenPatientSection() {
                   aria-describedby="pkey-help"
                 />
                 <p id="pkey-help" className="dr-muted" style={{ margin: '8px 0 0' }}>
-                  Demo: the citizen's current key is on their Share and access screen. A session lasts 30 minutes and is logged to the patient.
+                  Ask the patient for their ABHA number and the current key (demo patient: DEMO-0000-1234, key on their Share and access screen). A session lasts 30 minutes and is logged to the patient.
                 </p>
               </div>
             ) : (

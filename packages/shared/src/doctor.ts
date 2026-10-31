@@ -24,6 +24,8 @@ export type OrderPriority = z.infer<typeof OrderPrioritySchema>
 export const OpenSessionRequestSchema = z.object({
   /** The citizen's rotating 6-digit key (spaces allowed), or the scanned QR payload `cfkey:v1:<handle>:<code>`. */
   key: z.string().trim().min(6).max(80),
+  /** Needed with a typed 6-digit key: the patient's ABHA number, so the key is checked against that one patient. Not needed for the QR text. */
+  patientAbha: z.string().trim().min(4).max(40).optional(),
   /** Optional: the OP visit this session belongs to (otherwise today's matching visit is linked). */
   visitId: z.string().uuid().optional(),
   /** Optional device location, used for the geofence check. */

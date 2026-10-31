@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common'
 import { randomUUID } from 'node:crypto'
 import type { DoctorSessionInfo, OpenSessionRequest } from '@carefusion/shared/dist/doctor.js'
 import type { AuthenticatedUser } from '../auth/types'
@@ -44,10 +44,18 @@ export class AccessService {
    * Open a patient's record with the rotating key. Never opens without a valid key (or break-glass, see EmergencyService).
    * The unknown/expired/used cases give one message so a key cannot be probed.
    */
-  async openWithKey(user: AuthenticatedUser | undefined, body: OpenSessionRequest): Promise<DoctorSessionInfo> {
+  async openWithKey(user: AuthenticatedUser | undefined, body: OpenSessionRequest, client = 'unknown'): Promise<DoctorSessionInfo> {
     const actor = this.db.actorOf(user)
-    const personId = await this.keys.consume(body.key)
-    if (!personId) throw new NotFoundException('Key not recognised, already used or expired. Ask the patient for the new key.')
+    const who = user?.userId ?? user?.id ?? 'unknown'
+    if (await this.keys.isLocked(who, client)) {
+      throw new HttpException('Too many wrong keys. Wait about 10 minutes, then ask the patient for the new key.', 429)
+    }
+    const personId = await this.keys.consume(body.key, Date.now(), body.patientAbha)
+    if (!personId) {
+      await this.keys.recordFail(who, client)
+      throw new NotFoundException('Key not recognised, already used or expired. Ask the patient for the new key.')
+    }
+    await this.keys.clearFails(who, client)
     return this.db.run(user, async (tx) => {
       await sweepExpiredSessions(tx)
       const patient = await loadHeader(tx, personId)
