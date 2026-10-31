@@ -116,13 +116,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends postgresql-client
 
-      - name: Run migrations
-        run: |
-          set -euo pipefail
-          for f in $(ls carefusion-db/migrations/*.sql | sort); do
-            echo "Applying $f"
-            psql -v ON_ERROR_STOP=1 -q -f "$f"
-          done
+      # The rule tests use the demo seed data (util.seed_uuid and the seeded people), so apply migrations AND seeds.
+      - name: Run migrations and demo seeds
+        run: ./carefusion-db/run_migrations.sh "postgresql://carefusion:ci_test_password@localhost:5432/carefusion" all
 
       - name: Run rule tests
         run: |
