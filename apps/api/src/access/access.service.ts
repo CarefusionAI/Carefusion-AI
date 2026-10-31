@@ -67,6 +67,13 @@ export class AccessService {
       await this.db.query(`DELETE FROM util.access_attempt WHERE client_hash = $1`, [key])
       return true
     }
+    await this.recordFailure(client)
+    return false
+  }
+
+  /** Counts one wrong guess for this key (an address, or a role plus address for reviewer passwords). */
+  async recordFailure(client: string): Promise<void> {
+    const key = this.clientKey(client)
     await this.db.query(
       `INSERT INTO util.access_attempt (client_hash, fails, first_at) VALUES ($1, 1, now())
        ON CONFLICT (client_hash) DO UPDATE SET
@@ -74,6 +81,10 @@ export class AccessService {
          first_at = CASE WHEN util.access_attempt.first_at < now() - make_interval(secs => $2) THEN now() ELSE util.access_attempt.first_at END`,
       [key, WINDOW_MS / 1000],
     )
-    return false
+  }
+
+  /** Forget earlier wrong guesses after a right one. */
+  async clearFailures(client: string): Promise<void> {
+    await this.db.query(`DELETE FROM util.access_attempt WHERE client_hash = $1`, [this.clientKey(client)])
   }
 }

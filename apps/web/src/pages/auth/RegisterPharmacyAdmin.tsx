@@ -100,9 +100,8 @@ export default function RegisterPharmacyAdminScreen() {
     else setStep((s) => s + 1)
   }
 
-  function preview() {
-    login('PHARMACY_ADMIN')
-    navigate('/pharmacy-admin')
+  async function preview() {
+    if (await login('PHARMACY_ADMIN')) navigate('/pharmacy-admin')
   }
 
   const h2 = (text: string, lead: string) => (

@@ -1,7 +1,8 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Role } from '@carefusion/shared'
 import { getRoleConfig } from '../config/roles'
 import { setAuthToken } from '../lib/api'
+import ReviewerPasswordPrompt from '../components/ReviewerPasswordPrompt'
 
 export interface DemoUser {
   username: string
@@ -14,7 +15,8 @@ export interface DemoUser {
 interface AuthContextValue {
   user: DemoUser | null
   role: Role | null
-  login: (role: Role) => void
+  /** Resolves true once signed in. Asks for the reviewer password first when the API says the role needs one. */
+  login: (role: Role) => Promise<boolean>
   logout: () => void
 }
 
@@ -73,29 +75,77 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<DemoUser | null>(readStoredUser)
 
-  const login = useCallback((role: Role) => {
-    const token = `demo:${role}`
-    setAuthToken(token)
-    setUser(buildDemoUser(role))
-    writeStorage(role, token)
+  const [prompt, setPrompt] = useState<{ role: Role; error: string | null; busy: boolean; askPassword: boolean } | null>(null)
+  const waiting = useRef<{ role: Role; resolve: (ok: boolean) => void } | null>(null)
 
-    // Ask the API for the real person/user ids (demo mode looks them up in the database).
-    fetch('/api/v1/auth/demo-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role }),
-    })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: { user?: { personId?: string | null; userId?: string | null } } | null) => {
-        const personId = data?.user?.personId ?? undefined
-        const userId = data?.user?.userId ?? undefined
-        if (!personId && !userId) return
-        setUser((current) => (current && current.role === role ? buildDemoUser(role, personId, userId) : current))
+  type Attempt = { ok: true } | { ok: false; passwordRequired: boolean; message: string }
+
+  const attempt = useCallback(async (role: Role, password?: string): Promise<Attempt> => {
+    try {
+      const res = await fetch('/api/v1/auth/demo-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(password ? { role, password } : { role }),
+      })
+      if (res.ok) {
+        const data = (await res.json()) as { token?: string; user?: { personId?: string | null; userId?: string | null } }
+        const token = data.token ?? `demo:${role}`
+        const personId = data.user?.personId ?? undefined
+        const userId = data.user?.userId ?? undefined
+        setAuthToken(token)
+        setUser(buildDemoUser(role, personId, userId))
         writeStorage(role, token, personId, userId)
+        return { ok: true }
+      }
+      const body = (await res.json().catch(() => null)) as { message?: string; passwordRequired?: boolean } | null
+      return { ok: false, passwordRequired: body?.passwordRequired === true, message: body?.message ?? 'Sign-in failed.' }
+    } catch {
+      // The API is not reachable (for example, not started yet): keep the old offline demo behaviour.
+      const token = `demo:${role}`
+      setAuthToken(token)
+      setUser(buildDemoUser(role))
+      writeStorage(role, token)
+      return { ok: true }
+    }
+  }, [])
+
+  const login = useCallback(
+    async (role: Role): Promise<boolean> => {
+      const first = await attempt(role)
+      if (first.ok) return true
+      if (!first.passwordRequired) {
+        setPrompt({ role, error: first.message, busy: false, askPassword: false })
+        return false
+      }
+      return new Promise<boolean>((resolve) => {
+        waiting.current = { role, resolve }
+        setPrompt({ role, error: null, busy: false, askPassword: true })
       })
-      .catch(() => {
-        // API may not be running yet — the demo token still works.
-      })
+    },
+    [attempt],
+  )
+
+  const submitPassword = useCallback(
+    async (password: string) => {
+      const w = waiting.current
+      if (!w) return
+      setPrompt((p) => (p ? { ...p, busy: true, error: null } : p))
+      const r = await attempt(w.role, password)
+      if (r.ok) {
+        waiting.current = null
+        setPrompt(null)
+        w.resolve(true)
+      } else {
+        setPrompt((p) => (p ? { ...p, busy: false, error: r.message } : p))
+      }
+    },
+    [attempt],
+  )
+
+  const cancelPrompt = useCallback(() => {
+    waiting.current?.resolve(false)
+    waiting.current = null
+    setPrompt(null)
   }, [])
 
   const logout = useCallback(() => {
@@ -109,7 +159,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [user, login, logout],
   )
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      {prompt ? (
+        <ReviewerPasswordPrompt
+          roleLabel={getRoleConfig(prompt.role).label}
+          error={prompt.error}
+          busy={prompt.busy}
+          askPassword={prompt.askPassword}
+          onSubmit={submitPassword}
+          onCancel={cancelPrompt}
+        />
+      ) : null}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth(): AuthContextValue {

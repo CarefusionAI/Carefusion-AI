@@ -85,9 +85,8 @@ export default function RegisterHospitalAdminScreen() {
     else setStep((s) => s + 1)
   }
 
-  function preview() {
-    login('HOSPITAL_ADMIN')
-    navigate('/hospital-admin')
+  async function preview() {
+    if (await login('HOSPITAL_ADMIN')) navigate('/hospital-admin')
   }
 
   const h2 = (text: string, lead: string) => (

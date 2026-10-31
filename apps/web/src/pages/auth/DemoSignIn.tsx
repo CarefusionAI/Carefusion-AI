@@ -23,9 +23,8 @@ export default function DemoSignInScreen() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  function pick(r: DemoRole) {
-    login(r.role)
-    navigate(r.path)
+  async function pick(r: DemoRole) {
+    if (await login(r.role)) navigate(r.path)
   }
 
   return (

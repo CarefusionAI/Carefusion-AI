@@ -36,10 +36,9 @@ export default function StaffLoginScreen() {
   const [loading, setLoading] = useState(false)
   const [code, setCode] = useState('')
 
-  function enter(k: StaffKey) {
+  async function enter(k: StaffKey) {
     const role = STAFF[k].role
-    login(role)
-    navigate(demoRole(role).path)
+    if (await login(role)) navigate(demoRole(role).path)
   }
 
   function submit(e: FormEvent) {

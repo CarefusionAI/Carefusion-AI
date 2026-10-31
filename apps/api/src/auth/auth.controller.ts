@@ -1,16 +1,19 @@
-import { Controller, Get, Post, Body, Req, UnauthorizedException } from '@nestjs/common'
+import { Controller, Get, HttpException, Post, Body, Req, UnauthorizedException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Role } from '@carefusion/shared'
 import { Public } from './public.decorator'
 import { AuditService } from '../audit/audit.service'
 import { DatabaseService } from '../database/database.service'
 import { lookupDemoIdentity } from './demo-identity'
+import { AccessService } from '../access/access.service'
+import { DemoCredentialsService } from './demo-credentials.service'
 import type { AuthenticatedUser } from './types'
 
 const ROLE_VALUES = new Set<string>(Object.values(Role))
 
 interface DemoLoginBody {
   role: string
+  password?: string
 }
 
 @Controller('api/v1/auth')
@@ -21,6 +24,8 @@ export class AuthController {
     config: ConfigService,
     private readonly audit: AuditService,
     private readonly db: DatabaseService,
+    private readonly creds: DemoCredentialsService,
+    private readonly access: AccessService,
   ) {
     this.demoMode = config.get<string>('DEMO_MODE', 'false') === 'true'
   }
@@ -51,6 +56,22 @@ export class AuthController {
     if (!role || !ROLE_VALUES.has(role)) {
       throw new UnauthorizedException('Invalid role')
     }
+    const ip = req.ip === '::1' ? '127.0.0.1' : req.ip?.replace('::ffff:', '')
+    const needsPassword = this.creds.requiresPassword(role)
+    if (needsPassword) {
+      // Wrong passwords are counted per role and client address; 5 in 10 minutes locks that pair out.
+      const client = `pw:${role}:${String(req.headers['x-vercel-forwarded-for'] ?? req.headers['x-forwarded-for'] ?? req.socket?.remoteAddress ?? 'unknown').split(',')[0]!.trim()}`
+      if (await this.access.isLocked(client)) {
+        throw new HttpException({ message: 'Too many wrong passwords. Try again in a few minutes.' }, 429)
+      }
+      const given = typeof body.password === 'string' ? body.password : ''
+      if (!given) throw new UnauthorizedException({ message: 'This role needs its reviewer password.', passwordRequired: true })
+      if (!this.creds.verifyPassword(role, given)) {
+        await this.access.recordFailure(client)
+        throw new UnauthorizedException({ message: 'That password is not right.', passwordRequired: true })
+      }
+      await this.access.clearFailures(client)
+    }
     const username = `demo-${role.toLowerCase().replace(/_/g, '-')}`
     const user: AuthenticatedUser = {
       id: username,
@@ -64,14 +85,13 @@ export class AuthController {
       user.userId = identity.userId
     }
 
-    const ip = req.ip === '::1' ? '127.0.0.1' : req.ip?.replace('::ffff:', '')
     await this.audit.logAction(user, 'auth.demo_login', {
       ip,
       details: { role, demo: true },
     })
 
     return {
-      token: `demo:${role}`,
+      token: needsPassword ? this.creds.issueToken(role) : `demo:${role}`,
       user: {
         id: username,
         username,

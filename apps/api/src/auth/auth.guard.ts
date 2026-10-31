@@ -6,6 +6,7 @@ import { Role } from '@carefusion/shared'
 import { DatabaseService } from '../database/database.service'
 import { IS_PUBLIC_KEY } from './public.decorator'
 import { lookupDemoIdentity } from './demo-identity'
+import { DemoCredentialsService } from './demo-credentials.service'
 import type { AuthenticatedUser } from './types'
 
 const ROLE_VALUES = new Set<string>(Object.values(Role))
@@ -18,6 +19,7 @@ export class CfAuthGuard implements CanActivate {
     private readonly reflector: Reflector,
     config: ConfigService,
     private readonly db: DatabaseService,
+    private readonly creds: DemoCredentialsService,
   ) {
     this.demoMode = config.get<string>('DEMO_MODE', 'false') === 'true'
   }
@@ -65,16 +67,26 @@ export class CfAuthGuard implements CanActivate {
     throw new UnauthorizedException()
   }
 
+  /**
+   * The demo role a request claims. A role with a reviewer password only counts when the token is signed and
+   * not expired; the X-Demo-Role header is ignored for such roles. Other roles keep the open demo behaviour.
+   */
   private extractDemoRole(request: any): string | undefined {
     const authHeader: string | undefined = request.headers.authorization
     if (authHeader?.startsWith('Bearer demo:')) {
-      const role = authHeader.slice('Bearer demo:'.length).toUpperCase()
-      if (ROLE_VALUES.has(role)) return role
+      const token = authHeader.slice('Bearer '.length)
+      const claimed = token.split(':')[1]?.toUpperCase()
+      if (claimed && ROLE_VALUES.has(claimed)) {
+        if (!this.creds.requiresPassword(claimed)) return claimed
+        const signed = this.creds.roleFromToken(token)
+        if (signed && signed.toUpperCase() === claimed) return claimed
+      }
+      return undefined
     }
     const headerRole: string | undefined = request.headers['x-demo-role']
     if (headerRole) {
       const role = headerRole.toUpperCase()
-      if (ROLE_VALUES.has(role)) return role
+      if (ROLE_VALUES.has(role) && !this.creds.requiresPassword(role)) return role
     }
     return undefined
   }

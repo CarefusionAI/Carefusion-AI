@@ -61,10 +61,9 @@ export default function LoginScreen() {
     }, 900)
   }
 
-  function enter(target: Who) {
+  async function enter(target: Who) {
     const cfg = WHO[target]
-    login(cfg.role)
-    navigate(demoRole(cfg.role).path)
+    if (await login(cfg.role)) navigate(demoRole(cfg.role).path)
   }
 
   function pick(next: Who) {
