@@ -785,3 +785,9 @@ Template:
 - **Decision:** `gov/approvals/:id/reject` now withdraws the caller's own first signature (and audits `approval.first_signature_withdrawn`) before recording the rejection. Approve already refused the same-person case with a clear message.
 - **Other crawl results:** all other 4xx were correct validation (duplicate names, fake IDs, reasons required, time slot taken). Export CSV 400s in the crawl were the already-fixed bug (the local web build was older).
 - **Owner:** Athun + Claude. **Status:** PR open.
+
+## 2026-10-31 — Presentation video and project guide, secret rotation, react-router 7, live checks
+- **Topic:** Material for presenting the project, plus housekeeping done while the demo went to reviewers.
+- **Decision:** (1) **Project guide PDF** committed to `docs/` (PR #7). (2) **Walkthrough video** (28:45, 46 scenes) recorded from the local stack, not the live site, so no live data was touched; the video, subtitles and narration script live outside the repo. Narration is an offline synthetic voice, labelled as such. After a frame-by-frame check, 20 scenes were re-timed because the first seconds showed the previous page; the audio was not changed. (3) **Secrets rotated:** access code, and the Neon `cf_owner` password (twice). Values are not recorded here. (4) **react-router 7** adopted (PR #18) after a 16-check routing test; advisories 6 to 4. (5) The click-through results and the two bugs found are in the entries above and in `docs/sessions/2026-10-31_S2.md`.
+- **Reason:** Reviewers and the Ministry audience need a demo that does not look broken, and the earlier passwords had appeared in session output.
+- **Owner:** Athun + Claude. **Next:** confirm `ACCESS_KEY_SECRET` is random (reviewer tokens depend on it); watch the video once; real accounts and MFA. **Status:** DONE, with the open items listed in the session log.
