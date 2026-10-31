@@ -1,3 +1,5 @@
+import PersonPicker from '../PersonPicker'
+import type { PersonHit } from '../../../api/peopleSearch'
 import { useEffect, useState } from 'react'
 import { Alert, Avatar, Badge, Button, PageHeader, Select, StatCard, Table, TextField, Textarea } from '../../../components/ui'
 import type { TableColumn } from '../../../components/ui'
@@ -109,12 +111,12 @@ function InviteModal({ open, onClose }: { open: boolean; onClose: () => void }) 
 
 function AddByIdModal({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone: (t: string) => void }) {
   const create = useCreatePharmacist()
-  const [personId, setPersonId] = useState('')
+  const [person, setPerson] = useState<PersonHit | null>(null)
   const [registrationNo, setRegistrationNo] = useState('')
   const [problem, setProblem] = useState<string | null>(null)
   useEffect(() => {
     if (open) {
-      setPersonId('')
+      setPerson(null)
       setRegistrationNo('')
       setProblem(null)
       create.reset()
@@ -122,11 +124,11 @@ function AddByIdModal({ open, onClose, onDone }: { open: boolean; onClose: () =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
   async function submit() {
-    if (!UUID_RE.test(personId.trim())) return setProblem('Enter a valid Person ID (a UUID).')
+    if (!person) return setProblem('Find and pick the person first.')
     if (registrationNo.trim().length < 3) return setProblem('Enter the registration number.')
     setProblem(null)
     try {
-      await create.mutateAsync({ personId: personId.trim(), registrationNo: registrationNo.trim() })
+      await create.mutateAsync({ personId: person.personId, registrationNo: registrationNo.trim() })
       onClose()
       onDone('Pharmacist account created. It is active immediately.')
     } catch {
@@ -144,7 +146,7 @@ function AddByIdModal({ open, onClose, onDone }: { open: boolean; onClose: () =>
       onClose={onClose}
     >
       <p className="ak-p">For someone who already has a CareFusion person record. The pharmacist account is active as soon as you create it.</p>
-      <TextField label="Person ID" required placeholder="00000000-0000-0000-0000-000000000000" helper="UUID of the registered person (synthetic demo data)." autoComplete="off" value={personId} onChange={(e) => setPersonId(e.target.value)} />
+      <PersonPicker value={person} onPick={setPerson} />
       <TextField label="Registration number" required placeholder="e.g. DSPC DEMO-00000" value={registrationNo} onChange={(e) => setRegistrationNo(e.target.value)} />
     </ConfirmModal>
   )

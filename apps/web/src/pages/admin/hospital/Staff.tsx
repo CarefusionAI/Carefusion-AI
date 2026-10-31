@@ -4,6 +4,8 @@ import type { TableColumn } from '../../../components/ui'
 import { errorMessage } from '../../../api/adminHttp'
 import { useCreateHospitalStaff, useHospitalDepartments, useHospitalStaff } from '../../../api/hospitalAdmin'
 import type { HospitalStaffMember } from '../../../api/hospitalAdmin'
+import PersonPicker from '../PersonPicker'
+import type { PersonHit } from '../../../api/peopleSearch'
 import { Async, Box, Chips, ConfirmModal, ICONS, Icon, PageSkeleton, Row, RowText, UUID_RE, fmtDate, useFlash } from '../opsKit'
 
 type RoleFilter = '' | 'doctor' | 'nurse' | 'lab' | 'radiology' | 'pharmacist'
@@ -26,14 +28,14 @@ function useDebounced<T>(value: T, ms = 300): T {
 function AddStaffModal({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone: (text: string) => void }) {
   const create = useCreateHospitalStaff()
   const depts = useHospitalDepartments()
-  const [personId, setPersonId] = useState('')
+  const [person, setPerson] = useState<PersonHit | null>(null)
   const [staffRole, setStaffRole] = useState('')
   const [departmentId, setDepartmentId] = useState('')
   const [problem, setProblem] = useState<string | null>(null)
 
   useEffect(() => {
     if (open) {
-      setPersonId('')
+      setPerson(null)
       setStaffRole('')
       setDepartmentId('')
       setProblem(null)
@@ -43,12 +45,12 @@ function AddStaffModal({ open, onClose, onDone }: { open: boolean; onClose: () =
   }, [open])
 
   async function submit() {
-    if (!UUID_RE.test(personId.trim())) return setProblem('Enter a valid Person ID (a UUID).')
+    if (!person) return setProblem('Find and pick the person first.')
     if (!staffRole) return setProblem('Choose a staff role.')
     setProblem(null)
     try {
       await create.mutateAsync({
-        personId: personId.trim(),
+        personId: person.personId,
         staffRole: staffRole as 'nurse' | 'lab' | 'radiology',
         departmentId: departmentId || undefined,
       })
@@ -72,15 +74,7 @@ function AddStaffModal({ open, onClose, onDone }: { open: boolean; onClose: () =
       <p className="ak-p">
         The person must already be registered. The account is active as soon as you create it and appears in the Staff Portal list. Doctors apply for themselves and are approved under Approvals.
       </p>
-      <TextField
-        label="Person ID"
-        required
-        placeholder="00000000-0000-0000-0000-000000000000"
-        helper="UUID of the registered person (synthetic demo data)."
-        autoComplete="off"
-        value={personId}
-        onChange={(e) => setPersonId(e.target.value)}
-      />
+      <PersonPicker value={person} onPick={setPerson} />
       <Select
         label="Staff role"
         required

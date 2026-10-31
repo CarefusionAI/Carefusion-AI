@@ -23,7 +23,7 @@ function Body({ r }: { r: GovReports } & SectionProps) {
   async function run(rep: Report) {
     setBusy(rep.code)
     try {
-      const exp = await create.mutateAsync({ report: rep.code, period, format: 'csv' })
+      const { export: exp } = await create.mutateAsync({ report: rep.code, period, format: 'csv' })
       await downloadExport(exp)
       toast(`${exp.filename} exported (de-identified) and downloaded.`)
     } catch (e) {

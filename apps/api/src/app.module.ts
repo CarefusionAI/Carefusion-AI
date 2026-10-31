@@ -17,6 +17,7 @@ import { CitizenAppModule } from './citizen-app'
 import { DoctorModule } from './doctor/doctor.module'
 import { StaffModule } from './staff/staff.module'
 import { HospitalAdminModule } from './hospital-admin/hospital-admin.module'
+import { PeopleSearchModule } from './people-search/people-search.module'
 import { PharmacyAdminModule } from './pharmacy-admin/pharmacy-admin.module'
 import { GovAdminModule } from './gov-admin/gov-admin.module'
 import { AccessModule } from './access/access.module'
@@ -39,6 +40,7 @@ import { CitizenExtrasModule } from './citizen-extras.module'
     DoctorModule,
     StaffModule,
     HospitalAdminModule,
+    PeopleSearchModule,
     PharmacyAdminModule,
     GovAdminModule,
     CitizenExtrasModule,
