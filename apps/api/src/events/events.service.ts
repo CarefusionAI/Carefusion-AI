@@ -1,9 +1,13 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, HttpException, Injectable } from '@nestjs/common'
+import { Role } from '@carefusion/shared'
 import type { EmitEventRequest, EventDto, EventRole, MarkEventsReadResponse } from '@carefusion/shared/dist/events.js'
 import { GOV_EVENT_ROLES } from '@carefusion/shared/dist/events.js'
 import type { AuthenticatedUser } from '../auth/types'
 import { eventRoleOf } from './event-roles'
 import { RequestDbService, RequestTx } from './request-db.service'
+
+/** Notices one account may send per minute through the open events endpoint. */
+const EMIT_PER_MINUTE = 10
 
 interface EventRow {
   id: string
@@ -93,7 +97,19 @@ export class EventsService {
 
   /** POST /events: the sender's role comes from the account, never from the request. */
   async emitForUser(user: AuthenticatedUser, req: EmitEventRequest): Promise<EventDto> {
-    return this.requestDb.run(user, (tx) => this.emit(tx, req))
+    // Citizens' notices to staff are created by the booking, message, complaint, review and blood flows, which know the
+    // right hospital. This open endpoint would let a citizen write any text to any hospital or person, so it is refused.
+    if (user.role === Role.CITIZEN && (req.to.some((r) => r !== 'citizen') || req.toUserId || req.hospitalId || req.pharmacyId)) {
+      throw new ForbiddenException('Citizens cannot send notices to staff here. Use messages, bookings or complaints.')
+    }
+    return this.requestDb.run(user, async (tx) => {
+      const recent = await tx.query<{ n: number }>(
+        `SELECT count(*)::int AS n FROM engage.event WHERE created_by_user_id = $1 AND created_at > now() - interval '1 minute'`,
+        [tx.userId],
+      )
+      if ((recent[0]?.n ?? 0) >= EMIT_PER_MINUTE) throw new HttpException('Too many notices. Wait a minute and try again.', 429)
+      return this.emit(tx, req)
+    })
   }
 
   /**

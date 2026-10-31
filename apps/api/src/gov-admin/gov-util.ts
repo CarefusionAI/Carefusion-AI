@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common'
 import type { ZodType, ZodTypeDef } from 'zod'
 import type { Widget } from '@carefusion/shared/dist/gov-admin'
+import { neutraliseCsvText } from '../csv'
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -58,7 +59,7 @@ export function suppress(count: number, min: number): number | null {
 
 export function csvCell(v: unknown): string {
   if (v === null || v === undefined) return ''
-  const s = String(v)
+  const s = typeof v === 'string' ? neutraliseCsvText(v) : String(v)
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
 }
 

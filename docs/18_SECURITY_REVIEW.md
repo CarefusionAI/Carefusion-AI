@@ -112,3 +112,62 @@ Distinct 409 messages for existing Aadhaar token, phone and email let a caller t
 - Is `ACCESS_KEY_SECRET` set in production? (decides if finding 3 is real)
 - Will testers get one shared code or one each?
 - Should the demo remain open to every role for every tester, or should testers be limited to the roles they test?
+
+---
+
+# Second pass (2026-10-31, after PR #10)
+
+Scope of this pass: every controller's guard decorators, all `@Public()` routes, the events API, per-hospital and per-pharmacy scoping in lab, hospital-admin and pharmacy-admin code, CSV exports, the web app (XSS sinks, storage), error mapping, committed secrets, `docker-compose.yml`. Still not read line by line: every business query in `gov-admin`, `doctor` and `citizen-app`, and the `apps/ai` service.
+
+## New findings
+
+| # | Severity (alpha) | Finding |
+|---|---|---|
+| 17 | Medium | Any signed-in role can send in-app events to any hospital, pharmacy or user, with free text |
+| 18 | Medium (your laptop) | `docker-compose.yml` publishes database, Valkey, Keycloak, LocalStack, Mailpit, API and AI ports on all network interfaces, with demo passwords |
+| 19 | Low | CSV exports do not neutralise spreadsheet formulas |
+| 20 | Low | JWT validation does not check the audience |
+| 21 | Low | A "missing value" database error returns the raw database message |
+| 22 | Info | Demo login returns a bearer token that is just `demo:<ROLE>` |
+
+### 17. Event spam and in-app phishing
+`events/events.service.ts` `emit`. A citizen (or any role) may set `hospitalId`, `pharmacyId` or `toUserId` to any value and write the `title` and `text`. Only the link (`href`) is restricted to an in-app path. A citizen could send "Urgent: approve this request" notices to every doctor of any hospital, or to one named admin. There is no limit on how many.
+**Fix:** let citizens send only to a hospital they have a booking, visit or open thread with; cap events per sender per minute; keep title and text from a fixed list of event types for citizens (or label citizen-written text as "message from a patient").
+
+### 18. Local services exposed on the network
+`docker-compose.yml` uses `ports: "5432:5432"`, `"6379:6379"`, `"8080:8080"`, `"9000:4566"`, `"8025:8025"`, `"1025:1025"`, `"3000:3000"`, `"8000:8000"`, `"5173:5173"`. That binds to all interfaces, so on public or shared Wi-Fi others can reach your Postgres (password `cf_demo_password_change_me`) and Valkey. `keycloak/realm-export.json` holds the same demo password (`Demo1234!pass`) for all 12 users and the client secret `api-demo-secret-change-me`. These are fine as dev defaults but must never run on a reachable server.
+**Fix:** write every port as `"127.0.0.1:5432:5432"`; never deploy that realm file; when real login arrives, create users with generated passwords.
+
+### 19. CSV formula injection
+`gov-admin/gov-util.ts` `csvCell` and the dispensing-log export in `staff/pharmacist/pharmacist.service.ts` quote commas and quotes but not cells that start with `=`, `+`, `-` or `@`. A value such as `=HYPERLINK(...)` typed into a free-text field (an override reason, a name) runs when an admin opens the CSV in Excel.
+**Fix:** prefix such cells with a single quote (`'`) in both functions, and use one shared helper.
+
+### 20. JWT audience
+`auth/jwt.strategy.ts` checks issuer and RS256 but not `audience`. When Keycloak goes live, a token issued for another client of the same realm would be accepted.
+**Fix:** set `audience` to the API client id.
+
+### 21. Database message leak
+`events/pg-errors.ts` returns `Missing required value (<database message>)` for not-null errors, which names tables and columns. Return a fixed message and log the detail on the server.
+
+### 22. Demo bearer
+`POST /api/v1/auth/demo-login` returns `demo:<ROLE>` as the token. Nothing secret is lost (the header is accepted anyway), but it shows the token is not a credential. Remove with finding 1.
+
+## Checked and found good
+- Every controller carries `@Roles(...)` or `@Public()`, except `events.controller.ts`, which is intentionally open to any signed-in role and relies on row-level security. The 18 `@Public()` routes are the health/clock, access gate, demo login, cron escalate (secret protected), registration, and the calendar token feed.
+- Lab, hospital-admin and pharmacy-admin code filters by the caller's hospital or pharmacy in each by-id query I read (for example lab `stage`, `receiveSpecimen`). Staff, hospital-admin, pharmacy-admin and gov code use the owner connection (no RLS), so this scoping is the only protection (finding 6). Add an automated cross-hospital test.
+- The web app has no `dangerouslySetInnerHTML`, `innerHTML`, `eval` or `document.write`. It stores only the demo role and ids in `sessionStorage` and two UI switches in `localStorage`. `window.open` uses `noopener`.
+- No secrets are committed (`.env` is ignored; only `.env.example`), and no keys were found in the git history search or the public bundle.
+- Event links must be in-app paths (database rule); events cannot be edited; patient events cannot reach government roles.
+
+## Suggested next fixes (alpha-sized)
+1. Bind compose ports to `127.0.0.1` (finding 18): 10 minutes.
+2. CSV cell neutralising (19) and the not-null message (21): 20 minutes.
+3. Limit who a citizen can send events to, and add a per-sender cap (17): about 1 hour.
+4. JWT audience (20): when real login work starts.
+
+## Status of the second-pass fixes (branch `security-alpha-fixes-2`)
+- 17 fixed: citizens cannot use the open events endpoint to reach staff; every account is limited to 10 notices per minute there.
+- 18 fixed: all compose ports now bind to `127.0.0.1`.
+- 19 fixed: CSV text cells that start with `=`, `+`, `-`, `@`, tab or carriage return get a leading quote (`apps/api/src/csv.ts`, used by the gov reports and the pharmacist dispensing log).
+- 21 fixed: the missing-value error no longer shows the database message.
+- 20 (JWT audience) and 22 (demo bearer) left for the real-login work.

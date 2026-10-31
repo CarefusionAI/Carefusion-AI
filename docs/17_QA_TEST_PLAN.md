@@ -818,7 +818,7 @@ The only live channel is the in-app event feed. An event is visible only to the 
 | NOTIF-003 | Own events not counted | 1. As Doctor reply to a message. | The doctor's own bell does not count their own event. | Citizen |
 | NOTIF-004 | Error backoff | 1. Go offline for a minute, then back online. | Polling slows (15 s) after an error then returns to 3 s; no duplicate toasts. | No one |
 | NOTIF-005 | Cross-role feed | 1. As Citizen call `GET /api/v1/events?role=DOCTOR` (copy the exact param from the Network tab). | 403. | No one |
-| NOTIF-006 | Emit as another role | 1. As Citizen `POST /api/v1/events` claiming to be a doctor. | Role comes from the account; refused or stored as citizen. | No one |
+| NOTIF-006 | Emit as another role / citizen to staff | 1. As Citizen `POST /api/v1/events` with `to:["doctor"]` (or with `hospitalId` / `toUserId`).<br>2. As Doctor send 11 events within a minute through the same endpoint. | 1: 403 "Citizens cannot send notices to staff here. Use messages, bookings or complaints." Role always comes from the account. 2: the 11th gets 429 "Too many notices. Wait a minute and try again." | No one |
 | NOTIF-007 | Other hospital isolation | 1. Create a lab order at Demo General Hospital.<br>2. Check a lab tech of another hospital (ask Athun whether one is reachable). | Not visible there. | Only own hospital |
 | NOTIF-008 | Government never sees patient events | 1. Do citizen/doctor actions.<br>2. Open District/State/Zonal/Central feeds. | None of them appear. | No one |
 | NOTIF-009 | Mark unseen event read | 1. Call `POST /events/read` with an id you cannot see. | Refused / not marked. | No one |
@@ -907,6 +907,7 @@ Treat "this table" as the expectation from the code. Anything different is a bug
 | NFR-007 | Refresh and Back | 1. Refresh mid-flow on every multi-step form; Back/Forward. | State kept or cleanly reset; no double submit. | No one |
 | NFR-008 | Offline and errors | 1. Go offline; trigger a server error (invalid id). | Friendly message; no stack trace. | No one |
 | NFR-009 | Tab session | 1. Open the same role in two tabs; log out in one. | Other tab fails cleanly on next call. | No one |
+| SEC-013 | CSV formula safety | 1. As Pharmacist create a dispensing override reason starting with `=1+1`.<br>2. Export the dispensing log CSV and open it in a spreadsheet.<br>3. Export a gov report CSV. | The cell shows `'=1+1` as text and nothing is calculated. Numbers (including negative) stay numbers. | No one |
 | NFR-010 | Print / export | 1. Print a prescription, patient summary; export a dispensing log and a report. | Readable output; banner included; CSV only (PDF export gives 400 "PDF export is not available in the alpha. Use CSV."). | No one |
 
 ## KNOWN-ISSUES: confirm each one and record expected vs actual
